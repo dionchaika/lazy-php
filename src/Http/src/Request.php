@@ -56,16 +56,11 @@ class Request extends Message implements RequestInterface
         $this->uri = $uri;
 
         foreach ($headers as $name => $value) {
-            $this->headers[strtolower($name)] = [
-
-                'name'   => $this->filterHeaderName($name),
-                'values' => $this->filterHeaderValue($value)
-
-            ];
+            $this->setHeader($name, $value);
         }
 
         if ('1.1' === $this->protocolVersion && !$this->hasHeader('Host')) {
-            $this->appendHostHeader();
+            $this->setHostHeader();
         }
 
         $this->protocolVersion = $protocolVersion;
@@ -181,11 +176,11 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Append the Host header to the request.
+     * Set the Host header to the request.
      *
      * @return void
      */
-    protected function appendHostHeader()
+    protected function setHostHeader()
     {
         $host = $this->uri->getHost();
         if ('' !== $host) {
@@ -194,12 +189,7 @@ class Request extends Message implements RequestInterface
                 $host .= ':'.$port;
             }
 
-            $this->headers['host'] = [
-
-                'name'   => 'Host',
-                'values' => [$host]
-
-            ];
+            $this->setHeader('Host', $host);
         }
     }
 
