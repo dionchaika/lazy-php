@@ -198,7 +198,9 @@ class Response extends Message implements ResponseInterface
     {
         try {
             return to_string($this);
-        } catch (Throwable $e) {}
+        } catch (Throwable $e) {
+            return $e->getMessage();
+        }
     }
 
     /**

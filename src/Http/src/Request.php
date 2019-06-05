@@ -186,7 +186,9 @@ class Request extends Message implements RequestInterface
     {
         try {
             return to_string($this);
-        } catch (Throwable $e) {}
+        } catch (Throwable $e) {
+            return $e->getMessage();
+        }
     }
 
     /**
