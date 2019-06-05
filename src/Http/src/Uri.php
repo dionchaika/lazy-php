@@ -1,0 +1,3 @@
+<?php
+
+namespace Lazy\Http;
