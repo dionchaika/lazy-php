@@ -195,8 +195,10 @@ class Response extends Message implements ResponseInterface
     /**
      * Filter a response status code.
      *
-     * @param int $code
+     * @param  int  $code
+     *
      * @return int
+     *
      * @throws \InvalidArgumentException
      */
     protected function filterStatusCode($code)
