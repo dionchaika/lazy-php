@@ -170,7 +170,7 @@ class Request extends Message implements RequestInterface
             return $new;
         }
 
-        $new->appendHostHeader();
+        $new->setHostHeader();
 
         return $new;
     }
