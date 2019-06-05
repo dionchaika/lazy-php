@@ -2,6 +2,7 @@
 
 namespace Lazy\Http;
 
+use Throwable;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
@@ -87,14 +88,14 @@ class Uri implements UriInterface
                 throw new InvalidArgumentException('Unable to parse the URI: '.$uri.'!');
             }
 
-            $scheme = !empty($uriParts['scheme']) ? $uriParts['scheme'] : '';
-            $user = !empty($uriParts['user']) ? $uriParts['user'] : '';
-            $password = !empty($uriParts['pass']) ? $uriParts['pass'] : null;
-            $host = !empty($uriParts['host']) ? $uriParts['host'] : '';
-            $port = !empty($uriParts['port']) ? $uriParts['port'] : null;
-            $path = !empty($uriParts['path']) ? $uriParts['path'] : '';
-            $query = !empty($uriParts['query']) ? $uriParts['query'] : '';
-            $fragment = !empty($uriParts['fragment']) ? $uriParts['fragment'] : '';
+            $scheme = ! empty($uriParts['scheme']) ? $uriParts['scheme'] : '';
+            $user = ! empty($uriParts['user']) ? $uriParts['user'] : '';
+            $password = ! empty($uriParts['pass']) ? $uriParts['pass'] : null;
+            $host = ! empty($uriParts['host']) ? $uriParts['host'] : '';
+            $port = ! empty($uriParts['port']) ? $uriParts['port'] : null;
+            $path = ! empty($uriParts['path']) ? $uriParts['path'] : '';
+            $query = ! empty($uriParts['query']) ? $uriParts['query'] : '';
+            $fragment = ! empty($uriParts['fragment']) ? $uriParts['fragment'] : '';
 
             $userInfo = $user;
             if ('' !== $userInfo && null !== $password) {
@@ -120,24 +121,24 @@ class Uri implements UriInterface
      */
     public static function fromGlobals()
     {
-        $secured = !empty($_SERVER['HTTPS']) && 0 !== strcasecmp($_SERVER['HTTPS'], 'off');
+        $secured = ! empty($_SERVER['HTTPS']) && 0 !== strcasecmp($_SERVER['HTTPS'], 'off');
 
         $scheme = $secured ? 'https' : 'http';
 
-        if (!empty($_SERVER['SERVER_NAME'])) {
+        if (! empty($_SERVER['SERVER_NAME'])) {
             $host = $_SERVER['SERVER_NAME'];
         } else {
-            $host = !empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+            $host = ! empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
         }
 
-        if (!empty($_SERVER['SERVER_PORT'])) {
+        if (! empty($_SERVER['SERVER_PORT'])) {
             $port = (int)$_SERVER['SERVER_PORT'];
         } else {
             $port = $secured ? 443 : 80;
         }
 
-        $path = !empty($_SERVER['REQUEST_URI']) ? explode('?', $_SERVER['REQUEST_URI'], 2)[0] : '/';
-        $query = !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+        $path = ! empty($_SERVER['REQUEST_URI']) ? explode('?', $_SERVER['REQUEST_URI'], 2)[0] : '/';
+        $query = ! empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
 
         return (new static)
             ->withScheme($scheme)
@@ -171,7 +172,7 @@ class Uri implements UriInterface
      */
     public static function isNonStandartPort($scheme, $port)
     {
-        return !isset(static::DEFAULT_PORTS[$scheme]) || $port !== static::DEFAULT_PORTS[$scheme];
+        return ! isset(static::DEFAULT_PORTS[$scheme]) || $port !== static::DEFAULT_PORTS[$scheme];
     }
 
      /**
@@ -452,35 +453,37 @@ class Uri implements UriInterface
      */
     public function __toString()
     {
-        $uri = '';
+        try {
+            $uri = '';
 
-        if ('' !== $this->scheme) {
-            $uri .= $this->scheme.':';
-        }
+            if ('' !== $this->scheme) {
+                $uri .= $this->scheme.':';
+            }
 
-        $authority = $this->getAuthority();
+            $authority = $this->getAuthority();
 
-        if ('' !== $authority) {
-            $uri .= '//'.$authority;
-        }
+            if ('' !== $authority) {
+                $uri .= '//'.$authority;
+            }
 
-        if ('' !== $authority && 0 !== strncmp($this->path, '/', 1)) {
-            $uri .= '/'.$this->path;
-        } else if ('' === $authority && 0 === strncmp($this->path, '//', 2)) {
-            $uri .= '/'.ltrim($this->path, '/');
-        } else {
-            $uri .= $this->path;
-        }
+            if ('' !== $authority && 0 !== strncmp($this->path, '/', 1)) {
+                $uri .= '/'.$this->path;
+            } else if ('' === $authority && 0 === strncmp($this->path, '//', 2)) {
+                $uri .= '/'.ltrim($this->path, '/');
+            } else {
+                $uri .= $this->path;
+            }
 
-        if ('' !== $this->query) {
-            $uri .= '?'.$this->query;
-        }
+            if ('' !== $this->query) {
+                $uri .= '?'.$this->query;
+            }
 
-        if ('' !== $this->fragment) {
-            $uri .= '#'.$this->fragment;
-        }
+            if ('' !== $this->fragment) {
+                $uri .= '#'.$this->fragment;
+            }
 
-        return $uri;
+            return $uri;
+        } catch (Throwable $e) {}
     }
 
     /**
@@ -495,7 +498,7 @@ class Uri implements UriInterface
     protected function filterScheme($scheme)
     {
         if ('' !== $scheme) {
-            if (!preg_match('/^[a-zA-Z][a-zA-Z0-9+\-.]*$/', $scheme)) {
+            if (! preg_match('/^[a-zA-Z][a-zA-Z0-9+\-.]*$/', $scheme)) {
                 throw new InvalidArgumentException('Invalid scheme! Scheme must be compliant with the "RFC 3986" standart.');
             }
 
@@ -527,7 +530,7 @@ class Uri implements UriInterface
                 // Matching an IPvFuture.
                 //
                 if (preg_match('/^(v|V)/', $host)) {
-                    if (!preg_match('/^(v|V)[a-fA-F0-9]\.([a-zA-Z0-9\-._~]|[!$&\'()*+,;=]|\:)$/', $host)) {
+                    if (! preg_match('/^(v|V)[a-fA-F0-9]\.([a-zA-Z0-9\-._~]|[!$&\'()*+,;=]|\:)$/', $host)) {
                         throw new InvalidArgumentException('Invalid host! IP address must be compliant with the "IPvFuture" of the "RFC 3986" standart.');
                     }
                 //
@@ -549,7 +552,7 @@ class Uri implements UriInterface
             // Matching a domain name.
             //
             } else {
-                if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])*$/', $host)) {
+                if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])*$/', $host)) {
                     throw new InvalidArgumentException('Invalid host! Host must be compliant with the "RFC 3986" standart.');
                 }
             }
@@ -608,7 +611,7 @@ class Uri implements UriInterface
         }
 
         if ('' !== $path && '/' !== $path) {
-            if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\%)*$/', $path)) {
+            if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\%)*$/', $path)) {
                 throw new InvalidArgumentException('Invalid path! Path must be compliant with the "RFC 3986" standart.');
             }
 
@@ -632,7 +635,7 @@ class Uri implements UriInterface
     protected function filterQuery($query)
     {
         if ('' !== $query) {
-            if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\?|\%)*$/', $query)) {
+            if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\?|\%)*$/', $query)) {
                 throw new InvalidArgumentException('Invalid query! Query must be compliant with the "RFC 3986" standart.');
             }
 

@@ -261,7 +261,7 @@ abstract class Message implements MessageInterface
      */
     protected function filterHeaderName($name)
     {
-        if (!preg_match('/^[!#$%&\'*+\-.^_`|~0-9a-zA-Z]+$/', $name)) {
+        if (! preg_match('/^[!#$%&\'*+\-.^_`|~0-9a-zA-Z]+$/', $name)) {
             throw new InvalidArgumentException('Invalid header name! Header name must be compliant with the "RFC 7230" standart.');
         }
 
@@ -308,7 +308,7 @@ abstract class Message implements MessageInterface
      */
     protected function filterBody(StreamInterface $body)
     {
-        if (!$body->isReadable()) {
+        if (! $body->isReadable()) {
             throw new InvalidArgumentException('Invalid body! Body is not readable.');
         }
 

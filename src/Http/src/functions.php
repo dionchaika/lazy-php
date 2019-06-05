@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 
 if (! function_exists('uri_for')) {
     /**
-     * Get the URI for a string.
+     * Get the URI for string.
      *
      * @param  string  $uri
      *

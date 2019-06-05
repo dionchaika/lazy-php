@@ -2,6 +2,7 @@
 
 namespace Lazy\Http;
 
+use Throwable;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -185,6 +186,19 @@ class Response extends Message implements ResponseInterface
     public function getReasonPhrase()
     {
         return $this->reasonPhrase;
+    }
+
+    /**
+     * Get the string
+     * representation of the response.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        try {
+            return to_string($this);
+        } catch (Throwable $e) {}
     }
 
     /**

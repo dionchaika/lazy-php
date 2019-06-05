@@ -2,6 +2,7 @@
 
 namespace Lazy\Http;
 
+use Throwable;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
@@ -59,7 +60,7 @@ class Request extends Message implements RequestInterface
             $this->setHeader($name, $value);
         }
 
-        if ('1.1' === $this->protocolVersion && !$this->hasHeader('Host')) {
+        if ('1.1' === $this->protocolVersion && ! $this->hasHeader('Host')) {
             $this->setHostHeader();
         }
 
@@ -176,6 +177,19 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Get the string
+     * representation of the request.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        try {
+            return to_string($this);
+        } catch (Throwable $e) {}
+    }
+
+    /**
      * Set the Host header to the request.
      *
      * @return void
@@ -204,7 +218,7 @@ class Request extends Message implements RequestInterface
      */
     protected function filterMethod($method)
     {
-        if (!preg_match('/^[!#$%&\'*+\-.^_`|~0-9a-zA-Z]+$/', $method)) {
+        if (! preg_match('/^[!#$%&\'*+\-.^_`|~0-9a-zA-Z]+$/', $method)) {
             throw new InvalidArgumentException('Invalid method! Method must be compliant with the "RFC 7230" standart.');
         }
 
