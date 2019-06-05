@@ -6,22 +6,6 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-if (! function_exists('uri_for')) {
-    /**
-     * Get the URI for string.
-     *
-     * @param  string  $uri
-     *
-     * @return \Lazy\Http\Uri
-     *
-     * @throws \InvalidArgumentException
-     */
-    function uri_for(string $uri): Uri
-    {
-        return new Uri($uri);
-    }
-}
-
 if (! function_exists('to_string')) {
     /**
      * Get the string
