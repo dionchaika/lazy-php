@@ -72,6 +72,115 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Get the request target.
+     *
+     * @return string
+     */
+    public function getRequestTarget()
+    {
+        if (null !== $this->requestTarget && '' !== $this->requestTarget) {
+            return $this->requestTarget;
+        }
+
+        if (null !== $this->uri) {
+            $requestTarget = $this->uri->getPath();
+            if ('' === $requestTarget) {
+                $requestTarget = '/';
+            }
+
+            $query = $this->uri->getQuery();
+            if ('' !== $query) {
+                $requestTarget .= '?'.$query;
+            }
+
+            return $requestTarget;
+        }
+
+        return '/';
+    }
+
+    /**
+     * Return an instance
+     * with the specified request target.
+     *
+     * @param  mixed  $requestTarget
+     *
+     * @return static
+     */
+    public function withRequestTarget($requestTarget)
+    {
+        $new = clone $this;
+        $new->requestTarget = $requestTarget;
+
+        return $new;
+    }
+
+    /**
+     * Get the request method.
+     *
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * Return an instance
+     * with the specified request method.
+     *
+     * @param  string  $method
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withMethod($method)
+    {
+        $new = clone $this;
+        $new->method = $new->filterMethod($method);
+
+        return $new;
+    }
+
+    /**
+     * Get the request URI.
+     *
+     * @return \Psr\Http\Message\UriInterface
+     */
+    public function getUri()
+    {
+        if (null === $this->uri) {
+            $this->uri = new Uri;
+        }
+
+        return $this->uri;
+    }
+
+    /**
+     * Return an instance
+     * with the specified request URI.
+     *
+     * @param  \Psr\Http\Message\UriInterface  $uri
+     * @param  bool  $preserveHost
+     *
+     * @return static
+     */
+    public function withUri(UriInterface $uri, $preserveHost = false)
+    {
+        $new = clone $this;
+        $new->uri = $uri;
+
+        if ($preserveHost && $new->hasHeader('Host')) {
+            return $new;
+        }
+
+        $new->appendHostHeader();
+
+        return $new;
+    }
+
+    /**
      * Append the Host header to the request.
      *
      * @return void
@@ -92,5 +201,23 @@ class Request extends Message implements RequestInterface
 
             ];
         }
+    }
+
+    /**
+     * Filter a request method.
+     *
+     * @param  string  $method
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function filterMethod($method)
+    {
+        if (!preg_match('/^[!#$%&\'*+\-.^_`|~0-9a-zA-Z]+$/', $method)) {
+            throw new InvalidArgumentException('Invalid method! Method must be compliant with the "RFC 7230" standart.');
+        }
+
+        return $method;
     }
 }
