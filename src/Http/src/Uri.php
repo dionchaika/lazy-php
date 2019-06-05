@@ -123,8 +123,19 @@ class Uri implements UriInterface
         $secured = !empty($_SERVER['HTTPS']) && 0 !== strcasecmp($_SERVER['HTTPS'], 'off');
 
         $scheme = $secured ? 'https' : 'http';
-        $host = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : (!empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1');
-        $port = !empty($_SERVER['SERVER_PORT']) ? (int)$_SERVER['SERVER_PORT'] : ($secured ? 443 : 80);
+
+        if (!empty($_SERVER['SERVER_NAME'])) {
+            $host = $_SERVER['SERVER_NAME'];
+        } else {
+            $host = !empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+        }
+
+        if (!empty($_SERVER['SERVER_PORT'])) {
+            $port = (int)$_SERVER['SERVER_PORT'];
+        } else {
+            $port = $secured ? 443 : 80;
+        }
+
         $path = !empty($_SERVER['REQUEST_URI']) ? explode('?', $_SERVER['REQUEST_URI'], 2)[0] : '/';
         $query = !empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
 
