@@ -129,10 +129,8 @@ class Response extends Message implements ResponseInterface
     {
         $this->statusCode = $this->filterStatusCode($code);
 
-        if ('' === $reasonPhrase) {
-            $reasonPhrase = isset(static::REASON_PHRASES[$this->statusCode])
-                ? static::REASON_PHRASES[$this->statusCode]
-                : '';
+        if ('' === $reasonPhrase && isset(static::REASON_PHRASES[$this->statusCode])) {
+            $reasonPhrase = static::REASON_PHRASES[$this->statusCode];
         }
 
         $this->reasonPhrase = $reasonPhrase;
@@ -175,10 +173,8 @@ class Response extends Message implements ResponseInterface
         $new = clone $this;
         $new->statusCode = $new->filterStatusCode($code);
 
-        if ('' === $reasonPhrase) {
-            $reasonPhrase = isset(static::REASON_PHRASES[$new->statusCode])
-                ? static::REASON_PHRASES[$new->statusCode]
-                : '';
+        if ('' === $reasonPhrase && isset(static::REASON_PHRASES[$this->statusCode])) {
+            $reasonPhrase = static::REASON_PHRASES[$this->statusCode];
         }
 
         $new->reasonPhrase = $reasonPhrase;
