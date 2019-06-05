@@ -3,7 +3,8 @@
 namespace Lazy\Http;
 
 /**
- * The HTTP response status code helper class.
+ * The HTTP response
+ * status code helper class.
  *
  * @see https://tools.ietf.org/html/rfc7230
  */

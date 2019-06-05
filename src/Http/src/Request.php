@@ -26,7 +26,7 @@ class Request extends Message implements RequestInterface
      *
      * @var string
      */
-    protected $method = 'GET';
+    protected $method = Method::GET;
 
     /**
      * The request URI.
@@ -43,7 +43,7 @@ class Request extends Message implements RequestInterface
      * @param  mixed[]  $headers
      * @param  string  $protocolVersion
      */
-    public function __construct($method = 'GET', $uri = null, $headers = [], $protocolVersion = '1.1')
+    public function __construct($method = Method::GET, $uri = null, $headers = [], $protocolVersion = '1.1')
     {
         $this->method = $this->filterMethod($method);
 

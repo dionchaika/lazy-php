@@ -106,14 +106,14 @@ class Response extends Message implements ResponseInterface
      *
      * @var int
      */
-    protected $statusCode = 200;
+    protected $statusCode = StatusCode::OK;
 
     /**
      * The response reason phrase.
      *
      * @var string
      */
-    protected $reasonPhrase = 'OK';
+    protected $reasonPhrase = self::REASON_PHRASES[StatusCode::OK];
 
     /**
      * The response constructor.
@@ -125,7 +125,7 @@ class Response extends Message implements ResponseInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($code = 200, $reasonPhrase = '', $headers = [], $protocolVersion = '1.1')
+    public function __construct($code = StatusCode::OK, $reasonPhrase = '', $headers = [], $protocolVersion = '1.1')
     {
         $this->statusCode = $this->filterStatusCode($code);
 
