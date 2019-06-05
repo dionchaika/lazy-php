@@ -97,7 +97,7 @@ class Uri implements UriInterface
             $fragment = !empty($uriParts['fragment']) ? $uriParts['fragment'] : '';
 
             $userInfo = $user;
-            if ('' !== $userInfo && null !== $password && '' !== $password) {
+            if ('' !== $userInfo && null !== $password) {
                 $userInfo .= ':'.$password;
             }
 
@@ -226,5 +226,414 @@ class Uri implements UriInterface
     public function getFragment()
     {
         return $this->fragment;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI scheme.
+     *
+     * @param  string  $scheme
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withScheme($scheme)
+    {
+        $new = clone $this;
+
+        $new->scheme = $new->filterScheme($scheme);
+        $new->port = $new->isNonStandartPort($new->scheme, $new->port) ? $new->port : null;
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI user information.
+     *
+     * @param  string  $user
+     * @param  string|null  $password
+     *
+     * @return static
+     */
+    public function withUserInfo($user, $password = null)
+    {
+        $userInfo = $user;
+        if ('' !== $userInfo && null !== $password && '' !== $password) {
+            $userInfo .= ':'.$password;
+        }
+
+        $new = clone $this;
+        $new->userInfo = $userInfo;
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI host.
+     *
+     * @param  string  $host
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withHost($host)
+    {
+        $new = clone $this;
+        $new->host = $new->filterHost($host);
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI port.
+     *
+     * @param  int|null  $port
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withPort($port)
+    {
+        $new = clone $this;
+        $new->port = $new->filterPort($port);
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI path.
+     *
+     * @param  string  $path
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withPath($path)
+    {
+        $new = clone $this;
+        $new->path = $new->filterPath($path);
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI query.
+     *
+     * @param  string  $query
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withQuery($query)
+    {
+        $new = clone $this;
+        $new->query = $new->filterQuery($query);
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI query parameter.
+     *
+     * @param  string  $name
+     * @param  string  $value
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withQueryParam($name, $value)
+    {
+        $new = clone $this;
+
+        $queryParams = explode('&', $new->query);
+
+        $queryParams[] = $name.'='.$value;
+        $new->query = $new->filterQuery(implode('&', $queryParams));
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI query parameters.
+     *
+     * @param  mixed[]  $params
+     *
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withQueryParams($params)
+    {
+        $new = clone $this;
+
+        $queryParams = explode('&', $new->query);
+
+        foreach ($params as $name => $value) {
+            $queryParams[] = $name.'='.$value;
+        }
+
+        $new->query = $new->filterQuery(implode('&', $queryParams));
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI fragment.
+     *
+     * @param  string  $fragment
+     *
+     * @return static
+     */
+    public function withFragment($fragment)
+    {
+        $new = clone $this;
+        $new->fragment = $new->filterFragment($fragment);
+
+        return $new;
+    }
+
+    /**
+     * Return the string
+     * representation of the URI.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $uri = '';
+
+        if ('' !== $this->scheme) {
+            $uri .= $this->scheme.':';
+        }
+
+        $authority = $this->getAuthority();
+
+        if ('' !== $authority) {
+            $uri .= '//'.$authority;
+        }
+
+        if ('' !== $authority && 0 !== strncmp($this->path, '/', 1)) {
+            $uri .= '/'.$this->path;
+        } else if ('' === $authority && 0 === strncmp($this->path, '//', 2)) {
+            $uri .= '/'.ltrim($this->path, '/');
+        } else {
+            $uri .= $this->path;
+        }
+
+        if ('' !== $this->query) {
+            $uri .= '?'.$this->query;
+        }
+
+        if ('' !== $this->fragment) {
+            $uri .= '#'.$this->fragment;
+        }
+
+        return $uri;
+    }
+
+    /**
+     * Filter a URI scheme.
+     *
+     * @param  string  $scheme
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function filterScheme($scheme)
+    {
+        if ('' !== $scheme) {
+            if (!preg_match('/^[a-zA-Z][a-zA-Z0-9+\-.]*$/', $scheme)) {
+                throw new InvalidArgumentException('Invalid scheme! Scheme must be compliant with the "RFC 3986" standart.');
+            }
+
+            return strtolower($scheme);
+        }
+
+        return $scheme;
+    }
+
+    /**
+     * Filter a URI host.
+     *
+     * @param  string  $host
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function filterHost($host)
+    {
+        if ('' !== $host) {
+            //
+            // Matching an IPvFuture or an IPv6address.
+            //
+            if (preg_match('/^\[.+\]$/', $host)) {
+                $host = trim($host, '[]');
+
+                //
+                // Matching an IPvFuture.
+                //
+                if (preg_match('/^(v|V)/', $host)) {
+                    if (!preg_match('/^(v|V)[a-fA-F0-9]\.([a-zA-Z0-9\-._~]|[!$&\'()*+,;=]|\:)$/', $host)) {
+                        throw new InvalidArgumentException('Invalid host! IP address must be compliant with the "IPvFuture" of the "RFC 3986" standart.');
+                    }
+                //
+                // Matching an IPv6address.
+                //
+                } else if (false === filter_var($host, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6)) {
+                    throw new InvalidArgumentException('Invalid host! IP address must be compliant with the "IPv6address" of the "RFC 3986" standart.');
+                }
+
+                $host = '['.$host.']';
+            //
+            // Matching an IPv4address.
+            //
+            } else if (preg_match('/^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\./', $host)) {
+                if (false === filter_var($host, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
+                    throw new InvalidArgumentException('Invalid host! IP address must be compliant with the "IPv4address" of the "RFC 3986" standart.');
+                }
+            //
+            // Matching a domain name.
+            //
+            } else {
+                if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])*$/', $host)) {
+                    throw new InvalidArgumentException('Invalid host! Host must be compliant with the "RFC 3986" standart.');
+                }
+            }
+
+            return strtolower($host);
+        }
+
+        return $host;
+    }
+
+    /**
+     * Filter a URI port.
+     *
+     * @param  int|null  $port
+     *
+     * @return int|null
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function filterPort($port)
+    {
+        if (null !== $port) {
+            if (1 > $port || 65535 < $port) {
+                throw new InvalidArgumentException('Invalid port! TCP or UDP port must be between 1 and 65535.');
+            }
+
+            return $this->isNonStandartPort($this->scheme, $port) ? $port : null;
+        }
+
+        return $port;
+    }
+
+    /**
+     * Check is the URI port is non-standard for the given URI scheme.
+     *
+     * @param  string  $scheme
+     * @param  int|null  $port
+     *
+     * @return bool
+     */
+    protected function isNonStandartPort($scheme, $port)
+    {
+        return !isset(static::DEFAULT_PORTS[$scheme]) || $port !== static::DEFAULT_PORTS[$scheme];
+    }
+
+    /**
+     * Filter a URI path.
+     *
+     * @param  string  $path
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function filterPath($path)
+    {
+        if ('' === $this->scheme && 0 === strncmp($path, ':', 1)) {
+            throw new InvalidArgumentException('Invalid path! Path of a URI without a scheme cannot begin with a colon.');
+        }
+
+        $authority = $this->getAuthority();
+
+        if ('' === $authority && 0 === strncmp($path, '//', 2)) {
+            throw new InvalidArgumentException('Invalid path! Path of a URI without an authority cannot begin with two slashes.');
+        }
+
+        if ('' !== $authority && '' !== $path && 0 !== strncmp($path, '/', 1)) {
+            throw new InvalidArgumentException('Invalid path! Path of a URI with an authority must be empty or begin with a slash.');
+        }
+
+        if ('' !== $path && '/' !== $path) {
+            if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\%)*$/', $path)) {
+                throw new InvalidArgumentException('Invalid path! Path must be compliant with the "RFC 3986" standart.');
+            }
+
+            return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
+                return rawurlencode($matches[0]);
+            }, $path);
+        }
+
+        return $path;
+    }
+
+    /**
+     * Filter a URI query.
+     *
+     * @param  string  $query
+     *
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function filterQuery($query)
+    {
+        if ('' !== $query) {
+            if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\?|\%)*$/', $query)) {
+                throw new InvalidArgumentException('Invalid query! Query must be compliant with the "RFC 3986" standart.');
+            }
+
+            return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/?%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
+                return rawurlencode($matches[0]);
+            }, $query);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Filter a URI fragment.
+     *
+     * @param  string  $fragment
+     *
+     * @return string
+     */
+    protected function filterFragment($fragment)
+    {
+        if ('' !== $fragment) {
+            return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/?%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
+                return rawurlencode($matches[0]);
+            }, $fragment);
+        }
+
+        return $fragment;
     }
 }
