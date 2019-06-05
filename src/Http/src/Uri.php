@@ -135,4 +135,96 @@ class Uri implements UriInterface
             ->withPath($path)
             ->withQuery($query);
     }
+
+     /**
+     * Get the URI scheme.
+     *
+     * @return string
+     */
+    public function getScheme()
+    {
+        return $this->scheme;
+    }
+
+    /**
+     * Get the URI authority.
+     *
+     * @return string
+     */
+    public function getAuthority()
+    {
+        $authority = $this->host;
+
+        if ('' !== $authority) {
+            if ('' !== $this->userInfo) {
+                $authority = $this->userInfo.'@'.$authority;
+            }
+
+            if (null !== $this->port) {
+                $authority .= ':'.$this->port;
+            }
+        }
+
+        return $authority;
+    }
+
+    /**
+     * Get the URI user information.
+     *
+     * @return string
+     */
+    public function getUserInfo()
+    {
+        return $this->userInfo;
+    }
+
+    /**
+     * Get the URI host.
+     *
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * Get the URI port.
+     *
+     * @return int|null
+     */
+    public function getPort()
+    {
+        return $this->port;
+    }
+
+    /**
+     * Get the URI path.
+     *
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * Get the URI query.
+     *
+     * @return string
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * Get the URI fragment.
+     *
+     * @return string
+     */
+    public function getFragment()
+    {
+        return $this->fragment;
+    }
 }
