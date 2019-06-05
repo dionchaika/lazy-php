@@ -56,6 +56,6 @@ if (! function_exists('to_string')) {
             }
         }
 
-        return $res;
+        return "{$res}\r\n{$message->getBody()}";
     }
 }
