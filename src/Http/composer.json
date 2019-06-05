@@ -1,9 +1,10 @@
 {
     "name": "lazy-php/http",
-    "description": "The Lazy PHP framework HTTP package",
+    "description": "The Lazy PHP Framework HTTP Package",
     "keywords": [
         "php",
-        "lazy framework",
+        "lazy",
+        "framework",
         "psr",
         "psr-7",
         "psr-17",
