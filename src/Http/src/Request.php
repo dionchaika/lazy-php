@@ -70,4 +70,27 @@ class Request extends Message implements RequestInterface
 
         $this->protocolVersion = $protocolVersion;
     }
+
+    /**
+     * Append the Host header to the request.
+     *
+     * @return void
+     */
+    protected function appendHostHeader()
+    {
+        $host = $this->uri->getHost();
+        if ('' !== $host) {
+            $port = $this->uri->getPort();
+            if (null !== $port) {
+                $host .= ':'.$port;
+            }
+
+            $this->headers['host'] = [
+
+                'name'   => 'Host',
+                'values' => [$host]
+
+            ];
+        }
+    }
 }
