@@ -136,6 +136,33 @@ class Uri implements UriInterface
             ->withQuery($query);
     }
 
+    /**
+     * Create a new URI from string.
+     *
+     * @param  string  $uri
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromString($uri)
+    {
+        return new static($uri);
+    }
+
+    /**
+     * Check is the URI port is non-standard for the given URI scheme.
+     *
+     * @param  string  $scheme
+     * @param  int|null  $port
+     *
+     * @return bool
+     */
+    public static function isNonStandartPort($scheme, $port)
+    {
+        return !isset(static::DEFAULT_PORTS[$scheme]) || $port !== static::DEFAULT_PORTS[$scheme];
+    }
+
      /**
      * Get the URI scheme.
      *
@@ -243,7 +270,7 @@ class Uri implements UriInterface
         $new = clone $this;
 
         $new->scheme = $new->filterScheme($scheme);
-        $new->port = $new->isNonStandartPort($new->scheme, $new->port) ? $new->port : null;
+        $new->port = static::isNonStandartPort($new->scheme, $new->port) ? $new->port : null;
 
         return $new;
     }
@@ -538,23 +565,10 @@ class Uri implements UriInterface
                 throw new InvalidArgumentException('Invalid port! TCP or UDP port must be between 1 and 65535.');
             }
 
-            return $this->isNonStandartPort($this->scheme, $port) ? $port : null;
+            return static::isNonStandartPort($this->scheme, $port) ? $port : null;
         }
 
         return $port;
-    }
-
-    /**
-     * Check is the URI port is non-standard for the given URI scheme.
-     *
-     * @param  string  $scheme
-     * @param  int|null  $port
-     *
-     * @return bool
-     */
-    protected function isNonStandartPort($scheme, $port)
-    {
-        return !isset(static::DEFAULT_PORTS[$scheme]) || $port !== static::DEFAULT_PORTS[$scheme];
     }
 
     /**
