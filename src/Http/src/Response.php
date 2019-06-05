@@ -135,7 +135,7 @@ class Response extends Message implements ResponseInterface
 
         $this->reasonPhrase = $reasonPhrase;
 
-        foreach ($this->headers as $name => $value) {
+        foreach ($headers as $name => $value) {
             $this->headers[strtolower($name)] = [
 
                 'name'   => $this->filterHeaderName($name),
