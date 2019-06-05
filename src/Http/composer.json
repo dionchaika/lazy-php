@@ -1,4 +1,31 @@
 {
+    "name": "lazy-php/http",
+    "description": "The Lazy PHP framework HTTP package",
+    "keywords": [
+        "php",
+        "lazy framework",
+        "psr",
+        "psr-7",
+        "psr-17",
+        "psr-15",
+        "psr-18",
+        "http",
+        "http-message",
+        "http-factory",
+        "http-server-handler",
+        "http-server-middleware",
+        "http-client"
+    ],
+    "homepage": "https://github.com/dionchaika/lazy-php",
+    "version": "v1.0.0",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dion Chaika",
+            "email": "dionchaika@gmail.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "Lazy\\Http\\": "src/"
