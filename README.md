@@ -1,2 +1,2 @@
-# lazy-php
+# Lazy PHP
 The Lazy PHP Framework
