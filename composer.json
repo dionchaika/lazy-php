@@ -1,0 +1,30 @@
+{
+    "name": "lazy-php/lazy-php",
+    "description": "The Lazy PHP Framework",
+    "keywords": [
+        "php",
+        "lazy",
+        "framework"
+    ],
+    "homepage": "https://github.com/dionchaika/lazy-php",
+    "version": "v1.0.0",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dion Chaika",
+            "email": "dionchaika@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Lazy\\": "src/"
+        }
+    },
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.1.3",
+        "lazy-php/http": "self.version"
+    }
+}
