@@ -25,6 +25,6 @@
     "minimum-stability": "dev",
     "require": {
         "php": "^7.1.3",
-        "lazy-php/http": "self.version"
+        "lazy-php/http": "*"
     }
 }
