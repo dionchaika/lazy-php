@@ -236,10 +236,7 @@ abstract class Message implements MessageInterface
             ];
         }
 
-        $this->headers[$normalizedName]['values'] = array_merge(
-            $this->headers[$normalizedName]['values'],
-            $this->filterHeaderValue($value)
-        );
+        $this->headers[$normalizedName]['values'] = array_merge($this->headers[$normalizedName]['values'], $this->filterHeaderValue($value));
     }
 
     /**
