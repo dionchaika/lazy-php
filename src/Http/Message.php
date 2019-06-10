@@ -15,11 +15,11 @@ use Psr\Http\Message\MessageInterface;
 abstract class Message implements MessageInterface
 {
     /**
-     * The message protocol version.
+     * The message body.
      *
-     * @var string
+     * @var \Psr\Http\Message\StreamInterface
      */
-    protected $protocolVersion = '1.1';
+    protected $body;
 
     /**
      * The array of message headers.
@@ -29,11 +29,11 @@ abstract class Message implements MessageInterface
     protected $headers = [];
 
     /**
-     * The message body.
+     * The message protocol version.
      *
-     * @var \Psr\Http\Message\StreamInterface
+     * @var string
      */
-    protected $body;
+    protected $protocolVersion = '1.1';
 
     /**
      * Get the message protocol version.
