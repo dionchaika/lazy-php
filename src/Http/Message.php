@@ -50,7 +50,6 @@ abstract class Message implements MessageInterface
      * with the specified message protocol version.
      *
      * @param  string  $version
-     *
      * @return static
      */
     public function withProtocolVersion($version)
@@ -80,7 +79,6 @@ abstract class Message implements MessageInterface
      * Check is the message header exists.
      *
      * @param  string  $name
-     *
      * @return bool
      */
     public function hasHeader($name)
@@ -92,7 +90,6 @@ abstract class Message implements MessageInterface
      * Get the message header.
      *
      * @param  string  $name
-     *
      * @return string[]
      */
     public function getHeader($name)
@@ -105,7 +102,6 @@ abstract class Message implements MessageInterface
      * Get the message header line.
      *
      * @param  string  $name
-     *
      * @return string
      */
     public function getHeaderLine($name)
@@ -120,7 +116,6 @@ abstract class Message implements MessageInterface
      *
      * @param  string  $name
      * @param  string|string[]  $value
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -140,7 +135,6 @@ abstract class Message implements MessageInterface
      *
      * @param  string  $name
      * @param  string|string[]  $value
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -158,7 +152,6 @@ abstract class Message implements MessageInterface
      * without the specified message header.
      *
      * @param  string  $name
-     *
      * @return static
      */
     public function withoutHeader($name)
@@ -190,7 +183,6 @@ abstract class Message implements MessageInterface
      * with the specified message body.
      *
      * @param  \Psr\Http\Message\StreamInterface  $body
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -208,7 +200,6 @@ abstract class Message implements MessageInterface
      *
      * @param  string  $name
      * @param  string|string[]  $value
-     *
      * @return void
      *
      * @throws \InvalidArgumentException
@@ -228,7 +219,6 @@ abstract class Message implements MessageInterface
      *
      * @param  string  $name
      * @param  string|string[]  $value
-     *
      * @return void
      *
      * @throws \InvalidArgumentException
@@ -254,7 +244,6 @@ abstract class Message implements MessageInterface
      * Filter a message header name.
      *
      * @param  string  $name
-     *
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -272,7 +261,6 @@ abstract class Message implements MessageInterface
      * Filter a message header value.
      *
      * @param  string|string[]  $value
-     *
      * @return string[]
      *
      * @throws \InvalidArgumentException
@@ -301,7 +289,6 @@ abstract class Message implements MessageInterface
      * Filter a message body.
      *
      * @param  Psr\Http\Message\StreamInterface  $body
-     *
      * @return Psr\Http\Message\StreamInterface
      *
      * @throws \InvalidArgumentException
