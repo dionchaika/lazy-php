@@ -2,6 +2,7 @@
 
 namespace Lazy\Cookie;
 
+use Throwable;
 use RuntimeException;
 use InvalidArgumentException;
 
@@ -158,7 +159,6 @@ class Cookie
      * @param  bool  $secure
      * @param  bool  $httpOnly
      * @param  string|null  $sameSite
-     *
      * @return self
      *
      * @throws \RuntimeException
@@ -197,8 +197,7 @@ class Cookie
     /**
      * Create a new cookie from string.
      *
-     * @param string $cookie
-     *
+     * @param  string  $cookie
      * @return self
      *
      * @throws \RuntimeException
@@ -452,8 +451,9 @@ class Cookie
      * Return an instance
      * with the specified cookie value.
      *
-     * @param string|null $value
+     * @param  string|null  $value
      * @return static
+     *
      * @throws \InvalidArgumentException
      */
     public function withValue(?string $value): self
@@ -468,9 +468,9 @@ class Cookie
      * Return an instance
      * with the specified cookie Expires attribute.
      *
-     * @param string|null $expires
+     * @param  string|null  $expires
      * @return static
-     * @throws \RuntimeException
+     *
      * @throws \InvalidArgumentException
      */
     public function withExpires(?string $expires): self
@@ -485,9 +485,8 @@ class Cookie
      * Return an instance
      * with the specified cookie Max-Age attribute.
      *
-     * @param int|null $maxAge
+     * @param  int|null  $maxAge
      * @return static
-     * @throws \RuntimeException
      */
     public function withMaxAge(?int $maxAge): self
     {
@@ -501,8 +500,9 @@ class Cookie
      * Return an instance
      * with the specified cookie Domain attribute.
      *
-     * @param string|null $domain
+     * @param  string|null  $domain
      * @return static
+     *
      * @throws \InvalidArgumentException
      */
     public function withDomain(?string $domain): self
@@ -517,8 +517,9 @@ class Cookie
      * Return an instance
      * with the specified cookie Path attribute.
      *
-     * @param string|null $path
+     * @param  string|null  $path
      * @return static
+     *
      * @throws \InvalidArgumentException
      */
     public function withPath(?string $path): self
@@ -533,7 +534,7 @@ class Cookie
      * Return an instance
      * with the specified cookie Secure attribute.
      *
-     * @param bool $secure
+     * @param  bool  $secure
      * @return static
      */
     public function withSecure(bool $secure): self
@@ -548,7 +549,7 @@ class Cookie
      * Return an instance
      * with the specified cookie HttpOnly attribute.
      *
-     * @param bool $httpOnly
+     * @param  bool  $httpOnly
      * @return static
      */
     public function withHttpOnly(bool $httpOnly): self
@@ -563,8 +564,9 @@ class Cookie
      * Return an instance
      * with the specified cookie SameSite attribute.
      *
-     * @param string|null $sameSite
+     * @param  string|null  $sameSite
      * @return static
+     *
      * @throws \InvalidArgumentException
      */
     public function withSameSite(?string $sameSite): self
@@ -578,8 +580,9 @@ class Cookie
     /**
      * Sign the cookie.
      *
-     * @param string $key
+     * @param  string  $key
      * @return void
+     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
@@ -606,8 +609,9 @@ class Cookie
     /**
      * Verify the cookie.
      *
-     * @param string $key
+     * @param  string  $key
      * @return void
+     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
@@ -630,7 +634,7 @@ class Cookie
                 );
             }
 
-            if (!hash_equals($hash, $originalHash)) {
+            if (! hash_equals($hash, $originalHash)) {
                 throw new RuntimeException(
                     'The cookie is modified!'
                 );
@@ -661,15 +665,67 @@ class Cookie
     }
 
     /**
+     * Get the string
+     * representation of the cookie.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        try {
+            $cookie = $this->getNameValuePair();
+
+            if ($this->hasHostPrefix) {
+                $cookie = '__Host-'.$cookie;
+            } else if ($this->hasSecurePrefix) {
+                $cookie = '__Secure-'.$cookie;
+            }
+
+            if (null !== $this->expires) {
+                $cookie .= '; Expires='.$this->expires;
+            }
+
+            if (null !== $this->maxAge) {
+                $cookie .= '; Max-Age='.$this->maxAge;
+            }
+
+            if (null !== $this->domain) {
+                $cookie .= '; Domain='.$this->domain;
+            }
+
+            if (null !== $this->path) {
+                $cookie .= '; Path='.$this->path;
+            }
+
+            if ($this->secure) {
+                $cookie .= '; Secure';
+            }
+
+            if ($this->httpOnly) {
+                $cookie .= '; HttpOnly';
+            }
+
+            if (null !== $this->sameSite) {
+                $cookie .= '; SameSite='.$this->sameSite;
+            }
+
+            return $cookie;
+        } catch (Throwable $e) {
+            trigger_error($e->getMessage(), \E_USER_ERROR);
+        }
+    }
+
+    /**
      * Filter a cookie name.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
+     *
      * @throws \InvalidArgumentException
      */
     protected function filterName(string $name): string
     {
-        if (!preg_match('/^[^\x00-\x1f\x7f\x20()<>@,;:\\"\/\[\]?={}]+$/', $name)) {
+        if (! preg_match('/^[^\x00-\x1f\x7f\x20()<>@,;:\\"\/\[\]?={}]+$/', $name)) {
             throw new InvalidArgumentException(
                 'Invalid cookie name! Cookie name must be compliant with the "RFC 6265" standart.'
             );
@@ -681,15 +737,16 @@ class Cookie
     /**
      * Filter a cookie value.
      *
-     * @param string|null $value
+     * @param  string|null  $value
      * @return string|null
+     *
      * @throws \InvalidArgumentException
      */
     protected function filterValue(?string $value): ?string
     {
         if (null !== $value) {
             $unquotedValue = preg_match('/^\".*\"$/', $value) ? trim($value, '"') : $value;
-            if (!preg_match('/^[^\x00-\x1f\x7f\x20,;\\"]*$/', $unquotedValue)) {
+            if (! preg_match('/^[^\x00-\x1f\x7f\x20,;\\"]*$/', $unquotedValue)) {
                 throw new InvalidArgumentException(
                     'Invalid cookie value! Cookie value must be compliant with the "RFC 6265" standart.'
                 );
@@ -702,8 +759,9 @@ class Cookie
     /**
      * Filter a cookie Expires attribute.
      *
-     * @param string|null $expires
+     * @param  string|null  $expires
      * @return string|null
+     *
      * @throws \InvalidArgumentException
      */
     protected function filterExpires(?string $expires): ?string
@@ -712,7 +770,7 @@ class Cookie
             $day = '(Mon|Tue|Wed|Thu|Fri|Sat|Sun)';
             $month = '(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
 
-            if (!preg_match('/^'.$day.'\, \d{2} '.$month.' \d{4} \d{2}\:\d{2}\:\d{2} GMT$/', $expires)) {
+            if (! preg_match('/^'.$day.'\, \d{2} '.$month.' \d{4} \d{2}\:\d{2}\:\d{2} GMT$/', $expires)) {
                 throw new InvalidArgumentException(
                     'Invalid cookie "Expires" attribute! Cookie "Expires" attribute must be compliant with the "RFC 1123" standart.'
                 );
@@ -725,8 +783,9 @@ class Cookie
     /**
      * Filter a cookie Domain attribute.
      *
-     * @param string|null $domain
+     * @param  string|null  $domain
      * @return string|null
+     *
      * @throws \InvalidArgumentException
      */
     protected function filterDomain(?string $domain): ?string
@@ -736,7 +795,7 @@ class Cookie
                 return null;
             }
 
-            if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])+$/', $domain)) {
+            if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])+$/', $domain)) {
                 throw new InvalidArgumentException(
                     'Invalid cookie "Domain" attribute! Cookie "Domain" attribute must be compliant with the "RFC 3986" standart.'
                 );
@@ -751,8 +810,9 @@ class Cookie
     /**
      * Filter a cookie Path attribute.
      *
-     * @param string|null $path
+     * @param  string|null  $path
      * @return string|null
+     *
      * @throws \InvalidArgumentException
      */
     protected function filterPath(?string $path): ?string
@@ -762,7 +822,7 @@ class Cookie
                 return null;
             }
 
-            if (!preg_match('/^[^\x00-\x1f\x7f;]+$/', $path)) {
+            if (! preg_match('/^[^\x00-\x1f\x7f;]+$/', $path)) {
                 throw new InvalidArgumentException(
                     'Invalid cookie "Path" attribute! Cookie "Path" attribute must be compliant with the "RFC 6265" standart.'
                 );
@@ -775,8 +835,9 @@ class Cookie
     /**
      * Filter a cookie SameSite attribute.
      *
-     * @param string|null $sameSite
+     * @param  string|null  $sameSite
      * @return string|null
+     *
      * @throws \InvalidArgumentException
      */
     protected function filterSameSite(?string $sameSite): ?string
@@ -790,52 +851,5 @@ class Cookie
         }
 
         return $sameSite;
-    }
-
-    /**
-     * Get the string
-     * representation of the cookie.
-     *
-     * @return string
-     */
-    public function __toString(): string
-    {
-        $cookie = $this->getNameValuePair();
-
-        if ($this->hasHostPrefix) {
-            $cookie = '__Host-'.$cookie;
-        } else if ($this->hasSecurePrefix) {
-            $cookie = '__Secure-'.$cookie;
-        }
-
-        if (null !== $this->expires) {
-            $cookie .= '; Expires='.$this->expires;
-        }
-
-        if (null !== $this->maxAge) {
-            $cookie .= '; Max-Age='.$this->maxAge;
-        }
-
-        if (null !== $this->domain) {
-            $cookie .= '; Domain='.$this->domain;
-        }
-
-        if (null !== $this->path) {
-            $cookie .= '; Path='.$this->path;
-        }
-
-        if ($this->secure) {
-            $cookie .= '; Secure';
-        }
-
-        if ($this->httpOnly) {
-            $cookie .= '; HttpOnly';
-        }
-
-        if (null !== $this->sameSite) {
-            $cookie .= '; SameSite='.$this->sameSite;
-        }
-
-        return $cookie;
     }
 }

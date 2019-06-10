@@ -1,17 +1,8 @@
 <?php
 
-/**
- * The PSR HTTP Library.
- *
- * @package dionchaika/http
- * @version 1.0.0
- * @license MIT
- * @author Dion Chaika <dionchaika@gmail.com>
- */
+namespace Lazy\Cookie;
 
-namespace Dionchaika\Http\Cookie;
-
-use Exception;
+use Throwable;
 use RuntimeException;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
@@ -84,7 +75,7 @@ class CookieStorage
     {
         $cookies = [];
         foreach ($this->cookies as $cookie) {
-            if (!$cookie['persistent']) {
+            if (! $cookie['persistent']) {
                 $cookies[] = $cookie;
             }
         }
@@ -144,7 +135,7 @@ class CookieStorage
     public function clearSessionCookies(): void
     {
         foreach ($this->cookies as $key => $value) {
-            if (!$value['persistent']) {
+            if (! $value['persistent']) {
                 unset($this->cookies[$key]);
             }
         }
@@ -187,8 +178,9 @@ class CookieStorage
     /**
      * Load cookies from file.
      *
-     * @param string $filename
+     * @param  string  $filename
      * @return void
+     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
@@ -196,7 +188,7 @@ class CookieStorage
     {
         $this->clearAllCookies();
 
-        if (!file_exists($filename)) {
+        if (! file_exists($filename)) {
             throw new InvalidArgumentException(
                 'File does not exists: '.$filename.'!'
             );
@@ -275,8 +267,9 @@ class CookieStorage
     /**
      * Store cookies to file.
      *
-     * @param string $filename
+     * @param  string  $filename
      * @return void
+     *
      * @throws \RuntimeException
      */
     public function storeCookies(string $filename): void
@@ -311,9 +304,10 @@ class CookieStorage
     /**
      * Receive cookies from response.
      *
-     * @param \Psr\Http\Message\RequestInterface $request
-     * @param \Psr\Http\Message\ResponseInterface $response
+     * @param  \Psr\Http\Message\RequestInterface  $request
+     * @param  \Psr\Http\Message\ResponseInterface  $response
      * @return void
+     *
      * @throws \InvalidArgumentException
      */
     public function receiveFromResponse(RequestInterface $request, ResponseInterface $response): void
@@ -409,15 +403,16 @@ class CookieStorage
                 }
 
                 $this->cookies[] = $storageAttributes;
-            } catch (Exception $e) {}
+            } catch (Throwable $e) {}
         }
     }
 
     /**
      * Include cookies to request.
      *
-     * @param \Psr\Http\Message\RequestInterface $request
+     * @param  \Psr\Http\Message\RequestInterface  $request
      * @return \Psr\Http\Message\RequestInterface
+     *
      * @throws \InvalidArgumentException
      */
     public function includeToRequest(RequestInterface $request): RequestInterface
@@ -441,13 +436,13 @@ class CookieStorage
             ) {
                 continue;
             } else if (
-                !$cookie['host_only'] &&
-                !$this->isMatchesDomain($cookie['domain'], $request->getUri()->getHost())
+                ! $cookie['host_only'] &&
+                ! $this->isMatchesDomain($cookie['domain'], $request->getUri()->getHost())
             ) {
                 continue;
             }
 
-            if (!$this->isMatchesPath($cookie['path'], $path)) {
+            if (! $this->isMatchesPath($cookie['path'], $path)) {
                 continue;
             }
 
@@ -465,8 +460,8 @@ class CookieStorage
      * Check is the cookie path
      * matches a request URI path.
      *
-     * @param string $cookiePath
-     * @param string $requestUriPath
+     * @param  string  $cookiePath
+     * @param  string  $requestUriPath
      * @return bool
      */
     protected function isMatchesPath(string $cookiePath, string $requestUriPath): bool
@@ -490,8 +485,8 @@ class CookieStorage
      * Check is the cookie domain
      * matches a request URI domain.
      *
-     * @param string $cookieDomain
-     * @param string $requestUriHost
+     * @param  string  $cookieDomain
+     * @param  string  $requestUriHost
      * @return bool
      */
     protected function isMatchesDomain(string $cookieDomain, string $requestUriHost): bool
