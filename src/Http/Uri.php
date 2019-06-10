@@ -484,7 +484,7 @@ class Uri implements UriInterface
 
             return $uri;
         } catch (Throwable $e) {
-            return $e->getMessage();
+            trigger_error($e->getMessage(), \E_USER_ERROR);
         }
     }
 

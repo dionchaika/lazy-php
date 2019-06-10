@@ -3,6 +3,7 @@
 namespace Lazy\Http;
 
 use Throwable;
+use Lazy\Cookie\Cookie;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -159,7 +160,6 @@ class Response extends Message implements ResponseInterface
      *
      * @param  int  $code
      * @param  string  $reasonPhrase
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -167,6 +167,7 @@ class Response extends Message implements ResponseInterface
     public function withStatus($code, $reasonPhrase = '')
     {
         $new = clone $this;
+
         $new->statusCode = $new->filterStatusCode($code);
 
         if ('' === $reasonPhrase && isset(static::REASON_PHRASES[$this->statusCode])) {
@@ -189,6 +190,18 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
+     * Return an instance
+     * with the specified response cookie.
+     *
+     * @param  \Lazy\Cookie\Cookie  $cookie
+     * @return static
+     */
+    public function withCookie(Cookie $cookie)
+    {
+        return $this->withAddedHeader('Set-Cookie', $cookie);
+    }
+
+    /**
      * Get the string
      * representation of the response.
      *
@@ -199,7 +212,7 @@ class Response extends Message implements ResponseInterface
         try {
             return to_string($this);
         } catch (Throwable $e) {
-            return $e->getMessage();
+            trigger_error($e->getMessage(), \E_USER_ERROR);
         }
     }
 
@@ -207,7 +220,6 @@ class Response extends Message implements ResponseInterface
      * Filter a response status code.
      *
      * @param  int  $code
-     *
      * @return int
      *
      * @throws \InvalidArgumentException

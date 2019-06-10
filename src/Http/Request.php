@@ -3,6 +3,7 @@
 namespace Lazy\Http;
 
 use Throwable;
+use Lazy\Cookie\Cookie;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
@@ -100,7 +101,6 @@ class Request extends Message implements RequestInterface
      * with the specified request target.
      *
      * @param  mixed  $requestTarget
-     *
      * @return static
      */
     public function withRequestTarget($requestTarget)
@@ -126,7 +126,6 @@ class Request extends Message implements RequestInterface
      * with the specified request method.
      *
      * @param  string  $method
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -159,7 +158,6 @@ class Request extends Message implements RequestInterface
      *
      * @param  \Psr\Http\Message\UriInterface  $uri
      * @param  bool  $preserveHost
-     *
      * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
@@ -177,6 +175,18 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Return an instance
+     * with the specified request cookie.
+     *
+     * @param  \Lazy\Cookie\Cookie  $cookie
+     * @return static
+     */
+    public function withCookie(Cookie $cookie)
+    {
+        return $this->withAddedHeader('Cookie', $cookie->getNameValuePair());
+    }
+
+    /**
      * Get the string
      * representation of the request.
      *
@@ -187,7 +197,7 @@ class Request extends Message implements RequestInterface
         try {
             return to_string($this);
         } catch (Throwable $e) {
-            return $e->getMessage();
+            trigger_error($e->getMessage(), \E_USER_ERROR);
         }
     }
 
@@ -213,7 +223,6 @@ class Request extends Message implements RequestInterface
      * Filter a request method.
      *
      * @param  string  $method
-     *
      * @return string
      *
      * @throws \InvalidArgumentException
