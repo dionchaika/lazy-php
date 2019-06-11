@@ -136,5 +136,28 @@ trait ClientTrait
         ];
 
         $remoteSocket = "{$transport}://{$host}:{$port}";
+
+        if (null !== $this->config['context']) {
+            $context = $this->config['context'];
+        } else {
+            $contextOpts = $this->config['context_opts'];
+            $contextParams = $this->config['context_params'];
+
+            $context = stream_context_create($contextOpts, $contextParams);
+        }
+
+        $socket = stream_socket_client($remoteSocket, $errno, $errstr, $this->config['timeout'], \STREAM_CLIENT_CONNECT, $context);
+        if (false === $socket) {
+            throw new NetworkException($request, 'Remote socket connection error #'.$errno.'! '.$errstr.'.');
+        }
+
+        $timeoutParts = explode('.', (string)$this->config['timeout']);
+
+        $timeoutSecs = (int)$timeoutParts[0];
+        $timeoutMicrosecs = isset($timeoutParts[1]) ? (int)$timeoutParts[1] : 0;
+
+        if (false === stream_set_timeout($socket, $timeoutSecs, $timeoutMicrosecs)) {
+            throw new ClientException($request, 'Unable to set the remote socket timeout!');
+        }
     }
 }
