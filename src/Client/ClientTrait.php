@@ -4,6 +4,7 @@ namespace Lazy\Client;
 
 use Throwable;
 use Lazy\Http\Uri;
+use Lazy\Http\StatusCode;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -52,6 +53,20 @@ trait ClientTrait
             $response = parse_response($response);
         } catch (InvalidArgumentException $e) {
             throw new ClientException($request, $e->getMessage());
+        }
+
+        if (
+            StatusCode::UNAUTHORIZED === $response->getStatusCode() &&
+            $response->hasHeader('WWW-Authenticate') &&
+            preg_match('/^Basic/i', $response->getHeaderLine('WWW-Authenticate')) &&
+            isset($this->config['basic_auth']['user'])
+        ) {
+            $credentials = $this->config['basic_auth']['user'];
+            if (isset($this->config['basic_auth']['password'])) {
+                $credentials = ':'.$this->config['basic_auth']['password'];
+            }
+
+            $response = $this->sendRequest($request->withHeader('Authorization', 'Basic '.base64_encode($credentials)));
         }
 
         return $response;
