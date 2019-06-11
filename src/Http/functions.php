@@ -5,7 +5,6 @@ namespace Lazy\Http;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 if (! function_exists('to_string')) {
     /**
@@ -165,75 +164,5 @@ if (! function_exists('parse_response')) {
         }
 
         return $response;
-    }
-}
-
-if (! function_exists('stream_for_json')) {
-    /**
-     * Get the stream
-     * for a JSON HTTP message body.
-     *
-     * @param  mixed  $data
-     * @param  int  $opts
-     * @param  int  $depth
-     * @return  \Lazy\Http\Stream
-     *
-     * @throws \InvalidArgumentException
-     */
-    function stream_for_json($data, int $opts = 0, int $depth = 512): Stream
-    {
-        $json = json_encode($data, $opts, $depth);
-        if (false === $json) {
-            throw new InvalidArgumentException('JSON encode error #'.json_last_error().': '.json_last_error_msg().'!');
-        }
-
-        return new Stream($json);
-    }
-}
-
-if (! function_exists('stream_for_urlencoded')) {
-    /**
-     * Get the stream
-     * for a urlencoded HTTP message body.
-     *
-     * @param  mixed[]  $data
-     * @return  \Lazy\Http\Stream
-     *
-     * @throws \InvalidArgumentException
-     */
-    function stream_for_urlencoded(array $data): Stream
-    {
-        $urlencoded = http_build_query($data);
-        if (false === $urlencoded) {
-            throw new InvalidArgumentException('Unable to create a urlencoded stream!');
-        }
-
-        return new Stream($urlencoded);
-    }
-}
-
-if (! function_exists('parse_body')) {
-    /**
-     * Parse a server request body.
-     *
-     * @param  \Psr\Http\Message\ServerRequestInterface  $request
-     * @return \Psr\Http\Message\ServerRequestInterface
-     */
-    function parse_body(ServerRequestInterface $request): ServerRequestInterface
-    {
-        if (! $request->hasHeader('Content-Type')) {
-            return $request;
-        }
-
-        if ('application/x-www-form-urlencoded' === $request->getHeaderLine('Content-Type')) {
-            parse_str($request->getBody(), $parsedBody);
-            return $request->withParsedBody($parsedBody);
-        }
-
-        if (preg_match('/^multipart\/form\-data\; boundary\=(.+)$/', $request->getHeaderLine('Content-Type'), $matches)) {
-            $boundary = '--'.trim($matches[1], '"');
-
-            $parts = explode($boundary, $request->getBody());
-        }
     }
 }
