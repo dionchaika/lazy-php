@@ -318,6 +318,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function get($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -332,6 +334,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function put($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -346,6 +350,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function head($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -360,6 +366,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function post($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -374,6 +382,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function patch($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -388,6 +398,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function trace($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -402,6 +414,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function delete($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -416,6 +430,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function options($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -430,6 +446,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function connect($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
@@ -445,6 +463,8 @@ class Client implements ClientInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     public function request(string $method, $uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
