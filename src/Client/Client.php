@@ -4,8 +4,12 @@ namespace Lazy\Client;
 
 use Throwable;
 use RuntimeException;
+use Lazy\Http\Method;
+use Lazy\Http\Request;
 use InvalidArgumentException;
 use Lazy\Cookie\CookieStorage;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * The PSR-18 HTTP client implementation class.
@@ -291,5 +295,136 @@ class Client implements ClientInterface
         if (isset($config['debug_response_body']) && is_bool($config['debug_response_body'])) {
             $this->config['debug_response_body'] = $config['debug_response_body'];
         }
+    }
+
+    /**
+     * Make a GET HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function get($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::GET, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make a PUT HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function put($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::PUT, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make a HEAD HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function head($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::HEAD, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make a POST HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function post($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::POST, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make a PATCH HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function patch($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::PATCH, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make a TRACE HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function trace($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::TRACE, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make a DELETE HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function delete($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::DELETE, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make an OPTIONS HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function options($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::OPTIONS, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make a CONNECT HTTP request.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function connect($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->request(Method::CONNECT, $uri, $headers, $protocolVersion);
+    }
+
+    /**
+     * Make an HTTP request.
+     *
+     * @param  string  $method
+     * @param  \Psr\Http\Message\UriInterface|string  $uri
+     * @param  mixed[]  $headers
+     * @param  string  $protocolVersion
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function request(string $method, $uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    {
+        return $this->sendRequest(new Request($method, $uri, $headers, $protocolVersion));
     }
 }
