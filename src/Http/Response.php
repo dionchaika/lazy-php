@@ -211,7 +211,7 @@ class Response extends Message implements ResponseInterface
      */
     public function withCookie(Cookie $cookie)
     {
-        return $this->withAddedHeader('Set-Cookie', $cookie);
+        return $this->withAddedHeader('Set-Cookie', (string)$cookie);
     }
 
     /**
