@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * @property mixed[] $config
  * @property \Lazy\Cookie\CookieStorage $cookieStorage
+ * @property string $requestOrigin
  * @property int $redirectNumber
  * @property mixed[] $redirectsHistory
  */

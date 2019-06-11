@@ -61,6 +61,13 @@ class Client implements ClientInterface
     protected $cookieStorage;
 
     /**
+     * The client request origin.
+     *
+     * @var string
+     */
+    protected $requestOrigin = '';
+
+    /**
      * The client redirect number.
      *
      * @var int
