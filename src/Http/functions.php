@@ -221,6 +221,19 @@ if (! function_exists('parse_body')) {
      */
     function parse_body(ServerRequestInterface $request): ServerRequestInterface
     {
-        
+        if (! $request->hasHeader('Content-Type')) {
+            return $request;
+        }
+
+        if ('application/x-www-form-urlencoded' === $request->getHeaderLine('Content-Type')) {
+            parse_str($request->getBody(), $parsedBody);
+            return $request->withParsedBody($parsedBody);
+        }
+
+        if (preg_match('/^multipart\/form\-data\; boundary\=(.+)$/', $request->getHeaderLine('Content-Type'), $matches)) {
+            $boundary = '--'.trim($matches[1], '"');
+
+            $parts = explode($boundary, $request->getBody());
+        }
     }
 }
