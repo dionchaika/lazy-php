@@ -111,6 +111,10 @@ trait ClientTrait
                 throw new ClientException($request, $e->getMessage());
             }
 
+            if ('' === $uri->getHost()) {
+                throw new ClientException($request, 'Invalid proxy URI! Host is not defined.');
+            }
+
             [$port, $host, $scheme] = [
 
                 $uri->getPort() ?? 8080,
