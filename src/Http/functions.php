@@ -2,8 +2,6 @@
 
 namespace Lazy\Http;
 
-use Lazy\Http\Request;
-use Lazy\Http\Response;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -19,7 +17,14 @@ if (! function_exists('to_string')) {
     function to_string(MessageInterface $message): string
     {
         if ($message instanceof RequestInterface) {
-            $str = "{$message->getMethod()} {$message->getRequestTarget()} HTTP/{$message->getProtocolVersion()}\r\n";
+            $str = implode(' ', [
+
+                $message->getMethod(),
+                $message->getRequestTarget(),
+                'HTTP/'.$message->getProtocolVersion()
+
+            ])."\r\n";
+
             foreach (array_keys($message->getHeaders()) as $header) {
                 if (0 === strcasecmp($header, 'cookie')) {
                     $cookie = implode('; ', $message->getHeader('Cookie'));
@@ -29,7 +34,14 @@ if (! function_exists('to_string')) {
                 }
             }
         } else if ($message instanceof ResponseInterface) {
-            $str = "HTTP/{$message->getProtocolVersion()} {$message->getStatusCode()} {$message->getReasonPhrase()}\r\n";
+            $str = implode(' ', [
+
+                'HTTP/'.$message->getProtocolVersion(),
+                $message->getStatusCode(),
+                $message->getReasonPhrase()
+
+            ])."\r\n";
+
             foreach (array_keys($message->getHeaders()) as $header) {
                 if (0 === strcasecmp($header, 'set-cookie')) {
                     foreach ($message->getHeader('Set-Cookie') as $setCookie) {
