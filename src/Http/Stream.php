@@ -78,7 +78,7 @@ class Stream implements StreamInterface
     public function __construct($body = '', $mode = 'r', $opts = [])
     {
         if (is_string($body)) {
-            if (is_file($body) || 0 === strpos($body, 'php://')) {
+            if (@is_file($body) || 0 === strpos($body, 'php://')) {
                 $mode = $this->filterMode($mode);
 
                 $resource = fopen($body, $mode);
