@@ -7,6 +7,9 @@ use Lazy\Http\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
+use function Lazy\Http\to_string;
+use function Lazy\Http\parse_response;
+
 /**
  * @property mixed[] $config
  * @property \Lazy\Cookie\CookieStorage $cookieStorage
@@ -31,6 +34,27 @@ trait ClientTrait
         $this->requestOrigin = $request->getUri()->getAuthority();
 
         $socket = $this->getSocketForRequest($request);
+        if (false === fwrite($socket, to_string($request))) {
+            throw new ClientException($request, 'Unable to write data to the socket!');
+        }
+
+        $response = stream_get_contents($socket);
+        if (false === $response) {
+            throw new ClientException($request, 'Unable to read data from the socket!');
+        }
+
+        $meta = stream_get_meta_data($socket);
+        if (!empty($meta['timed_out']) && true === $meta['timed_out']) {
+            throw new NetworkException($request, 'Socket connection timed out!');
+        }
+
+        try {
+            $response = parse_response($response);
+        } catch (InvalidArgumentException $e) {
+            throw new ClientException($request, $e->getMessage());
+        }
+
+        $response = $this->prepareResponse();
     }
 
     /**
