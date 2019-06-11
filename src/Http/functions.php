@@ -50,11 +50,11 @@ if (! function_exists('parse_request')) {
      * Parse a request.
      *
      * @param  string  $request
-     * @return \Psr\Http\Message\RequestInterface
+     * @return \Lazy\Http\Request
      *
      * @throws \InvalidArgumentException
      */
-    function parse_request(string $request): RequestInterface
+    function parse_request(string $request): Request
     {
         if (false === strpos($request, "\r\n\r\n")) {
             throw new InvalidArgumentException('Invalid request! Request must be compliant with the "RFC 7230" standart.');
@@ -108,11 +108,11 @@ if (! function_exists('parse_response')) {
      * Parse a response.
      *
      * @param  string  $response
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return \Lazy\Http\Response
      *
      * @throws \InvalidArgumentException
      */
-    function parse_response(string $response): ResponseInterface
+    function parse_response(string $response): Response
     {
         if (false === strpos($response, "\r\n\r\n")) {
             throw new InvalidArgumentException('Invalid response! Response must be compliant with the "RFC 7230" standart.');

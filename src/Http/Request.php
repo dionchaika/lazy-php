@@ -69,6 +69,19 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Create a new request from string.
+     *
+     * @param  string  $request
+     * @return \Lazy\Http\Request
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromString(string $request): Request
+    {
+        return parse_request($request);
+    }
+
+    /**
      * Get the request target.
      *
      * @return string

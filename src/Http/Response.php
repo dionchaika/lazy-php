@@ -145,6 +145,19 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
+     * Create a new response from string.
+     *
+     * @param  string  $response
+     * @return \Lazy\Http\Response
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromString(string $response): Response
+    {
+        return parse_response($response);
+    }
+
+    /**
      * Get the response status code.
      *
      * @return int
