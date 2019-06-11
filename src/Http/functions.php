@@ -166,3 +166,47 @@ if (! function_exists('parse_response')) {
         return $response;
     }
 }
+
+if (! function_exists('stream_for_json')) {
+    /**
+     * Get the stream
+     * for a JSON HTTP message body.
+     *
+     * @param  mixed  $data
+     * @param  int  $opts
+     * @param  int  $depth
+     * @return  \Lazy\Http\Stream
+     *
+     * @throws \InvalidArgumentException
+     */
+    function stream_for_json($data, int $opts = 0, int $depth = 512): Stream
+    {
+        $json = json_encode($data, $opts, $depth);
+        if (false === $json) {
+            throw new InvalidArgumentException('JSON encode error #'.json_last_error().': '.json_last_error_msg().'!');
+        }
+
+        return new Stream($json);
+    }
+}
+
+if (! function_exists('stream_for_urlencoded')) {
+    /**
+     * Get the stream
+     * for a urlencoded HTTP message body.
+     *
+     * @param  mixed[]  $data
+     * @return  \Lazy\Http\Stream
+     *
+     * @throws \InvalidArgumentException
+     */
+    function stream_for_urlencoded(array $data): Stream
+    {
+        $urlencoded = http_build_query($data);
+        if (false === $urlencoded) {
+            throw new InvalidArgumentException('Unable to create a urlencoded stream!');
+        }
+
+        return new Stream($urlencoded);
+    }
+}
