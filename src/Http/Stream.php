@@ -15,29 +15,14 @@ use Psr\Http\Message\StreamInterface;
 class Stream implements StreamInterface
 {
     /**
-     * The writable stream modes.
+     * The readable stream modes pattern.
      */
-    const WRITABLE_STREAM_MODES = [
-
-        'r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+'
-
-    ];
+    const READABLE_STREAM_MODES_PATTERN = '/r|r\+|w\+|a\+|x\+|c\+/';
 
     /**
-     * The readable stream modes.
+     * The writable stream modes pattern.
      */
-    const READABLE_STREAM_MODES = [
-
-        'r', 'r+', 'w+', 'a+', 'x+', 'c+'
-
-    ];
-
-    /**
-     * The stream underlying resource.
-     *
-     * @var resource
-     */
-    protected $resource;
+    const WRITABLE_STREAM_MODES_PATTERN = '/r\+|w|w\+|a|a\+|x|x\+|c|c\+/';
 
     /**
      * The stream size.
@@ -47,18 +32,18 @@ class Stream implements StreamInterface
     protected $size;
 
     /**
+     * The stream underlying resource.
+     *
+     * @var resource
+     */
+    protected $resource;
+
+    /**
      * Is the stream seekable.
      *
      * @var bool
      */
     protected $seekable = false;
-
-    /**
-     * Is the stream writable.
-     *
-     * @var bool
-     */
-    protected $writable = false;
 
     /**
      * Is the stream readable.
@@ -68,7 +53,20 @@ class Stream implements StreamInterface
     protected $readable = false;
 
     /**
+     * Is the stream writable.
+     *
+     * @var bool
+     */
+    protected $writable = false;
+
+    /**
      * The stream constructor.
+     *
+     * Allowed stream options:
+     *      1. size (int) - the stream size.
+     *      2. seekable (bool) - is the stream seekable.
+     *      3. readable (bool) - is the stream readable.
+     *      4. writable (bool) - is the stream writable.
      *
      * @param  string|resource  $body
      * @param  string  $mode
@@ -110,7 +108,7 @@ class Stream implements StreamInterface
             if (false === $fstat) {
                 $this->size = null;
             } else {
-                $this->size = !empty($fstat['size']) ? $fstat['size'] : null;
+                $this->size = ! empty($fstat['size']) ? $fstat['size'] : null;
             }
         }
 
@@ -122,26 +120,16 @@ class Stream implements StreamInterface
             $this->seekable = ! empty($meta['seekable']) ? $meta['seekable'] : false;
         }
 
-        if (isset($opts['writable'])) {
-            $this->writable = $opts['writable'];
-        } else {
-            foreach (static::WRITABLE_STREAM_MODES as $mode) {
-                if (0 === strncmp($meta['mode'], $mode, strlen($mode))) {
-                    $this->writable = true;
-                    break;
-                }
-            }
-        }
-
         if (isset($opts['readable'])) {
             $this->readable = $opts['readable'];
         } else {
-            foreach (static::READABLE_STREAM_MODES as $mode) {
-                if (0 === strncmp($meta['mode'], $mode, strlen($mode))) {
-                    $this->readable = true;
-                    break;
-                }
-            }
+            $this->readable = preg_match(static::READABLE_STREAM_MODES_PATTERN, $meta['mode']);
+        }
+
+        if (isset($opts['writable'])) {
+            $this->writable = $opts['writable'];
+        } else {
+            $this->writable = preg_match(static::WRITABLE_STREAM_MODES_PATTERN, $meta['mode']);
         }
     }
 
@@ -167,8 +155,8 @@ class Stream implements StreamInterface
         $resource = $this->resource;
 
         if (null !== $resource) {
-            $this->resource = $this->size = null;
-            $this->seekable = $this->writable = $this->readable = false;
+            $this->size = $this->resource = null;
+            $this->seekable = $this->readable = $this->writable = false;
         }
 
         return $resource;
@@ -230,7 +218,6 @@ class Stream implements StreamInterface
      *
      * @param  int  $offset
      * @param  int  $whence
-     *
      * @return void
      *
      * @throws \RuntimeException
@@ -276,7 +263,6 @@ class Stream implements StreamInterface
      * Write data to the stream.
      *
      * @param  string  $string
-     *
      * @return int
      *
      * @throws \RuntimeException
@@ -320,7 +306,6 @@ class Stream implements StreamInterface
      * Read data from the stream.
      *
      * @param  int  $length
-     *
      * @return string
      *
      * @throws \RuntimeException
@@ -373,7 +358,6 @@ class Stream implements StreamInterface
      * as an associative array or retrieve a specific key.
      *
      * @param  string|null  $key
-     *
      * @return mixed|mixed[]|null
      */
     public function getMetadata($key = null)
@@ -401,9 +385,10 @@ class Stream implements StreamInterface
             if ($this->seekable) {
                 $this->rewind();
             }
+
             return $this->getContents();
         } catch (Throwable $e) {
-            return $e->getMessage();
+            return '';
         }
     }
 
@@ -411,32 +396,16 @@ class Stream implements StreamInterface
      * Filter a stream mode.
      *
      * @param  string  $mode
-     *
      * @return string
      *
      * @throws \InvalidArgumentException
      */
     protected function filterMode($mode) {
-        if (!in_array($mode, static::WRITABLE_STREAM_MODES) && !in_array($mode, static::READABLE_STREAM_MODES)) {
-            $validModes = [];
-
-            foreach (static::WRITABLE_STREAM_MODES as $mode) {
-                if (! in_array($mode, $validModes)) {
-                    $validModes[] = $mode;
-                }
-            }
-
-            foreach (static::READABLE_STREAM_MODES as $mode) {
-                if (! in_array($mode, $validModes)) {
-                    $validModes[] = $mode;
-                }
-            }
-
-            $validModes = implode(', ', array_map(function ($validMode) {
-                return '"'.$validMode.'"';
-            }, $validModes));
-
-            throw new InvalidArgumentException('Invalid mode! Valid modes: '.$validModes);
+        if (
+            ! preg_match(static::READABLE_STREAM_MODES_PATTERN, $mode) &&
+            ! preg_match(static::WRITABLE_STREAM_MODES_PATTERN, $mode)
+        ) {
+            throw new InvalidArgumentException('Invalid stream mode!');
         }
 
         return $mode;
