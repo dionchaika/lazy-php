@@ -24,6 +24,17 @@ trait ClientTrait
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
-        
+        $request = $this->prepareRequest($request);
+    }
+
+    /**
+     * Prepare a request.
+     *
+     * @param  \Psr\Http\Message\RequestInterface  $request
+     * @return \Psr\Http\Message\RequestInterface
+     */
+    protected function prepareRequest(RequestInterface $request): RequestInterface
+    {
+        return $request;
     }
 }
