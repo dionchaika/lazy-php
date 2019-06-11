@@ -15,14 +15,14 @@ use Psr\Http\Message\StreamInterface;
 class Stream implements StreamInterface
 {
     /**
-     * The readable stream modes pattern.
+     * The readable stream mode pattern.
      */
-    const READABLE_STREAM_MODES_PATTERN = '/r|r\+|w\+|a\+|x\+|c\+/';
+    const READABLE_STREAM_MODE_PATTERN = '/r|r\+|w\+|a\+|x\+|c\+/';
 
     /**
-     * The writable stream modes pattern.
+     * The writable stream mode pattern.
      */
-    const WRITABLE_STREAM_MODES_PATTERN = '/r\+|w|w\+|a|a\+|x|x\+|c|c\+/';
+    const WRITABLE_STREAM_MODE_PATTERN = '/r\+|w|w\+|a|a\+|x|x\+|c|c\+/';
 
     /**
      * The stream size.
@@ -123,13 +123,13 @@ class Stream implements StreamInterface
         if (isset($opts['readable'])) {
             $this->readable = $opts['readable'];
         } else {
-            $this->readable = preg_match(static::READABLE_STREAM_MODES_PATTERN, $meta['mode']);
+            $this->readable = preg_match(static::READABLE_STREAM_MODE_PATTERN, $meta['mode']);
         }
 
         if (isset($opts['writable'])) {
             $this->writable = $opts['writable'];
         } else {
-            $this->writable = preg_match(static::WRITABLE_STREAM_MODES_PATTERN, $meta['mode']);
+            $this->writable = preg_match(static::WRITABLE_STREAM_MODE_PATTERN, $meta['mode']);
         }
     }
 
@@ -402,8 +402,8 @@ class Stream implements StreamInterface
      */
     protected function filterMode($mode) {
         if (
-            ! preg_match(static::READABLE_STREAM_MODES_PATTERN, $mode) &&
-            ! preg_match(static::WRITABLE_STREAM_MODES_PATTERN, $mode)
+            ! preg_match(static::READABLE_STREAM_MODE_PATTERN, $mode) &&
+            ! preg_match(static::WRITABLE_STREAM_MODE_PATTERN, $mode)
         ) {
             throw new InvalidArgumentException('Invalid stream mode!');
         }
