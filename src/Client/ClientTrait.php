@@ -5,6 +5,12 @@ namespace Lazy\Client;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @property mixed[] $config
+ * @property \Lazy\Cookie\CookieStorage $cookieStorage
+ * @property int $redirectNumber
+ * @property mixed[] $redirectsHistory
+ */
 trait ClientTrait
 {
     /**
@@ -17,6 +23,6 @@ trait ClientTrait
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
-        //
+        
     }
 }
