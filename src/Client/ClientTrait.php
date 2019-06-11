@@ -141,6 +141,8 @@ trait ClientTrait
 
         $remoteSocket = "{$transport}://{$host}:{$port}";
 
+        echo $remoteSocket; die;
+
         if (null !== $this->config['context']) {
             $context = $this->config['context'];
         } else {

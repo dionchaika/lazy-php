@@ -8,6 +8,7 @@ use Lazy\Http\Method;
 use Lazy\Http\Request;
 use InvalidArgumentException;
 use Lazy\Cookie\CookieStorage;
+use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
