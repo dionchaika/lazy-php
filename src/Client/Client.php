@@ -103,7 +103,7 @@ class Client implements ClientInterface
      *      8.  strict_redirects (bool, default: true) - perform an "RFC 7230" compliant redirect requests
      *              (POST redirect requests are sent as POST requests instead of GET requests).
      *      9.  redirects_schemes (array, default: ['http', 'https']) - the array of schemes allowed for redirect requests.
-     *      10.  referer_header (bool, default: true) - add a "Referer" header to redirect requests.
+     *      10. referer_header (bool, default: true) - add a "Referer" header to redirect requests.
      *      11. redirects_history (bool, default: true) - store redirect requests URI and headers.
      *              <code>
      *                  // Get the redirect request host and headers:
