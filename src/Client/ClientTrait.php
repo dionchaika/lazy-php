@@ -2,8 +2,10 @@
 
 namespace Lazy\Client;
 
+use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Client\ClientExceptionInterface;
 
 /**
  * @property mixed[] $config
@@ -27,6 +29,8 @@ trait ClientTrait
         $request = $this->prepareRequest($request);
 
         $this->requestOrigin = $request->getUri()->getAuthority();
+
+        $socket = $this->getSocketForUri($request->getUri());
     }
 
     /**
@@ -87,5 +91,18 @@ trait ClientTrait
         }
 
         return $request;
+    }
+
+    /**
+     * Get the remote socket for the URI.
+     *
+     * @param  \Psr\Http\Message\UriInterface  $uri
+     * @return resource
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
+     */
+    protected function getSocketForUri(UriInterface $uri)
+    {
+
     }
 }
