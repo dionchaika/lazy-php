@@ -104,13 +104,29 @@ trait ClientTrait
      */
     protected function getSocketForRequest(RequestInterface $request)
     {
-        [$port, $host, $scheme] = [
+        if (isset($this->config['proxy'][$request->getUri()->getScheme()])) {
+            try {
+                $uri = new Uri($this->config['proxy'][$request->getUri()->getScheme()]);
+            } catch (Throwable $e) {
+                throw new ClientException($request, $e->getMessage());
+            }
 
-            $request->getUri()->getPort(),
-            $request->getUri()->getHost(),
-            $request->getUri()->getScheme()
+            [$port, $host, $scheme] = [
 
-        ];
+                $uri->getPort() ?? 8080,
+                $uri->getHost(),
+                ('' !== $uri->getScheme()) ?: 'http'
+
+            ];
+        } else {
+            [$port, $host, $scheme] = [
+
+                $request->getUri()->getPort(),
+                $request->getUri()->getHost(),
+                $request->getUri()->getScheme()
+
+            ];
+        }
 
         [$transport, $port] = [
 
