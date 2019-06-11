@@ -18,6 +18,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 class Client implements ClientInterface
 {
+    use ClientTrait;
+
     /**
      * The array of client config options.
      *
