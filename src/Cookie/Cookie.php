@@ -203,7 +203,7 @@ class Cookie
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public static function createFromString(string $cookie): self
+    public static function fromString(string $cookie): self
     {
         $cookieParts = explode(';', $cookie);
 
