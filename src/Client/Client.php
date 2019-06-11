@@ -32,6 +32,7 @@ class Client implements ClientInterface
         'cookies_file'        => null,
         'proxy'               => [],
         'basic_auth'          => [],
+        'origin_header'       => false,
         'timeout'             => 30.0,
         'redirects'           => false,
         'max_redirects'       => 10,
@@ -115,30 +116,31 @@ class Client implements ClientInterface
      *                      ]
      *                  ]);
      *              </code>
-     *      6.  timeout (float, default: 30.0) - client timeout.
-     *      7.  redirects (bool, default: false) - enable redirect requests.
-     *      8.  max_redirects (int, default: 10) - redirect requests limit.
-     *      9.  strict_redirects (bool, default: true) - perform an "RFC 7230" compliant redirect requests
+     *      6.  origin_header (bool, default: false) - add an "Origin" header to requests.
+     *      7.  timeout (float, default: 30.0) - client timeout.
+     *      8.  redirects (bool, default: false) - enable redirect requests.
+     *      9.  max_redirects (int, default: 10) - redirect requests limit.
+     *      10. strict_redirects (bool, default: true) - perform an "RFC 7230" compliant redirect requests
      *              (POST redirect requests are sent as POST requests instead of GET requests).
-     *      10. redirects_schemes (array, default: ['http', 'https']) - the array of schemes allowed for redirect requests.
-     *      11. referer_header (bool, default: true) - add a "Referer" header to redirect requests.
-     *      12. redirects_history (bool, default: true) - store redirect requests URI and headers.
+     *      11. redirects_schemes (array, default: ['http', 'https']) - the array of schemes allowed for redirect requests.
+     *      12. referer_header (bool, default: true) - add a "Referer" header to redirect requests.
+     *      13. redirects_history (bool, default: true) - store redirect requests URI and headers.
      *              <code>
      *                  // Get the redirect request host and headers:
      *                  $host = $client->getRedirectsHistory()[0]['uri']->getHost();
      *                  $headers = $client->getRedirectsHistory()[0]['headers'];
      *              </code>
-     *      13. receive_body (bool, default: true) - receive a response body.
-     *      14. unchunk_body (bool, default: true) - unchunk a response body with a "Transfer-Encoding: chunked" header.
-     *      15. decode_body (bool, default: true) - decode a response body with a "Content-Encoding" header
+     *      14. receive_body (bool, default: true) - receive a response body.
+     *      15. unchunk_body (bool, default: true) - unchunk a response body with a "Transfer-Encoding: chunked" header.
+     *      16. decode_body (bool, default: true) - decode a response body with a "Content-Encoding" header
      *              (allowed encoding formats: gzip, deflate, compress).
-     *      16. context (resource, default: null) - stream socket context.
-     *      17. context_opts (array, default: empty) - the array of stream socket context options.
-     *      18. context_params (array, default: empty) - the array of stream socket context parameters.
-     *      19. debug (bool, default: false) - enable debug output.
-     *      20. debug_file (string, default: null) - filename to write the debug output.
-     *      21. debug_request_body (bool, default: false) - write a request body to the debug output.
-     *      21. debug_response_body (bool, default: false) - write a response body to the debug output.
+     *      17. context (resource, default: null) - stream socket context.
+     *      18. context_opts (array, default: empty) - the array of stream socket context options.
+     *      19. context_params (array, default: empty) - the array of stream socket context parameters.
+     *      20. debug (bool, default: false) - enable debug output.
+     *      21. debug_file (string, default: null) - filename to write the debug output.
+     *      22. debug_request_body (bool, default: false) - write a request body to the debug output.
+     *      23. debug_response_body (bool, default: false) - write a response body to the debug output.
      *
      * @param mixed[] $config
      *
@@ -228,6 +230,10 @@ class Client implements ClientInterface
 
         if (isset($config['basic_auth']) && is_array($config['basic_auth'])) {
             $this->config['basic_auth'] = $config['basic_auth'];
+        }
+
+        if (isset($config['origin_header']) && is_bool($config['origin_header'])) {
+            $this->config['origin_header'] = $config['origin_header'];
         }
 
         if (isset($config['timeout']) && is_float($config['timeout'])) {
