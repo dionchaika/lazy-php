@@ -54,7 +54,7 @@ trait ClientTrait
             throw new ClientException($request, $e->getMessage());
         }
 
-        $response = $this->prepareResponse();
+        return $response;
     }
 
     /**
@@ -164,8 +164,6 @@ trait ClientTrait
 
         $remoteSocket = "{$transport}://{$host}:{$port}";
 
-        echo $remoteSocket; die;
-
         if (null !== $this->config['context']) {
             $context = $this->config['context'];
         } else {
@@ -188,5 +186,7 @@ trait ClientTrait
         if (false === stream_set_timeout($socket, $timeoutSecs, $timeoutMicrosecs)) {
             throw new ClientException($request, 'Unable to set the remote socket timeout!');
         }
+
+        return $socket;
     }
 }
