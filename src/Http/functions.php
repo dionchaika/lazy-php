@@ -5,6 +5,7 @@ namespace Lazy\Http;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 if (! function_exists('to_string')) {
     /**
@@ -208,5 +209,18 @@ if (! function_exists('stream_for_urlencoded')) {
         }
 
         return new Stream($urlencoded);
+    }
+}
+
+if (! function_exists('parse_body')) {
+    /**
+     * Parse a server request body.
+     *
+     * @param  \Psr\Http\Message\ServerRequestInterface  $request
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    function parse_body(ServerRequestInterface $request): ServerRequestInterface
+    {
+        
     }
 }
