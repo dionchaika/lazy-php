@@ -6,7 +6,6 @@ use Throwable;
 use Lazy\Http\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Client\ClientExceptionInterface;
 
 /**
  * @property mixed[] $config
