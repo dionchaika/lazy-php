@@ -44,7 +44,7 @@ trait ClientTrait
         }
 
         $meta = stream_get_meta_data($socket);
-        if (!empty($meta['timed_out']) && true === $meta['timed_out']) {
+        if (! empty($meta['timed_out']) && true === $meta['timed_out']) {
             throw new NetworkException($request, 'Socket connection timed out!');
         }
 
