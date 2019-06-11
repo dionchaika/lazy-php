@@ -83,7 +83,7 @@ class Client implements ClientInterface
      * The client constructor.
      *
      * Allowed client config options:
-     *      1.  headers (array, default: empty) - the array of additional request headers.
+     *      1.  headers (array, default: empty) - the array of default request headers.
      *              <code>
      *                  $client = new Client([
      *                      'headers' => [
