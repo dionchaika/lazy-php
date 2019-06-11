@@ -104,33 +104,21 @@ trait ClientTrait
      */
     protected function getSocketForRequest(RequestInterface $request)
     {
-        if (array_key_exists($request->getUri()->getScheme(), $this->config['proxy'])) {
-            try {
-                $uri = new Uri($this->config['proxy'][$request->getUri()->getScheme()]);
-            } catch (Throwable $e) {
-                throw new ClientException($request, $e->getMessage());
-            }
+        [$port, $host, $scheme] = [
 
-            $scheme = $uri->getScheme();
-            if ('' === $scheme) {
-                $scheme = 'http';
-            }
+            $request->getUri()->getPort(),
+            $request->getUri()->getHost(),
+            $request->getUri()->getScheme()
 
-            $host = $uri->getHost();
-            if ('' === $host) {
-                throw new ClientException($request, 'Invalid proxy URI! Host is not defined.');
-            }
+        ];
 
-            $port = $uri->getPort() ?? 8080;
-        } else {
-            $scheme = $request->getUri()->getScheme();
-            $host = $request->getUri()->getHost();
+        [$transport, $port] = [
 
-            $port = $request->getUri()->getPort();
-            $port = $port ?? ('https' === $scheme) ? 443 : 80;
-        }
+            ('https' === $scheme) ? 'ssl' : 'tcp',
+            $port ?? (('https' === $scheme) ? 443 : 80)
 
-        $transport = ('https' === $scheme) ? 'ssl' : 'tcp';
+        ];
+
         $remoteSocket = "{$transport}://{$host}:{$port}";
     }
 }
