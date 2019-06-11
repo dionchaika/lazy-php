@@ -18,7 +18,7 @@ class ClientException extends Exception implements ClientExceptionInterface
      * The client exception constructor.
      *
      * @param  \Psr\Http\Message\RequestInterface  $request
-     * @param string  $message
+     * @param  string  $message
      */
     public function __construct(RequestInterface $request, string $message = '')
     {
