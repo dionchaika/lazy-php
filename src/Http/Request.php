@@ -6,6 +6,7 @@ use Throwable;
 use Lazy\Cookie\Cookie;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
@@ -43,9 +44,10 @@ class Request extends Message implements RequestInterface
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      */
-    public function __construct($method = Method::GET, $uri = null, $headers = [], $protocolVersion = '1.1')
+    public function __construct($method = Method::GET, $uri = null, $headers = [], $body = null, $protocolVersion = '1.1')
     {
         $this->method = $this->filterMethod($method);
 
@@ -63,6 +65,14 @@ class Request extends Message implements RequestInterface
 
         if ('1.1' === $this->protocolVersion && ! $this->hasHeader('Host')) {
             $this->setHostHeader();
+        }
+
+        if (null !== $body) {
+            if ($body instanceof StreamInterface) {
+                $this->body = $body;
+            } else {
+                $this->body = new Stream($body);
+            }
         }
 
         $this->protocolVersion = $protocolVersion;

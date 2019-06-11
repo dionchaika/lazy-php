@@ -5,6 +5,7 @@ namespace Lazy\Http;
 use Throwable;
 use Lazy\Cookie\Cookie;
 use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -123,11 +124,12 @@ class Response extends Message implements ResponseInterface
      * @param  int  $code
      * @param  string  $reasonPhrase
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($code = StatusCode::OK, $reasonPhrase = '', $headers = [], $protocolVersion = '1.1')
+    public function __construct($code = StatusCode::OK, $reasonPhrase = '', $headers = [], $body = null, $protocolVersion = '1.1')
     {
         $this->statusCode = $this->filterStatusCode($code);
 
@@ -139,6 +141,14 @@ class Response extends Message implements ResponseInterface
 
         foreach ($headers as $name => $value) {
             $this->setHeader($name, $value);
+        }
+
+        if (null !== $body) {
+            if ($body instanceof StreamInterface) {
+                $this->body = $body;
+            } else {
+                $this->body = new Stream($body);
+            }
         }
 
         $this->protocolVersion = $protocolVersion;

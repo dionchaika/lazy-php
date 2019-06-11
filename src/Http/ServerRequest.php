@@ -63,14 +63,15 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
      * @param  mixed[]  $serverParams
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($method = Method::GET, $uri = null, $serverParams = [], $headers = [], $protocolVersion = '1.1')
+    public function __construct($method = Method::GET, $uri = null, $serverParams = [], $headers = [], $body = null, $protocolVersion = '1.1')
     {
         $this->serverParams = $serverParams;
-        parent::__construct($method, $uri, $headers, $protocolVersion);
+        parent::__construct($method, $uri, $headers, $body, $protocolVersion);
     }
 
     /**

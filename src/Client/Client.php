@@ -315,12 +315,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function get($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function get($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::GET, $uri, $headers, $protocolVersion);
+        return $this->request(Method::GET, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -328,12 +329,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function put($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function put($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::PUT, $uri, $headers, $protocolVersion);
+        return $this->request(Method::PUT, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -341,12 +343,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function head($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function head($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::HEAD, $uri, $headers, $protocolVersion);
+        return $this->request(Method::HEAD, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -354,12 +357,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function post($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function post($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::POST, $uri, $headers, $protocolVersion);
+        return $this->request(Method::POST, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -367,12 +371,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function patch($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function patch($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::PATCH, $uri, $headers, $protocolVersion);
+        return $this->request(Method::PATCH, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -380,12 +385,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function trace($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function trace($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::TRACE, $uri, $headers, $protocolVersion);
+        return $this->request(Method::TRACE, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -393,12 +399,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function delete($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function delete($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::DELETE, $uri, $headers, $protocolVersion);
+        return $this->request(Method::DELETE, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -406,12 +413,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function options($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function options($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::OPTIONS, $uri, $headers, $protocolVersion);
+        return $this->request(Method::OPTIONS, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -419,12 +427,13 @@ class Client implements ClientInterface
      *
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function connect($uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function connect($uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->request(Method::CONNECT, $uri, $headers, $protocolVersion);
+        return $this->request(Method::CONNECT, $uri, $headers, $body, $protocolVersion);
     }
 
     /**
@@ -433,11 +442,12 @@ class Client implements ClientInterface
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string  $uri
      * @param  mixed[]  $headers
+     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function request(string $method, $uri, array $headers = [], string $protocolVersion = '1.1'): ResponseInterface
+    public function request(string $method, $uri, array $headers = [], $body = null, string $protocolVersion = '1.1'): ResponseInterface
     {
-        return $this->sendRequest(new Request($method, $uri, $headers, $protocolVersion));
+        return $this->sendRequest(new Request($method, $uri, $headers, $body, $protocolVersion));
     }
 }
