@@ -2,6 +2,8 @@
 
 namespace Lazy\Client;
 
+use Throwable;
+use Lazy\Http\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -102,6 +104,33 @@ trait ClientTrait
      */
     protected function getSocketForRequest(RequestInterface $request)
     {
-        
+        if (array_key_exists($request->getUri()->getScheme(), $this->config['proxy'])) {
+            try {
+                $uri = new Uri($this->config['proxy'][$request->getUri()->getScheme()]);
+            } catch (Throwable $e) {
+                throw new ClientException($request, $e->getMessage());
+            }
+
+            $scheme = $uri->getScheme();
+            if ('' === $scheme) {
+                $scheme = 'http';
+            }
+
+            $host = $uri->getHost();
+            if ('' === $host) {
+                throw new ClientException($request, 'Invalid proxy URI! Host is not defined.');
+            }
+
+            $port = $uri->getPort() ?? 8080;
+        } else {
+            $scheme = $request->getUri()->getScheme();
+            $host = $request->getUri()->getHost();
+
+            $port = $request->getUri()->getPort();
+            $port = $port ?? ('https' === $scheme) ? 443 : 80;
+        }
+
+        $transport = ('https' === $scheme) ? 'ssl' : 'tcp';
+        $remoteSocket = "{$transport}://{$host}:{$port}";
     }
 }
