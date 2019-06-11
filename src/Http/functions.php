@@ -108,7 +108,7 @@ if (! function_exists('parse_request')) {
             $request = $request->withAddedHeader($headerName, $headerValues);
         }
 
-        if ('1.1' === $protocolVersion && !$request->hasHeader('Host')) {
+        if ('1.1' === $protocolVersion && ! $request->hasHeader('Host')) {
             throw new InvalidArgumentException('Invalid request! "HTTP/1.1" request must contain a "Host" header.');
         }
 

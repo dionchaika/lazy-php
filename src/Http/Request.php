@@ -17,11 +17,11 @@ use Psr\Http\Message\RequestInterface;
 class Request extends Message implements RequestInterface
 {
     /**
-     * The request target.
+     * The request URI.
      *
-     * @var string
+     * @var \Psr\Http\Message\UriInterface
      */
-    protected $requestTarget;
+    protected $uri;
 
     /**
      * The request method.
@@ -31,11 +31,11 @@ class Request extends Message implements RequestInterface
     protected $method = Method::GET;
 
     /**
-     * The request URI.
+     * The request target.
      *
-     * @var \Psr\Http\Message\UriInterface
+     * @var string
      */
-    protected $uri;
+    protected $requestTarget;
 
     /**
      * The request constructor.
