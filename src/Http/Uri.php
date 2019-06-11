@@ -113,6 +113,19 @@ class Uri implements UriInterface
     }
 
     /**
+     * Create a new URI from string.
+     *
+     * @param  string  $uri
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromString($uri)
+    {
+        return new static($uri);
+    }
+
+    /**
      * Create a new URI from globals.
      *
      * @return self
@@ -149,25 +162,10 @@ class Uri implements UriInterface
     }
 
     /**
-     * Create a new URI from string.
-     *
-     * @param  string  $uri
-     *
-     * @return self
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function fromString($uri)
-    {
-        return new static($uri);
-    }
-
-    /**
      * Check is the URI port is non-standard for the given URI scheme.
      *
      * @param  string  $scheme
      * @param  int|null  $port
-     *
      * @return bool
      */
     public static function isNonStandartPort($scheme, $port)
@@ -272,7 +270,6 @@ class Uri implements UriInterface
      * with the specified URI scheme.
      *
      * @param  string  $scheme
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -293,7 +290,6 @@ class Uri implements UriInterface
      *
      * @param  string  $user
      * @param  string|null  $password
-     *
      * @return static
      */
     public function withUserInfo($user, $password = null)
@@ -314,7 +310,6 @@ class Uri implements UriInterface
      * with the specified URI host.
      *
      * @param  string  $host
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -332,7 +327,6 @@ class Uri implements UriInterface
      * with the specified URI port.
      *
      * @param  int|null  $port
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -350,7 +344,6 @@ class Uri implements UriInterface
      * with the specified URI path.
      *
      * @param  string  $path
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -368,7 +361,6 @@ class Uri implements UriInterface
      * with the specified URI query.
      *
      * @param  string  $query
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -387,7 +379,6 @@ class Uri implements UriInterface
      *
      * @param  string  $name
      * @param  string  $value
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -409,7 +400,6 @@ class Uri implements UriInterface
      * with the specified URI query parameters.
      *
      * @param  mixed[]  $params
-     *
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -434,7 +424,6 @@ class Uri implements UriInterface
      * with the specified URI fragment.
      *
      * @param  string  $fragment
-     *
      * @return static
      */
     public function withFragment($fragment)
@@ -492,7 +481,6 @@ class Uri implements UriInterface
      * Filter a URI scheme.
      *
      * @param  string  $scheme
-     *
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -514,7 +502,6 @@ class Uri implements UriInterface
      * Filter a URI host.
      *
      * @param  string  $host
-     *
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -569,7 +556,6 @@ class Uri implements UriInterface
      * Filter a URI port.
      *
      * @param  int|null  $port
-     *
      * @return int|null
      *
      * @throws \InvalidArgumentException
@@ -591,7 +577,6 @@ class Uri implements UriInterface
      * Filter a URI path.
      *
      * @param  string  $path
-     *
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -629,7 +614,6 @@ class Uri implements UriInterface
      * Filter a URI query.
      *
      * @param  string  $query
-     *
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -653,7 +637,6 @@ class Uri implements UriInterface
      * Filter a URI fragment.
      *
      * @param  string  $fragment
-     *
      * @return string
      */
     protected function filterFragment($fragment)
