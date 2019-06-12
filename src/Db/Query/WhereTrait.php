@@ -82,7 +82,7 @@ trait WhereTrait
     public function whereIn(string $col, array $vals, string $delim = 'and'): self
     {
         $in = implode(', ', array_map(function ($val) {
-            $this->compiler->compileVal($val);
+            return $this->compiler->compileVal($val);
         }, $vals));
 
         $this->conditions[] = $this->chainDelim($col.' in ('.$in.')', $delim);
