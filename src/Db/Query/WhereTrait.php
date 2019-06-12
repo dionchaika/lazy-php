@@ -8,7 +8,7 @@ namespace Lazy\Db\Query;
 trait WhereTrait
 {
     /**
-     * where...
+     * Where...
      *
      * @param  string  $col
      * @param  string  $op
