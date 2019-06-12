@@ -101,8 +101,8 @@ trait WhereTrait
      */
     public function whereLike(string $col, $val, ?int $criteria = null, string $delim = 'and'): self
     {
-        $val = $this->compiler->compileWhereLike($val, $criteria);
-        $this->conditions[] = $this->chainDelim($col.' like '.$val, $delim);
+        $wildcard = $this->compiler->compileWildcard($val, $criteria);
+        $this->conditions[] = $this->chainDelim($col.' like '.$wildcard, $delim);
 
         return $this;
     }
