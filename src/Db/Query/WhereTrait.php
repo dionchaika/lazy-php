@@ -16,7 +16,7 @@ trait WhereTrait
      * @param  string  $delim
      * @return self
      */
-    public function where(string $col, ?string $op, $val = null, string $delim = 'AND'): self
+    public function where(string $col, string $op, $val = null, string $delim = 'AND'): self
     {
         [$op, $val] = [
 
