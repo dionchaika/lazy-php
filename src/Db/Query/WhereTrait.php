@@ -2,4 +2,31 @@
 
 namespace Lazy\Db\Query;
 
-trait WhereTrait {}
+/**
+ * @property mixed[] $parts
+ */
+trait WhereTrait
+{
+    /**
+     * where...
+     *
+     * @param  string  $col
+     * @param  string  $op
+     * @param  mixed|null  $val
+     * @param  string  $delim
+     * @return self
+     */
+    public function where(string $col, ?string $op, $val = null, string $delim = 'AND'): self
+    {
+        [$op, $val] = [
+
+            (null === $val) ? '=' : $op,
+            (null === $val) ? $op : $val
+
+        ];
+
+        $this->parts['where'][] = $col.' '.$op.' '.$val;
+
+        return $this;
+    }
+}
