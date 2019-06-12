@@ -102,7 +102,7 @@ trait WhereTrait
     }
 
     /**
-     * Chain the condition with a dilimiter.
+     * Chain a condition with a dilimiter.
      *
      * @param  string  $cond
      * @param  string  $delim
@@ -110,10 +110,6 @@ trait WhereTrait
      */
     protected function chainDelim(string $cond, string $delim): string
     {
-        if (empty($this->parts['where'])) {
-            return $cond;
-        }
-
-        return $delim.' '.$cond;
+        return empty($this->parts['where']) ? $cond : $delim.' '.$cond;
     }
 }
