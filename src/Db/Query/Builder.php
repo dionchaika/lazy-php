@@ -2,6 +2,8 @@
 
 namespace Lazy\Db\Query;
 
+use Lazy\Db\Query\Compilers\Compiler;
+
 class Builder
 {
     /**
@@ -14,7 +16,7 @@ class Builder
     /**
      * The builder compiler.
      *
-     * @var Lazy\Db\Query\CompilerInterface
+     * @var \Lazy\Db\Query\CompilerInterface
      */
     protected $compiler;
 
@@ -30,4 +32,16 @@ class Builder
         'from'     => null
 
     ];
+
+    /**
+     * The builder constructor.
+     *
+     * @param  string  $table
+     * @param  \Lazy\Db\Query\CompilerInterface|null  $compiler
+     */
+    public function __construct(string $table, ?CompilerInterface $compiler = null)
+    {
+        $this->table = $table;
+        $this->compiler = $compiler ?? new Compiler;
+    }
 }
