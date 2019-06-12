@@ -117,6 +117,18 @@ class Builder
     }
 
     /**
+     * FROM...
+     *
+     * @param  string  $table
+     * @return self
+     */
+    public function from(string $table): self
+    {
+        $this->table = $this->compiler->compileCol($table);
+        return $this;
+    }
+
+    /**
      * ORDER BY...
      *
      * @param  mixed  $cols

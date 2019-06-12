@@ -75,4 +75,28 @@ class Compiler implements CompilerInterface
 
         return $sql.';';
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function compileInsert(string $table, array $parts): string
+    {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function compileUpdate(string $table, array $parts): string
+    {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function compileDelete(string $table, array $parts): string
+    {
+        
+    }
 }
