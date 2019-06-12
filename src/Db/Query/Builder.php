@@ -21,6 +21,13 @@ class Builder
     protected $compiler;
 
     /**
+     * The builder connection.
+     *
+     * @var \Lazy\Db\Connection\ConnectionInterface
+     */
+    protected $connection;
+
+    /**
      * The query parts.
      *
      * @var mixed[]
@@ -28,8 +35,7 @@ class Builder
     protected $parts = [
 
         'select'   => [],
-        'distinct' => false,
-        'from'     => null
+        'distinct' => false
 
     ];
 
@@ -38,10 +44,12 @@ class Builder
      *
      * @param  string  $table
      * @param  \Lazy\Db\Query\CompilerInterface|null  $compiler
+     * @param  \Lazy\Db\Connection\ConnectionInterface|null  $connection
      */
-    public function __construct(string $table, ?CompilerInterface $compiler = null)
+    public function __construct(string $table, ?CompilerInterface $compiler = null, ?ConnectionInterface $connection = null)
     {
         $this->table = $table;
         $this->compiler = $compiler ?? new Compiler;
+        $this->connection = $connection ?? new PDOConnection;
     }
 }
