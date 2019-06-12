@@ -5,20 +5,20 @@ namespace Lazy\Db\Query;
 class Builder
 {
     /**
-     * The statements.
+     * The query statements.
      */
-    const STMTS = [
+    const STATEMENT = [
 
         'select', 'insert', 'update', 'delete'
 
     ];
 
     /**
-     * The current statement.
+     * The current query statement.
      *
      * @var int
      */
-    public $stmt = 0;
+    public $statement = 0;
 
     /**
      * The query DB.
