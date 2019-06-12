@@ -59,4 +59,40 @@ trait WhereTrait
         $this->parts['where'][] = $col.' IS NOT '.$this->compiler->compileVal($val);
         return $this;
     }
+
+    /**
+     * WHERE IN...
+     *
+     * @param  string  $col
+     * @param  mixed[]  $vals
+     * @return self
+     */
+    public function whereIn(string $col, array $vals): self
+    {
+        $callback = function ($val) {
+            return $this->compiler->compileVal($val);
+        };
+
+        $this->parts['where'][] = $col.' IN ('.implode(', ', array_map($callback, $vals)).')';
+
+        return $this;
+    }
+
+    /**
+     * WHERE BETWEEN...
+     *
+     * @param  string  $col
+     * @param  mixed  $min
+     * @param  mixed  $max
+     * @return self
+     */
+    public function whereBetween(string $col, $min, $max): self
+    {
+        $min = $this->compiler->compileVal($min);
+        $max = $this->compiler->compileVal($max);
+
+        $this->parts['where'][] = $col.' BETWEEN '.$min.' AND '.$max;
+
+        return $this;
+    }
 }
