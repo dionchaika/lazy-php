@@ -3,6 +3,8 @@
 namespace Lazy\Db\Query;
 
 /**
+ * @property string $db
+ * @property string $table
  * @property \Lazy\Db\Query\CompilerInterface $compiler
  * @property mixed[] $parts
  */
@@ -30,6 +32,7 @@ trait WhereTrait
             return $this->whereIs($col, $val);
         }
 
+        $col = $this->compiler->compileCol($col, $this->db, $this->table);
         $this->parts['where'][] = $this->chainDelim($col.' '.$op.' '.$this->compiler->compileVal($val), $delim);
 
         return $this;
@@ -45,7 +48,9 @@ trait WhereTrait
      */
     public function whereIs(string $col, $val, string $delim = 'AND'): self
     {
+        $col = $this->compiler->compileCol($col, $this->db, $this->table);
         $this->parts['where'][] = $this->chainDelim($col.' IS '.$this->compiler->compileVal($val), $delim);
+
         return $this;
     }
 
@@ -59,7 +64,9 @@ trait WhereTrait
      */
     public function whereIsNot(string $col, $val, string $delim = 'AND'): self
     {
+        $col = $this->compiler->compileCol($col, $this->db, $this->table);
         $this->parts['where'][] = $this->chainDelim($col.' IS NOT '.$this->compiler->compileVal($val), $delim);
+
         return $this;
     }
 
@@ -77,6 +84,7 @@ trait WhereTrait
             return $this->compiler->compileVal($val);
         };
 
+        $col = $this->compiler->compileCol($col, $this->db, $this->table);
         $this->parts['where'][] = $this->chainDelim($col.' IN ('.implode(', ', array_map($callback, $vals)).')', $delim);
 
         return $this;
@@ -96,6 +104,7 @@ trait WhereTrait
         $min = $this->compiler->compileVal($min);
         $max = $this->compiler->compileVal($max);
 
+        $col = $this->compiler->compileCol($col, $this->db, $this->table);
         $this->parts['where'][] = $this->chainDelim($col.' BETWEEN '.$min.' AND '.$max, $delim);
 
         return $this;

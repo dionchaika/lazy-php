@@ -29,4 +29,20 @@ class Compiler implements CompilerInterface
 
         return '\''.str_replace('\'', '\\\'', $val).'\'';
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function compileCol(string $col, ?string $db = null, ?string $table = null): string
+    {
+        if (null !== $table) {
+            $col = $table.'.'.$col;
+
+            if (null !== $db) {
+                $col = $db.'.'.$col;
+            }
+        }
+
+        return $col;
+    }
 }

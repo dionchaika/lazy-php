@@ -2,6 +2,7 @@
 
 namespace Lazy\Db\Query;
 
+use Throwable;
 use Lazy\Db\Query\Compilers\Compiler;
 use Lazy\Db\Connection\Connections\PDOConnection;
 
@@ -25,7 +26,14 @@ class Builder
     public $queryType = self::SELECT;
 
     /**
-     * The builder table.
+     * The query db.
+     *
+     * @var string
+     */
+    protected $db;
+
+    /**
+     * The query table.
      *
      * @var string
      */
@@ -63,12 +71,18 @@ class Builder
     /**
      * The builder constructor.
      *
-     * @param  string  $table
+     * @param  string|null  $db
+     * @param  string|null  $table
      * @param  \Lazy\Db\Query\CompilerInterface|null  $compiler
      * @param  \Lazy\Db\Connection\ConnectionInterface|null  $connection
      */
-    public function __construct(string $table, ?CompilerInterface $compiler = null, ?ConnectionInterface $connection = null)
-    {
+    public function __construct(
+        ?string $db = null,
+        ?string $table = null,
+        ?CompilerInterface $compiler = null,
+        ?ConnectionInterface $connection = null
+    ) {
+        $this->db = $db;
         $this->table = $table;
         $this->compiler = $compiler ?? new Compiler;
         $this->connection = $connection ?? new PDOConnection;
@@ -84,9 +98,9 @@ class Builder
     {
         $this->setQueryType(static::SELECT);
 
-        $cols = is_array($cols) ? $cols : func_get_args();
-
-        $this->parts['select'] = $cols;
+        $this->parts['select'] = array_map(function ($col) {
+            return $this->compiler->compileCol($col, $this->db, $this->table);
+        }, is_array($cols) ? $cols : func_get_args());
 
         return $this;
     }
@@ -111,7 +125,9 @@ class Builder
      */
     public function orderBy($cols, string $order = 'DESC'): self
     {
-        $cols = is_array($cols) ? $cols : [$cols];
+        $cols = array_map(function ($col) {
+            return $this->compiler->compileCol($col, $this->db, $this->table);
+        }, is_array($cols) ? $cols : [$cols]);
 
         $this->parts['orderBy'][] = implode(', ', $cols).' '.$order;
 
@@ -153,6 +169,40 @@ class Builder
     {
         $this->parts['limit'] = (null === $offset) ? $count : $offset.', '.$count;
         return $this;
+    }
+
+    /**
+     * Get the SQL string.
+     *
+     * @return string
+     */
+    public function toSql(): string
+    {
+        switch ($this->queryType) {
+            case static::SELECT:
+                return $this->compiler->compileSelect($this->parts);
+            case static::INSERT:
+                return $this->compiler->compileInsert($this->parts);
+            case static::UPDATE:
+                return $this->compiler->compileUpdate($this->parts);
+            case static::DELETE:
+                return $this->compiler->compileDelete($this->parts);
+        }
+    }
+
+    /**
+     * Get the string
+     * representation of the query.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        try {
+            return $this->toSql();
+        } catch (Throwable $e) {
+            trigger_error($e->getMessage(), \E_USER_ERROR);
+        }
     }
 
     /**
