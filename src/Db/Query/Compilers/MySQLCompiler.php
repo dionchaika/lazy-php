@@ -12,23 +12,38 @@ class MySQLCompiler extends Compiler implements CompilerInterface
     public function compileCol(string $col, ?string $db = null, ?string $table = null): string
     {
         if (preg_match('/^(\w+) (as) (\w+)$/i', $col, $matches)) {
-            $col = '`'.str_replace('`', '\\`', $matches[1]).'`';
-            $as = $matches[2];
-            $alias = '`'.str_replace('`', '\\`', $matches[3]).'`';
+            [$col, $as, $alias] = [
 
-            $col = $col.' '.$as.' '.$alias;
+                $matches[1],
+                $matches[2],
+                $matches[3]
+
+            ];
+
+            $col = $this->quoteCol($col).' '.$as.' '.$this->quoteCol($alias);
         } else {
-            $col = '`'.str_replace('`', '\\`', $col).'`';
+            $col = $this->quoteCol($col);
         }
 
         if (null !== $table) {
-            $col = '`'.str_replace('`', '\\`', $table).'`.'.$col;
+            $col = $this->quoteCol($table).'.'.$col;
 
             if (null !== $db) {
-                $col = '`'.str_replace('`', '\\`', $db).'`.'.$col;
+                $col = $this->quoteCol($db).'.'.$col;
             }
         }
 
         return $col;
+    }
+
+    /**
+     * Quote a column.
+     *
+     * @param  string  $col
+     * @return string
+     */
+    protected function quoteCol(string $col): string
+    {
+        return '`'.str_replace('`', '\\`', $col).'`';
     }
 }
