@@ -6,6 +6,8 @@ use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
 
 class Builder
 {
+    use WhereTrait;
+
     /**
      * The query DB.
      *
