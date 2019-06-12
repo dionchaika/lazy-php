@@ -45,4 +45,34 @@ class Compiler implements CompilerInterface
 
         return $col;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function compileSelect(array $parts): string
+    {
+        $sql = $parts['distinct'] ? 'SELECT DISTINCT ' : 'SELECT ';
+
+        if (empty($parts['select'])) {
+            $parts['select'][] = '*';
+        }
+
+        $sql .= implode(', ', $parts['select']);
+
+        $sql .= ' FROM '.$parts['table'];
+
+        if (! empty($parts['where'])) {
+            $sql .= ' WHERE '.implode(' ', $parts['where']);
+        }
+
+        if (! empty($parts['orderBy'])) {
+            $sql .= ' ORDER BY '.implode(', ', $parts['orderBy']);
+        }
+
+        if (null !== $parts['limit']) {
+            $sql .= ' LIMIT '.$parts['limit'];
+        }
+
+        return $sql.';';
+    }
 }
