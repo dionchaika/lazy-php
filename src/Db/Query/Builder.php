@@ -97,7 +97,7 @@ class Builder
         [$table, $alias] = $this->devideAlias($table);
 
         $this->table = $table;
-        if (null !== $alias) {
+        if ($alias) {
             $this->aliases[$table] = $alias;
         }
 
