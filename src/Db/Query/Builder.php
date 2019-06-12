@@ -5,22 +5,6 @@ namespace Lazy\Db\Query;
 class Builder
 {
     /**
-     * The query statements.
-     */
-    const STATEMENTS = [
-
-        'select', 'insert', 'update', 'delete'
-
-    ];
-
-    /**
-     * The current query statement.
-     *
-     * @var int
-     */
-    public $statement = 0;
-
-    /**
      * The query DB.
      *
      * @var string
