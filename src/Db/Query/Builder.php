@@ -7,6 +7,8 @@ use Lazy\Db\Connection\Connections\PDOConnection;
 
 class Builder
 {
+    use WhereTrait;
+
     /**
      * The builder table.
      *
