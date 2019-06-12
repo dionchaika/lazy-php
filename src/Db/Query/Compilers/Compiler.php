@@ -7,10 +7,7 @@ use Lazy\Db\Query\CompilerInterface;
 class Compiler implements CompilerInterface
 {
     /**
-     * Compile value.
-     *
-     * @param  mixed  $val
-     * @return string
+     * {@inheritDoc}
      */
     public function compileVal($val): string
     {
