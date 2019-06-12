@@ -11,12 +11,11 @@ trait WhereTrait
      * Where...
      *
      * @param  string  $col
-     * @param  string  $op
+     * @param  mixed  $op
      * @param  mixed|null  $val
-     * @param  string  $delim
      * @return self
      */
-    public function where(string $col, string $op, $val = null, string $delim = 'AND'): self
+    public function where(string $col, $op, $val = null): self
     {
         [$op, $val] = [
 
