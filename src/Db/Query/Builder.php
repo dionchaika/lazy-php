@@ -105,14 +105,14 @@ class Builder
     }
 
     /**
-     * Devide an alias from column.
+     * Devide an alias from the name.
      *
-     * @param  string  $col
+     * @param  string  $name
      * @return mixed[]
      */
-    protected function devideAlias(string $col): array
+    protected function devideAlias(string $name): array
     {
-        $col = explode(' as ', $col, 2);
-        return [$col[0], !empty($col[1]) ? $col[1] : null];
+        $name = explode(' as ', $name, 2);
+        return [$name[0], !empty($name[1]) ? $name[1] : null];
     }
 }
