@@ -11,7 +11,7 @@ class MySQLCompiler extends Compiler implements CompilerInterface
      */
     public function compileCol(string $col, ?string $db = null, ?string $table = null): string
     {
-        if (preg_match('/^(\w+) (as) (\w+)$/i', $col, $matches)) {
+        if (preg_match('/^(\w+)\s+(as)\s+(\w+)$/i', $col, $matches)) {
             [$col, $as, $alias] = [
 
                 $matches[1],
