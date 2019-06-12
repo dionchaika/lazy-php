@@ -36,7 +36,10 @@ class Builder
     protected $parts = [
 
         'select'   => [],
-        'distinct' => false
+        'distinct' => false,
+        'where'    => [],
+        'orderBy'  => [],
+        'limit'    => null
 
     ];
 
