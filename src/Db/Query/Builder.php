@@ -86,7 +86,7 @@ class Builder
 
         $cols = is_array($cols) ? $cols : func_get_args();
 
-        $this->parts['where'] = $cols;
+        $this->parts['select'] = $cols;
 
         return $this;
     }
@@ -140,6 +140,19 @@ class Builder
     {
         $cols = is_array($cols) ? $cols : func_get_args();
         return $this->orderBy($cols, 'DESC');
+    }
+
+    /**
+     * LIMIT...
+     *
+     * @param  int  $count
+     * @param  int|null  $offset
+     * @return self
+     */
+    public function limit(int $count, ?int $offset = null): self
+    {
+        $this->parts['limit'] = (null === $offset) ? $count : $offset.', '.$count;
+        return $this;
     }
 
     /**
