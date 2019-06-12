@@ -102,7 +102,7 @@ trait WhereTrait
     }
 
     /**
-     * Chain a condition with a dilimiter.
+     * Chain a condition with a delimiter.
      *
      * @param  string  $cond
      * @param  string  $delim
