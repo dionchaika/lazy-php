@@ -7,6 +7,14 @@ use Lazy\Db\Query\CompilerInterface;
 class Compiler implements CompilerInterface
 {
     /**
+     * The operators.
+     */
+    const OP_IS  = 'IS';
+    const OP_OR  = 'OR';
+    const OP_AND = 'AND';
+    const OP_NOT = 'NOT';
+
+    /**
      * Compile value.
      *
      * @param  mixed  $val
