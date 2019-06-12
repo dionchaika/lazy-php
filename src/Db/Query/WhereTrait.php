@@ -25,8 +25,8 @@ trait WhereTrait
 
         ];
 
-        if (null === $val) {
-            return $this->whereIsNull($col);
+        if ((null === $val || true === $val || false === $val) && '=' === $op) {
+            return $this->whereIs($col, $val);
         }
 
         $this->parts['where'][] = $col.' '.$op.' '.$this->compiler->compileVal($val);
@@ -35,26 +35,28 @@ trait WhereTrait
     }
 
     /**
-     * WHERE IS NULL...
+     * WHERE IS...
      *
      * @param  string  $col
+     * @param  mixed  $val
      * @return self
      */
-    public function whereIsNull(string $col): self
+    public function whereIs(string $col, $val): self
     {
-        $this->parts['where'][] = $col.' IS '.$this->compiler->compileVal(null);
+        $this->parts['where'][] = $col.' IS '.$this->compiler->compileVal($val);
         return $this;
     }
 
     /**
-     * WHERE IS NOT NULL...
+     * WHERE IS NOT...
      *
      * @param  string  $col
+     * @param  mixed  $val
      * @return self
      */
-    public function whereIsNotNull(string $col): self
+    public function whereIsNot(string $col, $val): self
     {
-        $this->parts['where'][] = $col.' IS NOT '.$this->compiler->compileVal(null);
+        $this->parts['where'][] = $col.' IS NOT '.$this->compiler->compileVal($val);
         return $this;
     }
 }
