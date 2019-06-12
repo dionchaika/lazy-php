@@ -7,7 +7,7 @@ class Builder
     /**
      * The query statements.
      */
-    const STATEMENT = [
+    const STATEMENTS = [
 
         'select', 'insert', 'update', 'delete'
 
