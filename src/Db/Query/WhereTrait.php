@@ -9,6 +9,39 @@ namespace Lazy\Db\Query;
 trait WhereTrait
 {
     /**
+     * OR...
+     *
+     * @return self
+     */
+    public function or(): self
+    {
+        $this->parts['where'][] = 'OR';
+        return $this;
+    }
+
+    /**
+     * AND...
+     *
+     * @return self
+     */
+    public function and(): self
+    {
+        $this->parts['where'][] = 'AND';
+        return $this;
+    }
+
+    /**
+     * NOT...
+     *
+     * @return self
+     */
+    public function not(): self
+    {
+        $this->parts['where'][] = 'NOT';
+        return $this;
+    }
+
+    /**
      * WHERE...
      *
      * @param  string  $col
