@@ -3,6 +3,7 @@
 namespace Lazy\Db\Query;
 
 /**
+ * @property \Lazy\Db\Query\CompilerInterface $compiler
  * @property mixed[] $parts
  */
 trait WhereTrait
@@ -24,7 +25,7 @@ trait WhereTrait
 
         ];
 
-        $this->parts['where'][] = $col.' '.$op.' '.$val;
+        $this->parts['where'][] = $col.' '.$op.' '.$this->compiler->compileVal($val);
 
         return $this;
     }
