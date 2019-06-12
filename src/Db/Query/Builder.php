@@ -3,6 +3,7 @@
 namespace Lazy\Db\Query;
 
 use Lazy\Db\Query\Compilers\Compiler;
+use Lazy\Db\Connection\Connections\PDOConnection;
 
 class Builder
 {
