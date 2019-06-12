@@ -25,32 +25,36 @@ interface CompilerInterface
     /**
      * Compile a SELECT query.
      *
+     * @param  string  $table
      * @param  mixed[]  $parts
      * @return string
      */
-    public function compileSelect(array $parts): string;
+    public function compileSelect(string $table, array $parts): string;
 
     /**
      * Compile an INSERT query.
      *
+     * @param  string  $table
      * @param  mixed[]  $parts
      * @return string
      */
-    public function compileInsert(array $parts): string;
+    public function compileInsert(string $table, array $parts): string;
 
     /**
      * Compile an UPDATE query.
      *
+     * @param  string  $table
      * @param  mixed[]  $parts
      * @return string
      */
-    public function compileUpdate(array $parts): string;
+    public function compileUpdate(string $table, array $parts): string;
 
     /**
      * Compile a DELETE query.
      *
+     * @param  string  $table
      * @param  mixed[]  $parts
      * @return string
      */
-    public function compileDelete(array $parts): string;
+    public function compileDelete(string $table, array $parts): string;
 }

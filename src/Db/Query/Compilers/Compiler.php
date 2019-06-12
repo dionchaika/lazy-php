@@ -49,7 +49,7 @@ class Compiler implements CompilerInterface
     /**
      * {@inheritDoc}
      */
-    public function compileSelect(array $parts): string
+    public function compileSelect(string $table, array $parts): string
     {
         $sql = $parts['distinct'] ? 'SELECT DISTINCT ' : 'SELECT ';
 
@@ -59,7 +59,7 @@ class Compiler implements CompilerInterface
 
         $sql .= implode(', ', $parts['select']);
 
-        $sql .= ' FROM '.$parts['table'];
+        $sql .= ' FROM '.$table;
 
         if (! empty($parts['where'])) {
             $sql .= ' WHERE '.implode(' ', $parts['where']);

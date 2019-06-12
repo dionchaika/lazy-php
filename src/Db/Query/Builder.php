@@ -180,13 +180,13 @@ class Builder
     {
         switch ($this->queryType) {
             case static::SELECT:
-                return $this->compiler->compileSelect($this->parts);
+                return $this->compiler->compileSelect($this->table, $this->parts);
             case static::INSERT:
-                return $this->compiler->compileInsert($this->parts);
+                return $this->compiler->compileInsert($this->table, $this->parts);
             case static::UPDATE:
-                return $this->compiler->compileUpdate($this->parts);
+                return $this->compiler->compileUpdate($this->table, $this->parts);
             case static::DELETE:
-                return $this->compiler->compileDelete($this->parts);
+                return $this->compiler->compileDelete($this->table, $this->parts);
         }
     }
 
