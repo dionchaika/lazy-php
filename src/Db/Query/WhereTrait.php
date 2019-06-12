@@ -3,15 +3,13 @@
 namespace Lazy\Db\Query;
 
 /**
- * @property string $db
- * @property string $table
+ * @property mixed[] $conditions
  * @property \Lazy\Db\Query\CompilerInterface $compiler
- * @property mixed[] $parts
  */
 trait WhereTrait
 {
     /**
-     * WHERE...
+     * where...
      *
      * @param  string  $col
      * @param  mixed  $op
@@ -19,7 +17,7 @@ trait WhereTrait
      * @param  string  $delim
      * @return self
      */
-    public function where(string $col, $op, $val = null, string $delim = 'AND'): self
+    public function where(string $col, $op, $val = null, string $delim = 'and'): self
     {
         [$op, $val] = [
 
@@ -32,66 +30,85 @@ trait WhereTrait
             return $this->whereIs($col, $val);
         }
 
-        $col = $this->compiler->compileCol($col, $this->db, $this->table);
-        $this->parts['where'][] = $this->chainDelim($col.' '.$op.' '.$this->compiler->compileVal($val), $delim);
+        $this->conditions[] = $this->chainDelim(
+            $col.' '.$op.' '.$this->compiler->compileVal($val), $delim
+        );
 
         return $this;
     }
 
     /**
-     * WHERE IS...
+     * where is...
      *
      * @param  string  $col
      * @param  mixed  $val
      * @param  string  $delim
      * @return self
      */
-    public function whereIs(string $col, $val, string $delim = 'AND'): self
+    public function whereIs(string $col, $val, string $delim = 'and'): self
     {
-        $col = $this->compiler->compileCol($col, $this->db, $this->table);
-        $this->parts['where'][] = $this->chainDelim($col.' IS '.$this->compiler->compileVal($val), $delim);
+        $this->conditions[] = $this->chainDelim(
+            $col.' is '.$this->compiler->compileVal($val), $delim
+        );
 
         return $this;
     }
 
     /**
-     * WHERE IS NOT...
+     * where is not...
      *
      * @param  string  $col
      * @param  mixed  $val
      * @param  string  $delim
      * @return self
      */
-    public function whereIsNot(string $col, $val, string $delim = 'AND'): self
+    public function whereIsNot(string $col, $val, string $delim = 'and'): self
     {
-        $col = $this->compiler->compileCol($col, $this->db, $this->table);
-        $this->parts['where'][] = $this->chainDelim($col.' IS NOT '.$this->compiler->compileVal($val), $delim);
+        $this->conditions[] = $this->chainDelim(
+            $col.' is not '.$this->compiler->compileVal($val), $delim
+        );
 
         return $this;
     }
 
     /**
-     * WHERE IN...
+     * where in...
      *
      * @param  string  $col
      * @param  mixed[]  $vals
      * @param  string  $delim
      * @return self
      */
-    public function whereIn(string $col, array $vals, string $delim = 'AND'): self
+    public function whereIn(string $col, array $vals, string $delim = 'and'): self
     {
-        $callback = function ($val) {
-            return $this->compiler->compileVal($val);
-        };
+        $in = implode(', ', array_map(function ($val) {
+            $this->compiler->compileVal($val);
+        }, $vals));
 
-        $col = $this->compiler->compileCol($col, $this->db, $this->table);
-        $this->parts['where'][] = $this->chainDelim($col.' IN ('.implode(', ', array_map($callback, $vals)).')', $delim);
+        $this->conditions[] = $this->chainDelim($col.' in ('.$in.')', $delim);
 
         return $this;
     }
 
     /**
-     * WHERE BETWEEN...
+     * where like...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @param  int|null  $criteria
+     * @param  string  $delim
+     * @return self
+     */
+    public function whereLike(string $col, $val, ?int $criteria = null, string $delim = 'and'): self
+    {
+        $val = $this->compiler->compileWhereLike($val, $criteria);
+        $this->conditions[] = $this->chainDelim($col.' like '.$val, $delim);
+
+        return $this;
+    }
+
+    /**
+     * where between...
      *
      * @param  string  $col
      * @param  mixed  $min
@@ -99,13 +116,12 @@ trait WhereTrait
      * @param  string  $delim
      * @return self
      */
-    public function whereBetween(string $col, $min, $max, string $delim = 'AND'): self
+    public function whereBetween(string $col, $min, $max, string $delim = 'and'): self
     {
         $min = $this->compiler->compileVal($min);
         $max = $this->compiler->compileVal($max);
 
-        $col = $this->compiler->compileCol($col, $this->db, $this->table);
-        $this->parts['where'][] = $this->chainDelim($col.' BETWEEN '.$min.' AND '.$max, $delim);
+        $this->conditions[] = $this->chainDelim($col.' between '.$min.' and '.$max, $delim);
 
         return $this;
     }
@@ -119,6 +135,6 @@ trait WhereTrait
      */
     protected function chainDelim(string $cond, string $delim): string
     {
-        return empty($this->parts['where']) ? $cond : $delim.' '.$cond;
+        return empty($this->conditions) ? $cond : $delim.' '.$cond;
     }
 }

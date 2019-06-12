@@ -2,6 +2,8 @@
 
 namespace Lazy\Db\Query;
 
+use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
+
 class Builder
 {
     /**
@@ -17,6 +19,13 @@ class Builder
      * @var string
      */
     protected $table;
+
+    /**
+     * The SQL compiler.
+     *
+     * @var \Lazy\Db\Query\CompilerInterface
+     */
+    protected $compiler;
 
     /**
      * The array of columns.
@@ -40,15 +49,24 @@ class Builder
     protected $distinct = false;
 
     /**
+     * The array of query conditions.
+     *
+     * @var string[]
+     */
+    protected $conditions = [];
+
+    /**
      * The builder constructor.
      *
      * @param  string|null  $db
      * @param  string|null  $table
+     * @param  \Lazy\Db\Query\CompilerInterface|null  $compiler
      */
-    public function __construct(?string $db = null, ?string $table = null)
+    public function __construct(?string $db = null, ?string $table = null, ?CompilerInterface $compiler = null)
     {
         $this->db = $db;
         $this->table = $table;
+        $this->compiler = $compiler ?? new BaseCompiler;
     }
 
     /**
