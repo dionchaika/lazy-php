@@ -58,4 +58,15 @@ class Builder
         $this->compiler = $compiler ?? new Compiler;
         $this->connection = $connection ?? new PDOConnection;
     }
+
+    /**
+     * DISTINCT...
+     *
+     * @return self
+     */
+    public function distinct(): self
+    {
+        $this->parts['distinct'] = true;
+        return $this;
+    }
 }

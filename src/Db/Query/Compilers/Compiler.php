@@ -15,15 +15,15 @@ class Compiler implements CompilerInterface
     public function compileVal($val): string
     {
         if (null === $val) {
-            return 'null';
+            return 'NULL';
         }
 
         if (true === $val) {
-            return 'true';
+            return 'TRUE';
         }
 
         if (false === $val) {
-            return 'false';
+            return 'FALSE';
         }
 
         if (is_numeric($val)) {
