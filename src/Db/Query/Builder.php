@@ -87,6 +87,17 @@ class Builder
     }
 
     /**
+     * from...
+     *
+     * @param  string  $table
+     * @return self
+     */
+    public function from(string $table): self
+    {
+        return $this->setTable($table);
+    }
+
+    /**
      * Set the query table.
      *
      * @param  string  $table
