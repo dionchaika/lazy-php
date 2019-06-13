@@ -2,6 +2,7 @@
 
 namespace Lazy\Db\Query;
 
+use Throwable;
 use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
 
 /**
@@ -12,6 +13,25 @@ class Builder
     use JoinTrait,
         WhereTrait,
         OrderByTrait;
+
+    /**
+     * The query types.
+     */
+    const QUERY_TYPES = [
+
+        'select' => 0,
+        'insert' => 1,
+        'update' => 2,
+        'delete' => 3
+
+    ];
+
+    /**
+     * The current query type.
+     *
+     * @var int
+     */
+    public $queryType = self::QUERY_TYPES['select'];
 
     /**
      * The query DB.
@@ -77,6 +97,8 @@ class Builder
      */
     public function select($cols = '*'): self
     {
+        $this->queryType = static::QUERY_TYPES['select'];
+
         $cols = is_array($cols)
             ? $cols
             : func_get_args();
@@ -113,6 +135,43 @@ class Builder
     public function from(string $table): self
     {
         return $this->setTable($table);
+    }
+
+    /**
+     * Get the SQL string.
+     *
+     * @return string
+     */
+    public function toSql(): string
+    {
+        switch ($this->queryType) {
+            case static::QUERY_TYPES['select']:
+                return $this->compiler->compileSelect(
+                    $this->db,
+                    $this->table,
+                    $this->cols,
+                    $this->aliases,
+                    $this->distinct,
+                    $this->joins,
+                    $this->wheres,
+                    $this->ordersBy
+                );
+        }
+    }
+
+    /**
+     * Get the string
+     * representation of the query.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        try {
+            return $this->toSql();
+        } catch (Throwable $e) {
+            trigger_error($e->getMessage(), \E_USER_ERROR);
+        }
     }
 
     /**
