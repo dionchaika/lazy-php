@@ -108,7 +108,7 @@ class Builder
 
             $this->cols[] = $col;
             if ($alias) {
-                $this->aliases[$alias] = $col;
+                $this->aliases[$col] = $alias;
             }
         }
 
@@ -186,7 +186,7 @@ class Builder
 
         $this->table = $table;
         if ($alias) {
-            $this->aliases[$alias] = $table;
+            $this->aliases[$table] = $alias;
         }
 
         return $this;
