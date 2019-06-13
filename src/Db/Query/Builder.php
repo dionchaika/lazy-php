@@ -57,14 +57,14 @@ class Builder
     protected $distinct = false;
 
     /**
-     * The query selection limit.
+     * The select query limit.
      *
      * @var int
      */
     protected $limit;
 
     /**
-     * The query selection offset.
+     * The select query offset.
      *
      * @var int
      */
