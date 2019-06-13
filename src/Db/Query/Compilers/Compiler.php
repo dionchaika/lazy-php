@@ -31,7 +31,7 @@ class Compiler implements CompilerInterface
             return (string)$val;
         }
 
-        return '\''.str_replace('\'', '\\\'', $val).'\'';
+        return '\''.addcslashes($val, '\'').'\'';
     }
 
     /**
@@ -42,31 +42,31 @@ class Compiler implements CompilerInterface
         if (null !== $criteria) {
             switch ($criteria) {
                 case Criteria::CONTAINS:
-                    $val = '%'.$val.'%';
+                    $val = '%'.addcslashes($val, '%').'%';
                     break;
                 case Criteria::ENDS_WITH:
-                    $val = '%'.$val;
+                    $val = '%'.addcslashes($val, '%');
                     break;
                 case Criteria::STARTS_WITH:
-                    $val = $val.'%';
+                    $val = addcslashes($val, '%').'%';
                     break;
                 case Criteria::IN_THE_RANGE:
-                    $val = '['.$val.']';
+                    $val = '['.addcslashes($val, '[]^').']';
                     break;
                 case Criteria::NOT_IN_THE_RANGE:
-                    $val = '[^'.$val.']';
+                    $val = '[^'.addcslashes($val, '[]^').']';
                     break;
                 case Criteria::ENDS_WITH_THE_RANGE:
-                    $val = '%['.$val.']';
+                    $val = '%['.addcslashes($val, '[]^').']';
                     break;
                 case Criteria::STARTS_WITH_THE_RANGE:
-                    $val = '['.$val.']%';
+                    $val = '['.addcslashes($val, '[]^').']%';
                     break;
                 case Criteria::NOT_ENDS_WITH_THE_RANGE:
-                    $val = '%[^'.$val.']';
+                    $val = '%[^'.addcslashes($val, '[]^').']';
                     break;
                 case Criteria::NOT_STARTS_WITH_THE_RANGE:
-                    $val = '[^'.$val.']%';
+                    $val = '[^'.addcslashes($val, '[]^').']%';
                     break;
             }
         }
