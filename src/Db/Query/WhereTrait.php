@@ -2,9 +2,6 @@
 
 namespace Lazy\Db\Query;
 
-/**
- * @property \Lazy\Db\Query\CompilerInterface $compiler
- */
 trait WhereTrait
 {
     /**
@@ -15,7 +12,7 @@ trait WhereTrait
     protected $wheres = [];
 
     /**
-     * where...
+     * Add a query where clause.
      *
      * @param  string  $col
      * @param  mixed  $op
@@ -23,7 +20,7 @@ trait WhereTrait
      * @param  string  $delim
      * @return self
      */
-    public function where(string $col, $op, $val = null, string $delim = 'and'): self
+    protected function addWhere(string $col, $op, $val = null, string $delim = 'and'): self
     {
         [$op, $val] = [
 

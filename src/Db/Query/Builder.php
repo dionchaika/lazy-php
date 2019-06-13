@@ -9,8 +9,10 @@ use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
  */
 class Builder
 {
-    use JoinTrait;
-    use WhereTrait;
+    use
+        JoinTrait,
+        WhereTrait,
+        OrderByTrait;
 
     /**
      * The query DB.
