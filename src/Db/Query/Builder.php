@@ -15,6 +15,18 @@ class Builder
         OrderByTrait;
 
     /**
+     * The join types.
+     */
+    const JOIN_TYPES = [
+
+        'inner' => 0,
+        'left'  => 1,
+        'right' => 2,
+        'full'  => 3
+
+    ];
+
+    /**
      * The query types.
      */
     const QUERY_TYPES = [
