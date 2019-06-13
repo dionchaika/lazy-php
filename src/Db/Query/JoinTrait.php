@@ -21,12 +21,28 @@ trait JoinTrait
      * @param  string  $table
      * @param  string  $col1
      * @param  string  $op
-     * @param  string  $col2
+     * @param  string|null  $col2
      * @return self
      */
-    public function join(string $table, string $col1, string $op, string $col2): self
+    public function join(string $table, string $col1, string $op, ?string $col2 = null): self
     {
         return $this->addJoin('inner', $table, $col1, $op, $col2);
+    }
+
+    /**
+     * inner join...
+     *
+     * An alias method name to join.
+     *
+     * @param  string  $table
+     * @param  string  $col1
+     * @param  string  $op
+     * @param  string|null  $col2
+     * @return self
+     */
+    public function innerJoin(string $table, string $col1, string $op, ?string $col2 = null): self
+    {
+        return $this->join($table, $col1, $op, $col2);
     }
 
     /**
@@ -35,10 +51,10 @@ trait JoinTrait
      * @param  string  $table
      * @param  string  $col1
      * @param  string  $op
-     * @param  string  $col2
+     * @param  string|null  $col2
      * @return self
      */
-    public function leftJoin(string $table, string $col1, string $op, string $col2): self
+    public function leftJoin(string $table, string $col1, string $op, ?string $col2 = null): self
     {
         return $this->addJoin('left', $table, $col1, $op, $col2);
     }
@@ -49,10 +65,10 @@ trait JoinTrait
      * @param  string  $table
      * @param  string  $col1
      * @param  string  $op
-     * @param  string  $col2
+     * @param  string|null  $col2
      * @return self
      */
-    public function rightJoin(string $table, string $col1, string $op, string $col2): self
+    public function rightJoin(string $table, string $col1, string $op, ?string $col2 = null): self
     {
         return $this->addJoin('right', $table, $col1, $op, $col2);
     }
@@ -63,10 +79,10 @@ trait JoinTrait
      * @param  string  $table
      * @param  string  $col1
      * @param  string  $op
-     * @param  string  $col2
+     * @param  string|null  $col2
      * @return self
      */
-    public function fullJoin(string $table, string $col1, string $op, string $col2): self
+    public function fullJoin(string $table, string $col1, string $op, ?string $col2 = null): self
     {
         return $this->addJoin('full', $table, $col1, $op, $col2);
     }
