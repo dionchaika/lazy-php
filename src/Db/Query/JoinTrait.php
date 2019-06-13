@@ -68,7 +68,7 @@ trait JoinTrait
     }
 
     /**
-     * Add a query join.
+     * Add a query join clause.
      *
      * @param  string  $type
      * @param  string  $table
