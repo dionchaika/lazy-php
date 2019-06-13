@@ -85,7 +85,7 @@ class Builder
     public function __construct(?string $db = null, ?string $table = null, ?CompilerInterface $compiler = null)
     {
         $this->db = $db;
-        $this->table = $table;
+        $this->setTable($table);
         $this->compiler = $compiler ?? new BaseCompiler;
     }
 
