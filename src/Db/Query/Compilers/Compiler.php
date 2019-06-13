@@ -32,8 +32,24 @@ class Compiler implements CompilerInterface
             return isset($aliases[$col]) ? $col.' as '.$aliases[$col] : $col;
         }, $cols));
 
-        $sql .= ' from '.isset($aliases[$table]) ? $table.' as '.$aliases[$table] : $table;
+        $sql .= ' from '.(isset($aliases[$table]) ? $table.' as '.$aliases[$table] : $table);
 
-        return $sql;
+        if (!empty($ordersBy)) {
+            $sql .= ' order by '.implode(', ', array_map(function ($orderBy) {
+                return implode(', ', $orderBy['cols']).' '.$orderBy['order'];
+            }, $ordersBy));
+        }
+
+        return $sql.';';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function compileDelete(?string $db = null, string $table, array $aliases, array $wheres): string
+    {
+        $sql = 'delete from '.(isset($aliases[$table]) ? $table.' as '.$aliases[$table] : $table);
+
+        return $sql.';';
     }
 }

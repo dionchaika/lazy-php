@@ -138,6 +138,17 @@ class Builder
     }
 
     /**
+     * delete...
+     *
+     * @return self
+     */
+    public function delete(): self
+    {
+        $this->queryType = static::QUERY_TYPES['delete'];
+        return $this;
+    }
+
+    /**
      * Get the SQL string.
      *
      * @return string
@@ -155,6 +166,13 @@ class Builder
                     $this->joins,
                     $this->wheres,
                     $this->ordersBy
+                );
+            case static::QUERY_TYPES['delete']:
+                return $this->compiler->compileDelete(
+                    $this->db,
+                    $this->table,
+                    $this->aliases,
+                    $this->wheres
                 );
         }
     }
