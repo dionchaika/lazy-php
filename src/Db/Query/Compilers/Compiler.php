@@ -44,7 +44,7 @@ class Compiler implements CompilerInterface
                 case Criteria::CONTAINS:
                     $val = '%'.$val.'%';
                     break;
-                case Criteria:ENDS_WITH:
+                case Criteria::ENDS_WITH:
                     $val = '%'.$val;
                     break;
                 case Criteria::STARTS_WITH:
