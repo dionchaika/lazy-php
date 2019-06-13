@@ -78,10 +78,10 @@ trait JoinTrait
      * @param  string  $table
      * @param  string  $col1
      * @param  string  $op
-     * @param  string  $col2
+     * @param  string|null  $col2
      * @return self
      */
-    protected function addJoin(string $type, string $table, string $col1, string $op, string $col2): self
+    protected function addJoin(string $type, string $table, string $col1, string $op, ?string $col2 = null): self
     {
         $join['type'] = $type;
 
@@ -91,6 +91,13 @@ trait JoinTrait
         if ($alias) {
             $this->aliases[$alias] = $table;
         }
+
+        [$op, $col2] = [
+
+            (null === $col2) ? '=' : $op,
+            (null === $col2) ? $op : $col2
+
+        ];
 
         $join['on'] = [
 
