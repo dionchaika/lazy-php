@@ -76,6 +76,20 @@ class Builder
     protected $distinct = false;
 
     /**
+     * The query selection limit.
+     *
+     * @var int
+     */
+    protected $limit;
+
+    /**
+     * The query selection offset.
+     *
+     * @var int
+     */
+    protected $offset;
+
+    /**
      * The query builder constructor.
      *
      * @param  string|null  $db
