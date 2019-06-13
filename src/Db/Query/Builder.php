@@ -15,37 +15,6 @@ class Builder
         OrderByTrait;
 
     /**
-     * The join types.
-     */
-    const JOIN_TYPES = [
-
-        'inner' => 0,
-        'left'  => 1,
-        'right' => 2,
-        'full'  => 3
-
-    ];
-
-    /**
-     * The query types.
-     */
-    const QUERY_TYPES = [
-
-        'select' => 0,
-        'insert' => 1,
-        'update' => 2,
-        'delete' => 3
-
-    ];
-
-    /**
-     * The current query type.
-     *
-     * @var int
-     */
-    protected $queryType = self::QUERY_TYPES['select'];
-
-    /**
      * The query DB.
      *
      * @var string
@@ -102,6 +71,13 @@ class Builder
     protected $offset;
 
     /**
+     * The current query type.
+     *
+     * @var int
+     */
+    protected $queryType = 'select';
+
+    /**
      * The query builder constructor.
      *
      * @param  string|null  $db
@@ -127,7 +103,7 @@ class Builder
      */
     public function select($cols = '*'): self
     {
-        $this->queryType = static::QUERY_TYPES['select'];
+        $this->queryType = 'select';
 
         $cols = is_array($cols)
             ? $cols
