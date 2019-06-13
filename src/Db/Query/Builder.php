@@ -4,6 +4,9 @@ namespace Lazy\Db\Query;
 
 use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
 
+/**
+ * The query builder class.
+ */
 class Builder
 {
     use WhereTrait;
