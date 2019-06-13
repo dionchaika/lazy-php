@@ -89,7 +89,7 @@ trait JoinTrait
 
         $join['table'] = $table;
         if ($alias) {
-            $this->aliases[$table] = $alias;
+            $this->aliases[$alias] = $table;
         }
 
         $join['on'] = [
