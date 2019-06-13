@@ -3,11 +3,17 @@
 namespace Lazy\Db\Query;
 
 /**
- * @property mixed[] $conditions
  * @property \Lazy\Db\Query\CompilerInterface $compiler
  */
 trait WhereTrait
 {
+    /**
+     * The array of query where clauses.
+     *
+     * @var mixed[]
+     */
+    protected $wheres = [];
+
     /**
      * where...
      *
