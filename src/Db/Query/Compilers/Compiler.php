@@ -2,6 +2,7 @@
 
 namespace Lazy\Db\Query\Compilers;
 
+use Lazy\Db\Query\Criteria;
 use Lazy\Db\Query\CompilerInterface;
 
 /**
@@ -31,5 +32,27 @@ class Compiler implements CompilerInterface
         }
 
         return '\''.str_replace('\'', '\\\'', $val).'\'';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function compileWildcard($val, ?int $criteria = null): string
+    {
+        if (null !== $criteria) {
+            switch ($criteria) {
+                case Criteria::CONTAINS:
+                    $val = '%'.$val.'%';
+                    break;
+                case Criteria:ENDS_WITH:
+                    $val = '%'.$val;
+                    break;
+                case Criteria::STARTS_WITH:
+                    $val = $val.'%';
+                    break;
+            }
+        }
+
+        return $this->compileVal($val);
     }
 }
