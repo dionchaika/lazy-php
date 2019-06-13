@@ -68,7 +68,7 @@ trait WhereTrait
      * @param  string  $delim
      * @return self
      */
-    public function whereIs(string $col, $val, $delim = 'and'): self
+    public function whereIs(string $col, $val, string $delim = 'and'): self
     {
         return $this->where($col, 'is', $val, $delim);
     }
@@ -81,7 +81,7 @@ trait WhereTrait
      * @param  string  $delim
      * @return self
      */
-    public function whereIsNot(string $col, $val, $delim = 'and'): self
+    public function whereIsNot(string $col, $val, string $delim = 'and'): self
     {
         return $this->where($col, 'is not', $val, $delim);
     }
