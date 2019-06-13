@@ -24,7 +24,7 @@ trait WhereTrait
     public function where(string $col, $op = null, $val = null, string $delim = 'and', bool $not = false): self
     {
         if (1 === func_num_args()) {
-            return $this->whereIs($col, null);
+            return $this->whereIsNot($col, null);
         }
 
         [$op, $val] = (null === $val) ? ['=', $op] : [$op, $val];
