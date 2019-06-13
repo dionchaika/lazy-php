@@ -9,6 +9,7 @@ use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
  */
 class Builder
 {
+    use JoinTrait;
     use WhereTrait;
 
     /**
@@ -26,42 +27,35 @@ class Builder
     protected $table;
 
     /**
-     * The SQL compiler.
+     * The query compiler.
      *
      * @var \Lazy\Db\Query\CompilerInterface
      */
     protected $compiler;
 
     /**
-     * The array of columns.
+     * The array of query columns.
      *
      * @var string[]
      */
     protected $cols = [];
 
     /**
-     * The array of aliases.
+     * The array of query aliases.
      *
      * @var mixed[]
      */
     protected $aliases = [];
 
     /**
-     * Is the select distinct.
+     * Is the select query distinct.
      *
      * @var bool
      */
     protected $distinct = false;
 
     /**
-     * The array of query conditions.
-     *
-     * @var string[]
-     */
-    protected $conditions = [];
-
-    /**
-     * The builder constructor.
+     * The query builder constructor.
      *
      * @param  string|null  $db
      * @param  string|null  $table
