@@ -31,7 +31,7 @@ class Builder
      *
      * @var int
      */
-    public $queryType = self::QUERY_TYPES['select'];
+    protected $queryType = self::QUERY_TYPES['select'];
 
     /**
      * The query DB.
