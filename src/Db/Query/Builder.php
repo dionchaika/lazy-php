@@ -120,6 +120,21 @@ class Builder
     }
 
     /**
+     * select (raw)...
+     *
+     * @param  string  $raw
+     * @return self
+     */
+    public function selectRaw(string $raw): self
+    {
+        $this->queryType = static::QUERY_TYPES['select'];
+
+        $this->cols[] = new Raw($raw);
+
+        return $this;
+    }
+
+    /**
      * distinct...
      *
      * @return self
@@ -139,6 +154,52 @@ class Builder
     public function from(string $table): self
     {
         return $this->setTable($table);
+    }
+
+    /**
+     * from (raw)...
+     *
+     * @param  string  $raw
+     * @return self
+     */
+    public function fromRaw(string $raw): self
+    {
+        $this->table = new Raw($raw);
+        return $this;
+    }
+
+    /**
+     * update...
+     *
+     * @return self
+     */
+    public function update(): self
+    {
+        $this->queryType = static::QUERY_TYPES['update'];
+        return $this;
+    }
+
+    /**
+     * table...
+     *
+     * @param  string  $table
+     * @return self
+     */
+    public function table(string $table): self
+    {
+        return $this->setTable($table);
+    }
+
+    /**
+     * table (raw)...
+     *
+     * @param  string  $raw
+     * @return self
+     */
+    public function tableRaw(string $raw): self
+    {
+        $this->table = new Raw($raw);
+        return $this;
     }
 
     /**
