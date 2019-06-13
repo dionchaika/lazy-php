@@ -61,13 +61,6 @@ class Builder
     protected $conditions = [];
 
     /**
-     * The array of query orders.
-     *
-     * @var string[]
-     */
-    protected $orders = [];
-
-    /**
      * The builder constructor.
      *
      * @param  string|null  $db
@@ -125,49 +118,6 @@ class Builder
     public function from(string $table): self
     {
         return $this->setTable($table);
-    }
-
-    /**
-     * order by...
-     *
-     * @param  string|string[]  $cols
-     * @param  string  $order
-     * @return self
-     */
-    public function orderBy($cols, string $order = 'asc'): self
-    {
-        $this->orders[] = implode(', ', is_array($cols) ? $cols : [$cols]).' '.$order;
-        return $this;
-    }
-
-    /**
-     * order by asc...
-     *
-     * @param  mixed  $cols
-     * @return self
-     */
-    public function orderByAsc($cols): self
-    {
-        $cols = is_array($cols)
-            ? $cols
-            : func_get_args();
-
-        return $this->orderBy($cols, 'asc');
-    }
-
-    /**
-     * order by desc...
-     *
-     * @param  mixed  $cols
-     * @return self
-     */
-    public function orderByDesc($cols): self
-    {
-        $cols = is_array($cols)
-            ? $cols
-            : func_get_args();
-
-        return $this->orderBy($cols, 'desc');
     }
 
     /**
