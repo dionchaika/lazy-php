@@ -120,21 +120,6 @@ class Builder
     }
 
     /**
-     * select (raw)...
-     *
-     * @param  string  $raw
-     * @return self
-     */
-    public function selectRaw(string $raw): self
-    {
-        $this->queryType = static::QUERY_TYPES['select'];
-
-        $this->cols[] = new Raw($raw);
-
-        return $this;
-    }
-
-    /**
      * distinct...
      *
      * @return self
@@ -157,89 +142,13 @@ class Builder
     }
 
     /**
-     * from (raw)...
-     *
-     * @param  string  $raw
-     * @return self
-     */
-    public function fromRaw(string $raw): self
-    {
-        $this->table = new Raw($raw);
-        return $this;
-    }
-
-    /**
-     * update...
-     *
-     * @return self
-     */
-    public function update(): self
-    {
-        $this->queryType = static::QUERY_TYPES['update'];
-        return $this;
-    }
-
-    /**
-     * table...
-     *
-     * @param  string  $table
-     * @return self
-     */
-    public function table(string $table): self
-    {
-        return $this->setTable($table);
-    }
-
-    /**
-     * table (raw)...
-     *
-     * @param  string  $raw
-     * @return self
-     */
-    public function tableRaw(string $raw): self
-    {
-        $this->table = new Raw($raw);
-        return $this;
-    }
-
-    /**
-     * delete...
-     *
-     * @return self
-     */
-    public function delete(): self
-    {
-        $this->queryType = static::QUERY_TYPES['delete'];
-        return $this;
-    }
-
-    /**
      * Get the SQL string.
      *
      * @return string
      */
     public function toSql(): string
     {
-        switch ($this->queryType) {
-            case static::QUERY_TYPES['select']:
-                return $this->compiler->compileSelect(
-                    $this->db,
-                    $this->table,
-                    $this->cols,
-                    $this->aliases,
-                    $this->distinct,
-                    $this->joins,
-                    $this->wheres,
-                    $this->ordersBy
-                );
-            case static::QUERY_TYPES['delete']:
-                return $this->compiler->compileDelete(
-                    $this->db,
-                    $this->table,
-                    $this->aliases,
-                    $this->wheres
-                );
-        }
+        return '';
     }
 
     /**
