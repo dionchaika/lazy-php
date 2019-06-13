@@ -6,7 +6,7 @@ use Lazy\Db\Query\Criteria;
 use Lazy\Db\Query\CompilerInterface;
 
 /**
- * The base SQL compiler class.
+ * The base query compiler class.
  */
 class Compiler implements CompilerInterface
 {
