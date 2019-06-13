@@ -194,19 +194,7 @@ class Builder
      */
     protected function devideAlias(string $name): array
     {
-        $name = explode(' as ', $name, 2);
+        $name = array_map('trim', explode(' as ', $name, 2));
         return [$name[0], !empty($name[1]) ? $name[1] : null];
-    }
-
-    /**
-     * Devide a DB and a table from the name.
-     *
-     * @param  string  $name
-     * @return mixed[]
-     */
-    protected function devideDbAndTable(string $name): array
-    {
-        $name = array_map('trim', explode('.', $name, 3));
-        return [!empty($name[2]) ? $name[2] : null, !empty($name[1]) ? $name[1] : null, $name[0]];
     }
 }
