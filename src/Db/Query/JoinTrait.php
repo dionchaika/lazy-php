@@ -2,6 +2,10 @@
 
 namespace Lazy\Db\Query;
 
+/**
+ * @property mixed[] $aliases
+ * @method mixed[] devideAlias(string $name)
+ */
 trait JoinTrait
 {
     /**
@@ -15,56 +19,56 @@ trait JoinTrait
      * join...
      *
      * @param  string  $table
-     * @param  string  $col
-     * @param  mixed  $op
-     * @param  mixed|null  $val
+     * @param  string  $col1
+     * @param  string  $op
+     * @param  string  $col2
      * @return self
      */
-    public function join(string $table, string $col, $op, $val = null): self
+    public function join(string $table, string $col1, string $op, string $col2): self
     {
-        return $this->addJoin('inner', $table, $col, $op, $val);
+        return $this->addJoin('inner', $table, $col1, $op, $col2);
     }
 
     /**
      * left join...
      *
      * @param  string  $table
-     * @param  string  $col
-     * @param  mixed  $op
-     * @param  mixed|null  $val
+     * @param  string  $col1
+     * @param  string  $op
+     * @param  string  $col2
      * @return self
      */
-    public function leftJoin(string $table, string $col, $op, $val = null): self
+    public function leftJoin(string $table, string $col1, string $op, string $col2): self
     {
-        return $this->addJoin('left', $table, $col, $op, $val);
+        return $this->addJoin('left', $table, $col1, $op, $col2);
     }
 
     /**
      * right join...
      *
      * @param  string  $table
-     * @param  string  $col
-     * @param  mixed  $op
-     * @param  mixed|null  $val
+     * @param  string  $col1
+     * @param  string  $op
+     * @param  string  $col2
      * @return self
      */
-    public function rightJoin(string $table, string $col, $op, $val = null): self
+    public function rightJoin(string $table, string $col1, string $op, string $col2): self
     {
-        return $this->addJoin('right', $table, $col, $op, $val);
+        return $this->addJoin('right', $table, $col1, $op, $col2);
     }
 
     /**
      * full join...
      *
      * @param  string  $table
-     * @param  string  $col
-     * @param  mixed  $op
-     * @param  mixed|null  $val
+     * @param  string  $col1
+     * @param  string  $op
+     * @param  string  $col2
      * @return self
      */
-    public function fullJoin(string $table, string $col, $op, $val = null): self
+    public function fullJoin(string $table, string $col1, string $op, string $col2): self
     {
-        return $this->addJoin('full', $table, $col, $op, $val);
+        return $this->addJoin('full', $table, $col1, $op, $col2);
     }
 
     /**
@@ -72,28 +76,27 @@ trait JoinTrait
      *
      * @param  string  $type
      * @param  string  $table
-     * @param  string  $col
-     * @param  mixed  $op
-     * @param  mixed|null  $val
+     * @param  string  $col1
+     * @param  string  $op
+     * @param  string  $col2
      * @return self
      */
-    protected function addJoin(string $type, string $table, string $col, $op, $val = null): self
+    protected function addJoin(string $type, string $table, string $col1, string $op, string $col2): self
     {
         $join['type'] = $type;
+
+        [$table, $alias] = $this->devideAlias($table);
+
         $join['table'] = $table;
-
-        [$op, $val] = [
-
-            (null === $val) ? '=' : $op,
-            (null === $val) ? $op : $val
-
-        ];
+        if ($alias) {
+            $this->aliases[$table] = $alias;
+        }
 
         $join['on'] = [
 
-            'col' => $col,
-            'op'  => $op,
-            'val' => $val
+            'col1' => $col1,
+            'op'   => $op,
+            'col2' => $col2
 
         ];
 
