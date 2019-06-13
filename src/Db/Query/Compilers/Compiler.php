@@ -50,6 +50,24 @@ class Compiler implements CompilerInterface
                 case Criteria::STARTS_WITH:
                     $val = $val.'%';
                     break;
+                case Criteria::IN_THE_RANGE:
+                    $val = '['.$val.']';
+                    break;
+                case Criteria::NOT_IN_THE_RANGE:
+                    $val = '[^'.$val.']';
+                    break;
+                case Criteria::ENDS_WITH_THE_RANGE:
+                    $val = '%['.$val.']';
+                    break;
+                case Criteria::STARTS_WITH_THE_RANGE:
+                    $val = '['.$val.']%';
+                    break;
+                case Criteria::NOT_ENDS_WITH_THE_RANGE:
+                    $val = '%[^'.$val.']';
+                    break;
+                case Criteria::NOT_STARTS_WITH_THE_RANGE:
+                    $val = '[^'.$val.']%';
+                    break;
             }
         }
 
