@@ -120,7 +120,7 @@ class Builder
      */
     public function toSql(): string
     {
-        return $this->compiler->{'compile'.$this->statement};
+        return $this->compiler->{'compile'.$this->statement}($this);
     }
 
     /**

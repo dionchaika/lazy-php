@@ -22,8 +22,8 @@ trait OrderByTrait
     {
         $this->ordersBy[] = [
 
-            'cols'  => is_array($cols) ? $cols : [$cols],
-            'order' => $order
+            'Cols'  => is_array($cols) ? $cols : [$cols],
+            'Order' => $order
 
         ];
 
