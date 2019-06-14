@@ -4,6 +4,11 @@ namespace Lazy\Db\Query;
 
 use Closure;
 
+/**
+ * @property string $db
+ * @property string $table
+ * @property \Lazy\Db\Query\CompilerInterface $compiler
+ */
 trait WhereTrait
 {
     /**
@@ -18,7 +23,7 @@ trait WhereTrait
      *
      * @param  \Closure|string  $col
      * @param  mixed|null  $op
-     * @param  mixed|null  $val
+     * @param  \Closure|mixed|null  $val
      * @param  string  $delim
      * @param  bool  $not
      * @return self
@@ -26,18 +31,8 @@ trait WhereTrait
     public function where($col, $op = null, $val = null, string $delim = 'and', bool $not = false): self
     {
         if ($col instanceof Closure) {
-            $this->wheres[] = '(';
-            $col($this);
-            $this->wheres[] = ')';
-
-            return $this;
+            return $this->whereGroup($col, $delim, $not);
         }
-
-        $type = 'basic';
-
-        [$op, $val] = (null === $val) ? ['=', $op] : [$op, $val];
-
-        $this->wheres[] = compact('type', 'col', 'op', 'val', 'delim', 'not');
 
         return $this;
     }
