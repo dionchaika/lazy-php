@@ -42,13 +42,6 @@ class Builder
     protected $cols = [];
 
     /**
-     * Is the select query distinct.
-     *
-     * @var bool
-     */
-    protected $distinct = false;
-
-    /**
      * The select query limit.
      *
      * @var int
@@ -61,6 +54,13 @@ class Builder
      * @var int
      */
     protected $offset;
+
+    /**
+     * Is the select query distinct.
+     *
+     * @var bool
+     */
+    protected $distinct = false;
 
     /**
      * The current query type.
