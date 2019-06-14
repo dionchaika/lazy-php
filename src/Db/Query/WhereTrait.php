@@ -20,9 +20,10 @@ trait WhereTrait
      * @param  mixed|null  $op
      * @param  mixed|null  $val
      * @param  string  $delim
+     * @param  bool  $not
      * @return self
      */
-    public function where($col, $op = null, $val = null, string $delim = 'and'): self
+    public function where($col, $op = null, $val = null, string $delim = 'and', bool $not = false): self
     {
         
     }
