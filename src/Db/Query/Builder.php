@@ -2,6 +2,7 @@
 
 namespace Lazy\Db\Query;
 
+use Throwable;
 use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
 
 /**
@@ -56,7 +57,7 @@ class Builder
      *
      * @var int
      */
-    protected $statement = 'select';
+    protected $statement = 'Select';
 
     /**
      * The query builder constructor.
@@ -80,7 +81,7 @@ class Builder
      */
     public function select($cols = '*'): self
     {
-        $this->statement = 'select';
+        $this->statement = 'Select';
 
         $this->cols = is_array($cols)
             ? $cols
@@ -110,5 +111,30 @@ class Builder
     {
         $this->table = $table;
         return $this;
+    }
+
+    /**
+     * Get the SQL.
+     *
+     * @return string
+     */
+    public function toSql(): string
+    {
+        return $this->compiler->{'compile'.$this->statement};
+    }
+
+    /**
+     * Get the string
+     * representation of the query.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        try {
+            return $this->toSql();
+        } catch (Throwable $e) {
+            trigger_error($e->getMessage(), \E_USER_ERROR);
+        }
     }
 }
