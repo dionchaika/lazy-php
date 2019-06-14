@@ -99,7 +99,7 @@ trait WhereTrait
     }
 
     /**
-     * where (select ... ) ...
+     * where ( select ... ) ...
      *
      * @param  \Closure  $closure
      * @param  string  $delim
