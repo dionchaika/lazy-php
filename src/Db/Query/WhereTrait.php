@@ -38,6 +38,10 @@ trait WhereTrait
             return $this->whereIs($col, $val, $delim, true);
         }
 
+        if ($val instanceof Closure) {
+            return $this->whereSub($val, $delim, $not);
+        }
+
         [$op, $val] = $this->prepareOpAndVal($op, $val);
 
         if ((null === $val || is_bool($val)) && '=' === $op) {
