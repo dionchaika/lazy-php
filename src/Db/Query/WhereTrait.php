@@ -212,12 +212,36 @@ trait WhereTrait
      */
     public function whereSub(Closure $closure, string $delim = 'and', bool $not = false): self
     {
-        $builder =  $this->getNestedWhere($closure);
+        $sql =  $this->newBuilderForNestedWhere($closure)->getSql();
 
         $type = 'sub';
-        $this->wheres[] = compact('type', 'builder', 'delim', 'not');
+        $this->wheres[] = compact('type', 'sql', 'delim', 'not');
 
         return $this;
+    }
+
+    /**
+     * or where ( select ... ) ...
+     *
+     * @param  \Closure  $closure
+     * @param  bool  $not
+     * @return self
+     */
+    public function orWhereSub(Closure $closure, bool $not = false): self
+    {
+        return $this->whereSub($closure, 'or', $not);
+    }
+
+    /**
+     * and where ( select ... ) ...
+     *
+     * @param  \Closure  $closure
+     * @param  bool  $not
+     * @return self
+     */
+    public function andWhereSub(Closure $closure, bool $not = false): self
+    {
+        return $this->whereSub($closure, 'and', $not);
     }
 
     /**
@@ -230,22 +254,36 @@ trait WhereTrait
      */
     public function whereGroup(Closure $closure, string $delim = 'and', bool $not = false): self
     {
-        $builder =  $this->getNestedWhere($closure);
+        $sql =  $this->newBuilderForNestedWhere($closure)->getSqlForWheres();
 
         $type = 'group';
-        $this->wheres[] = compact('type', 'builder', 'delim', 'not');
+        $this->wheres[] = compact('type', 'sql', 'delim', 'not');
 
         return $this;
     }
 
     /**
-     * Get the array of query where clauses.
+     * or where ( ... ) ...
      *
-     * @return mixed[]
+     * @param  \Closure  $closure
+     * @param  bool  $not
+     * @return self
      */
-    protected function getWheres(): array
+    public function orWhereGroup(Closure $closure, bool $not = false): self
     {
-        return $this->wheres;
+        return $this->whereGroup($closure, 'or', $not);
+    }
+
+    /**
+     * and where ( ... ) ...
+     *
+     * @param  \Closure  $closure
+     * @param  bool  $not
+     * @return self
+     */
+    public function andWhereGroup(Closure $closure, bool $not = false): self
+    {
+        return $this->whereGroup($closure, 'and', $not);
     }
 
     /**
@@ -261,12 +299,12 @@ trait WhereTrait
     }
 
     /**
-     * Get the nested query where clause.
+     * Create a new query builder for a nested query where clause.
      *
      * @param  \Closure  $closure
      * @return \Lazy\Db\Query\Builder
      */
-    protected function getNestedWhere(Closure $closure): Builder
+    protected function newBuilderForNestedWhere(Closure $closure): Builder
     {
         $closure($builder = new static($this->db, $this->table, $this->compiler));
         return $builder;
