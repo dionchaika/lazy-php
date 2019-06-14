@@ -25,6 +25,20 @@ trait WhereTrait
      */
     public function where($col, $op = null, $val = null, string $delim = 'and', bool $not = false): self
     {
-        
+        if ($col instanceof Closure) {
+            $this->wheres[] = '(';
+            $col($this);
+            $this->wheres[] = ')';
+
+            return $this;
+        }
+
+        $type = 'basic';
+
+        [$op, $val] = (null === $val) ? ['=', $op] : [$op, $val];
+
+        $this->wheres[] = compact('type', 'col', 'op', 'val', 'delim', 'not');
+
+        return $this;
     }
 }
