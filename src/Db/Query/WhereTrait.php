@@ -34,7 +34,64 @@ trait WhereTrait
             return $this->whereGroup($col, $delim, $not);
         }
 
+        if (1 === func_num_args()) {
+            return $this->whereIs($col, $val, $delim, true);
+        }
+
+        [$op, $val] = $this->prepareOpAndVal($op, $val);
+
+        if ((null === $val || is_bool($val)) && '=' === $op) {
+            return $this->whereIs($col, $val, $delim, false);
+        }
+
+        $type = 'simple';
+        $this->wheres[] = compact('type', 'col', 'op', 'val', 'delim', 'not');
+
         return $this;
+    }
+
+    /**
+     * where not...
+     *
+     * @param  string  $col
+     * @param  mixed|null  $op
+     * @param  mixed|null  $val
+     * @param string  $delim
+     * @return self
+     */
+    public function whereNot($col, $op = null, $val = null, string $delim = 'and'): self
+    {
+        return $this->where($col, $op, $val, $delim, true);
+    }
+
+    /**
+     * where is...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return self
+     */
+    public function whereIs(string $col, $val, $delim = 'and', $not = false): self
+    {
+        $type = 'is';
+        $this->wheres[] = compact('type', 'col', 'val', 'delim', 'not');
+
+        return $this;
+    }
+
+    /**
+     * where is not...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @param  string  $delim
+     * @return self
+     */
+    public function whereIsNot(string $col, $val, $delim = 'and'): self
+    {
+        return $this->whereIs($col, $val, $delim, true);
     }
 
     /**
@@ -61,6 +118,18 @@ trait WhereTrait
     public function whereGroup(Closure $closure, string $delim = 'and', bool $not = false): self
     {
         return $this->addNestedWhere('group', $closure, $delim, $not);
+    }
+
+    /**
+     * Prepare an operator and a value.
+     *
+     * @param  mixed  $op
+     * @param  mixed  $val
+     * @return mixed[]
+     */
+    protected function prepareOpAndVal($op, $val): array
+    {
+        return (null === $val) ? ['=', $op] : [$op, $val];
     }
 
     /**
