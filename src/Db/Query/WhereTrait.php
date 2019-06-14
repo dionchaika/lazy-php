@@ -55,6 +55,34 @@ trait WhereTrait
     }
 
     /**
+     * or where...
+     *
+     * @param  \Closure|string  $col
+     * @param  mixed|null  $op
+     * @param  \Closure|mixed|null  $val
+     * @param  bool  $not
+     * @return self
+     */
+    public function orWhere($col, $op = null, $val = null, bool $not = false): self
+    {
+        return $this->where($col, $op, $val, 'or', $not);
+    }
+
+    /**
+     * and where...
+     *
+     * @param  \Closure|string  $col
+     * @param  mixed|null  $op
+     * @param  \Closure|mixed|null  $val
+     * @param  bool  $not
+     * @return self
+     */
+    public function andWhere($col, $op = null, $val = null, bool $not = false): self
+    {
+        return $this->where($col, $op, $val, 'and', $not);
+    }
+
+    /**
      * where not...
      *
      * @param  string  $col
@@ -66,6 +94,32 @@ trait WhereTrait
     public function whereNot($col, $op = null, $val = null, string $delim = 'and'): self
     {
         return $this->where($col, $op, $val, $delim, true);
+    }
+
+    /**
+     * or where not...
+     *
+     * @param  string  $col
+     * @param  mixed|null  $op
+     * @param  mixed|null  $val
+     * @return self
+     */
+    public function orWhereNot($col, $op = null, $val = null): self
+    {
+        return $this->orWhere($col, $op, $val, true);
+    }
+
+    /**
+     * and where not...
+     *
+     * @param  string  $col
+     * @param  mixed|null  $op
+     * @param  mixed|null  $val
+     * @return self
+     */
+    public function andWhereNot($col, $op = null, $val = null): self
+    {
+        return $this->andWhere($col, $op, $val, true);
     }
 
     /**
@@ -86,6 +140,32 @@ trait WhereTrait
     }
 
     /**
+     * or where is...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @param  bool  $not
+     * @return self
+     */
+    public function orWhereIs(string $col, $val, $not = false): self
+    {
+        return $this->whereIs($col, $val, 'or', $not);
+    }
+
+    /**
+     * and where is...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @param  bool  $not
+     * @return self
+     */
+    public function andWhereIs(string $col, $val, $not = false): self
+    {
+        return $this->whereIs($col, $val, 'and', $not);
+    }
+
+    /**
      * where is not...
      *
      * @param  string  $col
@@ -99,37 +179,27 @@ trait WhereTrait
     }
 
     /**
-     * where in...
+     * or where is not...
      *
      * @param  string  $col
-     * @param  \Closure|mixed  $vals
-     * @param  string  $delim
-     * @param  bool  $not
+     * @param  mixed  $val
      * @return self
      */
-    public function whereIn(string $col, $vals, string $delim = 'and', bool $not = false): self
+    public function orWhereIsNot(string $col, $val): self
     {
-        if ($vals instanceof Closure) {
-            $vals[] = ($this->getNestedWhere($vals))->toSql();
-        }
-
-        $type = 'in';
-        $this->wheres[] = compact('type', 'cols', 'vals', 'delim', 'not');
-
-        return $this;
+        return $this->orWhereIs($col, $val, true);
     }
 
     /**
-     * where in...
+     * and where is not...
      *
      * @param  string  $col
-     * @param  \Closure|mixed  $vals
-     * @param  string  $delim
+     * @param  mixed  $val
      * @return self
      */
-    public function whereNotIn(string $col, $vals, string $delim = 'and'): self
+    public function andWhereIsNot(string $col, $val): self
     {
-        return $this->whereIn($col, $vals, $delim, true);
+        return $this->andWhereIs($col, $val, true);
     }
 
     /**
