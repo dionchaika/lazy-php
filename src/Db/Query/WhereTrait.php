@@ -287,6 +287,58 @@ trait WhereTrait
     }
 
     /**
+     * where like...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed  $val
+     * @param  int|null  $criteria
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function whereLike(string $col, $val, ?int $criteria = null, string $delim = 'and', bool $not = false): Builder
+    {
+        if ($val instanceof Closure) {
+            $val = $this->newBuilderForNestedWhere($val)->getSql();
+        }
+
+        $type = 'like';
+        $this->wheres[] = compact('type', 'col', 'val', 'criteria', 'delim', 'not');
+
+        return $this;
+    }
+
+    /**
+     * or where like...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed  $val
+     * @param  int|null  $criteria
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereLike(string $col, $val, ?int $criteria = null, bool $not = false): Builder
+    {
+        return $this->whereLike($col, $val, $criteria, 'or', $not);
+    }
+
+    /**
+     * and where like...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed  $val
+     * @param  int|null  $criteria
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function andWhereLike(string $col, $val, ?int $criteria = null, bool $not = false): Builder
+    {
+        return $this->whereLike($col, $val, $criteria, 'and', $not);
+    }
+
+    /**
      * where ( select ... ) ...
      *
      * @param  \Closure  $closure
