@@ -35,7 +35,7 @@ trait WhereTrait
         }
 
         if (1 === func_num_args()) {
-            return $this->whereIs($col, null, $delim, true);
+            return $this->whereIsNot($col, null, $delim);
         }
 
         if ($val instanceof Closure) {
@@ -45,7 +45,7 @@ trait WhereTrait
         [$op, $val] = $this->prepareOpAndVal($op, $val);
 
         if ((null === $val || is_bool($val)) && '=' === $op) {
-            return $this->whereIs($col, $val, $delim, false);
+            return $this->whereIs($col, $val, $delim);
         }
 
         $type = 'simple';
