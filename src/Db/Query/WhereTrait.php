@@ -21,9 +21,9 @@ trait WhereTrait
     /**
      * where...
      *
-     * @param  \Closure|string  $col
+     * @param  \Lazy\Db\Query\Builder|\Closure|string  $col
      * @param  mixed|null  $op
-     * @param  \Closure|mixed|null  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed|null  $val
      * @param  string  $delim
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
@@ -57,9 +57,9 @@ trait WhereTrait
     /**
      * or where...
      *
-     * @param  \Closure|string  $col
+     * @param  \Lazy\Db\Query\Builder|\Closure|string  $col
      * @param  mixed|null  $op
-     * @param  \Closure|mixed|null  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed|null  $val
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
@@ -71,9 +71,9 @@ trait WhereTrait
     /**
      * and where...
      *
-     * @param  \Closure|string  $col
+     * @param  \Lazy\Db\Query\Builder|\Closure|string  $col
      * @param  mixed|null  $op
-     * @param  \Closure|mixed|null  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed|null  $val
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
@@ -87,7 +87,7 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  mixed|null  $op
-     * @param  \Closure|mixed|null  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed|null  $val
      * @param string  $delim
      * @return \Lazy\Db\Query\Builder
      */
@@ -101,7 +101,7 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  mixed|null  $op
-     * @param  \Closure|mixed|null  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed|null  $val
      * @return \Lazy\Db\Query\Builder
      */
     public function orWhereNot($col, $op = null, $val = null): Builder
@@ -114,7 +114,7 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  mixed|null  $op
-     * @param  \Closure|mixed|null  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed|null  $val
      * @return \Lazy\Db\Query\Builder
      */
     public function andWhereNot($col, $op = null, $val = null): Builder
@@ -206,20 +206,16 @@ trait WhereTrait
      * where in...
      *
      * @param  string  $col
-     * @param  \Closure|mixed[]  $vals
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed[]  $vals
      * @param  string  $delim
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
     public function whereIn(string $col, $vals, string $delim = 'and', $not = false): Builder
     {
-        if ($vals instanceof Closure) {
-            $vals($builder = new static(null, null, $this->compiler));
-
-            $type = 'in_sub';
-            $this->wheres[] = compact('type', 'col', 'builder', 'delim', 'not');
-
-            return $this;
+        if ($vals instanceof Closure || $vals instanceof Builder) {
+            $query = $this->getSubWhere($vals);
+            $vals = [new Raw($query)];
         }
 
         $type = 'in';
@@ -232,7 +228,7 @@ trait WhereTrait
      * or where in...
      *
      * @param  string  $col
-     * @param  \Closure|mixed[]  $vals
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed[]  $vals
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
@@ -245,7 +241,7 @@ trait WhereTrait
      * and where in...
      *
      * @param  string  $col
-     * @param  \Closure|mixed[]  $vals
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed[]  $vals
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
@@ -258,7 +254,7 @@ trait WhereTrait
      * where not in...
      *
      * @param  string  $col
-     * @param  \Closure|mixed[]  $vals
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed[]  $vals
      * @param  string  $delim
      * @return \Lazy\Db\Query\Builder
      */
@@ -271,7 +267,7 @@ trait WhereTrait
      * or where not in...
      *
      * @param  string  $col
-     * @param  \Closure|mixed[]  $vals
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed[]  $vals
      * @return \Lazy\Db\Query\Builder
      */
     public function orWhereNotIn(string $col, $vals): Builder
@@ -283,7 +279,7 @@ trait WhereTrait
      * and where not in...
      *
      * @param  string  $col
-     * @param  \Closure|mixed[]  $vals
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed[]  $vals
      * @return \Lazy\Db\Query\Builder
      */
     public function andWhereNotIn(string $col, $vals): Builder
@@ -295,7 +291,7 @@ trait WhereTrait
      * where like...
      *
      * @param  string  $col
-     * @param  \Closure|mixed  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $val
      * @param  int|null  $criteria
      * @param  string  $delim
      * @param  bool  $not
@@ -303,13 +299,9 @@ trait WhereTrait
      */
     public function whereLike(string $col, $val, ?int $criteria = null, string $delim = 'and', bool $not = false): Builder
     {
-        if ($val instanceof Closure) {
-            $val($builder = new static(null, null, $this->compiler));
-
-            $type = 'like_sub';
-            $this->wheres[] = compact('type', 'col', 'builder', 'criteria', 'delim', 'not');
-
-            return $this;
+        if ($val instanceof Closure || $val instanceof Builder) {
+            $query = $this->getSubWhere($val);
+            $val = new Raw($query);
         }
 
         $type = 'like';
@@ -322,7 +314,7 @@ trait WhereTrait
      * or where like...
      *
      * @param  string  $col
-     * @param  \Closure|mixed  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $val
      * @param  int|null  $criteria
      * @param  string  $delim
      * @param  bool  $not
@@ -337,7 +329,7 @@ trait WhereTrait
      * and where like...
      *
      * @param  string  $col
-     * @param  \Closure|mixed  $val
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $val
      * @param  int|null  $criteria
      * @param  string  $delim
      * @param  bool  $not
@@ -352,35 +344,113 @@ trait WhereTrait
      * where between...
      *
      * @param  string  $col
-     * @param  \Closure|mixed  $firstVal
-     * @param  \Closure|mixed  $secondVal
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $firstVal
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $secondVal
      * @param  string  $delim
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
     public function whereBetween(string $col, $firstVal, $secondVal, string $delim = 'and', bool $not = false): Builder
     {
-        if ($firstVal instanceof Closure) {
-
+        if ($firstVal instanceof Closure || $firstVal instanceof Builder) {
+            $query = $this->getSubWhere($firstVal);
+            $firstVal = new Raw($query);
         }
+
+        if ($secondVal instanceof Closure || $secondVal instanceof Builder) {
+            $query = $this->getSubWhere($secondVal);
+            $secondVal = new Raw($query);
+        }
+
+        $type = 'between';
+        $this->wheres[] = compact('type', 'col', 'firstVal', 'secondVal', 'delim', 'not');
+
+        return $this;
+    }
+
+    /**
+     * or where between...
+     *
+     * @param  string  $col
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $firstVal
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $secondVal
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereBetween(string $col, $firstVal, $secondVal, bool $not = false): Builder
+    {
+        return $this->whereBetween($col, $firstVal, $secondVal, 'or', $not);
+    }
+
+    /**
+     * and where between...
+     *
+     * @param  string  $col
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $firstVal
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $secondVal
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function andWhereBetween(string $col, $firstVal, $secondVal, bool $not = false): Builder
+    {
+        return $this->whereBetween($col, $firstVal, $secondVal, 'and', $not);
+    }
+
+    /**
+     * where not between...
+     *
+     * @param  string  $col
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $firstVal
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $secondVal
+     * @param  string  $delim
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function whereNotBetween(string $col, $firstVal, $secondVal, string $delim = 'and'): Builder
+    {
+        return $this->whereBetween($col, $firstVal, $secondVal, $delim, true);
+    }
+
+    /**
+     * or where not between...
+     *
+     * @param  string  $col
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $firstVal
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $secondVal
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereNotBetween(string $col, $firstVal, $secondVal): Builder
+    {
+        return $this->orWhereBetween($col, $firstVal, $secondVal, true);
+    }
+
+    /**
+     * and where not between...
+     *
+     * @param  string  $col
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $firstVal
+     * @param  \Lazy\Db\Query\Builder|\Closure|mixed  $secondVal
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function andWhereNotBetween(string $col, $firstVal, $secondVal): Builder
+    {
+        return $this->andWhereBetween($col, $firstVal, $secondVal, true);
     }
 
     /**
      * where ( select ... ) ...
      *
-     * @param  \Closure  $closure
+     * @param  \Lazy\Db\Query\Builder|\Closure  $callback
      * @param  string  $delim
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
-    public function whereSub(Closure $closure, string $delim = 'and', bool $not = false): Builder
+    public function whereSub($callback, string $delim = 'and', bool $not = false): Builder
     {
-        $closure($builder = new static(null, null, $this->compiler));
-
-        $sql = $builder->toSql();
+        $query = $this->getSubWhere($callback);
+        $query = new Raw($query);
 
         $type = 'sub';
-        $this->wheres[] = compact('type', 'sql', 'delim', 'not');
+        $this->wheres[] = compact('type', 'query', 'delim', 'not');
 
         return $this;
     }
@@ -388,40 +458,39 @@ trait WhereTrait
     /**
      * or where ( select ... ) ...
      *
-     * @param  \Closure  $closure
+     * @param  \Lazy\Db\Query\Builder|\Closure  $callback
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereSub(Closure $closure, bool $not = false): Builder
+    public function orWhereSub($callback, bool $not = false): Builder
     {
-        return $this->whereSub($closure, 'or', $not);
+        return $this->whereSub($callback, 'or', $not);
     }
 
     /**
      * and where ( select ... ) ...
      *
-     * @param  \Closure  $closure
+     * @param  \Lazy\Db\Query\Builder|\Closure  $callback
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereSub(Closure $closure, bool $not = false): Builder
+    public function andWhereSub($callback, bool $not = false): Builder
     {
-        return $this->whereSub($closure, 'and', $not);
+        return $this->whereSub($callback, 'and', $not);
     }
 
     /**
      * where ( ... ) ...
      *
-     * @param  \Closure  $closure
+     * @param  \Lazy\Db\Query\Builder|\Closure  $callback
      * @param  string  $delim
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
-    public function whereGroup(Closure $closure, string $delim = 'and', bool $not = false): Builder
+    public function whereGroup($callback, string $delim = 'and', bool $not = false): Builder
     {
-        $closure($builder = new static($this->db, $this->table, $this->compiler));
-
-        $wheres = $builder->wheres;
+        $query = $this->getGroupWhere($callback);
+        $wheres = $query->wheres;
 
         $type = 'group';
         $this->wheres[] = compact('type', 'wheres', 'delim', 'not');
@@ -432,25 +501,25 @@ trait WhereTrait
     /**
      * or where ( ... ) ...
      *
-     * @param  \Closure  $closure
+     * @param  \Lazy\Db\Query\Builder|\Closure  $callback
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereGroup(Closure $closure, bool $not = false): Builder
+    public function orWhereGroup($callback, bool $not = false): Builder
     {
-        return $this->whereGroup($closure, 'or', $not);
+        return $this->whereGroup($callback, 'or', $not);
     }
 
     /**
      * and where ( ... ) ...
      *
-     * @param  \Closure  $closure
+     * @param  \Lazy\Db\Query\Builder|\Closure  $callback
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereGroup(Closure $closure, bool $not = false): Builder
+    public function andWhereGroup($callback, bool $not = false): Builder
     {
-        return $this->whereGroup($closure, 'and', $not);
+        return $this->whereGroup($callback, 'and', $not);
     }
 
     /**
@@ -463,5 +532,37 @@ trait WhereTrait
     protected function prepareOpAndVal($op, $val): array
     {
         return (null === $val) ? ['=', $op] : [$op, $val];
+    }
+
+    /**
+     * Get the query sub where clause.
+     *
+     * @param  \Lazy\Db\Query\Builder|\Closure  $callback
+     * @return \Lazy\Db\Query\Builder
+     */
+    protected function getSubWhere($callback): Builder
+    {
+        if ($callback instanceof Closure) {
+            $callback($query = (new static(null, null, $this->compiler)));
+            return $query;
+        }
+
+        return $callback;
+    }
+
+    /**
+     * Get the query where clause group.
+     *
+     * @param  \Lazy\Db\Query\Builder|\Closure  $callback
+     * @return \Lazy\Db\Query\Builder
+     */
+    protected function getGroupWhere($callback): Builder
+    {
+        if ($callback instanceof Closure) {
+            $callback($query = (new static($this->db, $this->table, $this->compiler)));
+            return $query;
+        }
+
+        return $callback;
     }
 }
