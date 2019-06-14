@@ -35,7 +35,7 @@ trait WhereTrait
         }
 
         if (1 === func_num_args()) {
-            return $this->whereIs($col, $val, $delim, true);
+            return $this->whereIs($col, null, $delim, true);
         }
 
         if ($val instanceof Closure) {
