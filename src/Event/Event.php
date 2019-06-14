@@ -10,14 +10,14 @@ class Event
     /**
      * The event target.
      *
-     * @var mixed
+     * @var mixed|null
      */
     protected $target;
 
     /**
      * The event constructor.
      *
-     * @param  mixed  $target
+     * @param  mixed|null  $target
      */
     public function __construct($target = null)
     {
@@ -27,7 +27,7 @@ class Event
     /**
      * Get the event target.
      *
-     * @return mixed
+     * @return mixed|null
      */
     public function getTarget()
     {
