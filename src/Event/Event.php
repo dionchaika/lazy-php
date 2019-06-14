@@ -12,7 +12,14 @@ class Event
      *
      * @var mixed|null
      */
-    protected $target;
+    public $target;
+
+    /**
+     * Enable the event propagation.
+     *
+     * @var bool
+     */
+    public $propagation = true;
 
     /**
      * The event constructor.
@@ -25,12 +32,12 @@ class Event
     }
 
     /**
-     * Get the event target.
+     * Stop the event propagation.
      *
-     * @return mixed|null
+     * @return void
      */
-    public function getTarget()
+    public function stopPropagation(): void
     {
-        return $this->target;
+        $this->propagation = false;
     }
 }
