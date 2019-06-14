@@ -16,9 +16,9 @@ trait OrderByTrait
      *
      * @param  string|string[]  $cols
      * @param  string  $order
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orderBy($cols, $order = 'asc'): self
+    public function orderBy($cols, $order = 'asc'): Builder
     {
         $this->ordersBy[] = [
 
@@ -34,9 +34,9 @@ trait OrderByTrait
      * order by asc...
      *
      * @param  mixed  $cols
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orderByAsc($cols): self
+    public function orderByAsc($cols): Builder
     {
         return $this->orderBy(is_array($cols) ? $cols : func_get_args(), 'asc');
     }
@@ -45,9 +45,9 @@ trait OrderByTrait
      * order by desc...
      *
      * @param  mixed  $cols
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orderByDesc($cols): self
+    public function orderByDesc($cols): Builder
     {
         return $this->orderBy(is_array($cols) ? $cols : func_get_args(), 'desc');
     }

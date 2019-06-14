@@ -19,9 +19,9 @@ trait JoinTrait
      * @param  string  $op
      * @param  string|null  $secondCol
      * @param  string  $type
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function join(string $table, string $firstCol, string $op, ?string $secondCol = null, string $type = 'inner'): self
+    public function join(string $table, string $firstCol, string $op, ?string $secondCol = null, string $type = 'inner'): Builder
     {
         return $this->addJoin($table, $firstCol, $op, $secondCol, $type);
     }
@@ -33,9 +33,9 @@ trait JoinTrait
      * @param  string  $firstCol
      * @param  string  $op
      * @param  string|null  $secondCol
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function innerJoin(string $table, string $firstCol, string $op, ?string $secondCol = null): self
+    public function innerJoin(string $table, string $firstCol, string $op, ?string $secondCol = null): Builder
     {
         return $this->addJoin($table, $firstCol, $op, $secondCol, 'inner');
     }
@@ -47,9 +47,9 @@ trait JoinTrait
      * @param  string  $firstCol
      * @param  string  $op
      * @param  string|null  $secondCol
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function leftJoin(string $table, string $firstCol, string $op, ?string $secondCol = null): self
+    public function leftJoin(string $table, string $firstCol, string $op, ?string $secondCol = null): Builder
     {
         return $this->addJoin($table, $firstCol, $op, $secondCol, 'left');
     }
@@ -61,9 +61,9 @@ trait JoinTrait
      * @param  string  $firstCol
      * @param  string  $op
      * @param  string|null  $secondCol
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function rightJoin(string $table, string $firstCol, string $op, ?string $secondCol = null): self
+    public function rightJoin(string $table, string $firstCol, string $op, ?string $secondCol = null): Builder
     {
         return $this->addJoin($table, $firstCol, $op, $secondCol, 'right');
     }
@@ -75,9 +75,9 @@ trait JoinTrait
      * @param  string  $firstCol
      * @param  string  $op
      * @param  string|null  $secondCol
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function fullJoin(string $table, string $firstCol, string $op, ?string $secondCol = null): self
+    public function fullJoin(string $table, string $firstCol, string $op, ?string $secondCol = null): Builder
     {
         return $this->addJoin($table, $firstCol, $op, $secondCol, 'full');
     }
@@ -89,9 +89,9 @@ trait JoinTrait
      * @param  string  $firstCol
      * @param  string  $op
      * @param  string|null  $secondCol
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    protected function addJoin(string $table, string $firstCol, string $op, ?string $secondCol = null, string $type): self
+    protected function addJoin(string $table, string $firstCol, string $op, ?string $secondCol = null, string $type): Builder
     {
         [$op, $secondCol] = (null === $secondCol) ? ['=', $op] : [$op, $secondCol];
 

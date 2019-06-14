@@ -26,9 +26,9 @@ trait WhereTrait
      * @param  \Closure|mixed|null  $val
      * @param  string  $delim
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function where($col, $op = null, $val = null, string $delim = 'and', bool $not = false): self
+    public function where($col, $op = null, $val = null, string $delim = 'and', bool $not = false): Builder
     {
         if ($col instanceof Closure) {
             return $this->whereGroup($col, $delim, $not);
@@ -61,9 +61,9 @@ trait WhereTrait
      * @param  mixed|null  $op
      * @param  \Closure|mixed|null  $val
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orWhere($col, $op = null, $val = null, bool $not = false): self
+    public function orWhere($col, $op = null, $val = null, bool $not = false): Builder
     {
         return $this->where($col, $op, $val, 'or', $not);
     }
@@ -75,9 +75,9 @@ trait WhereTrait
      * @param  mixed|null  $op
      * @param  \Closure|mixed|null  $val
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function andWhere($col, $op = null, $val = null, bool $not = false): self
+    public function andWhere($col, $op = null, $val = null, bool $not = false): Builder
     {
         return $this->where($col, $op, $val, 'and', $not);
     }
@@ -89,9 +89,9 @@ trait WhereTrait
      * @param  mixed|null  $op
      * @param  mixed|null  $val
      * @param string  $delim
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function whereNot($col, $op = null, $val = null, string $delim = 'and'): self
+    public function whereNot($col, $op = null, $val = null, string $delim = 'and'): Builder
     {
         return $this->where($col, $op, $val, $delim, true);
     }
@@ -102,9 +102,9 @@ trait WhereTrait
      * @param  string  $col
      * @param  mixed|null  $op
      * @param  mixed|null  $val
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereNot($col, $op = null, $val = null): self
+    public function orWhereNot($col, $op = null, $val = null): Builder
     {
         return $this->orWhere($col, $op, $val, true);
     }
@@ -115,9 +115,9 @@ trait WhereTrait
      * @param  string  $col
      * @param  mixed|null  $op
      * @param  mixed|null  $val
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereNot($col, $op = null, $val = null): self
+    public function andWhereNot($col, $op = null, $val = null): Builder
     {
         return $this->andWhere($col, $op, $val, true);
     }
@@ -129,9 +129,9 @@ trait WhereTrait
      * @param  mixed  $val
      * @param  string  $delim
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function whereIs(string $col, $val, $delim = 'and', $not = false): self
+    public function whereIs(string $col, $val, $delim = 'and', $not = false): Builder
     {
         $type = 'is';
         $this->wheres[] = compact('type', 'col', 'val', 'delim', 'not');
@@ -145,9 +145,9 @@ trait WhereTrait
      * @param  string  $col
      * @param  mixed  $val
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereIs(string $col, $val, $not = false): self
+    public function orWhereIs(string $col, $val, $not = false): Builder
     {
         return $this->whereIs($col, $val, 'or', $not);
     }
@@ -158,9 +158,9 @@ trait WhereTrait
      * @param  string  $col
      * @param  mixed  $val
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereIs(string $col, $val, $not = false): self
+    public function andWhereIs(string $col, $val, $not = false): Builder
     {
         return $this->whereIs($col, $val, 'and', $not);
     }
@@ -171,9 +171,9 @@ trait WhereTrait
      * @param  string  $col
      * @param  mixed  $val
      * @param  string  $delim
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function whereIsNot(string $col, $val, $delim = 'and'): self
+    public function whereIsNot(string $col, $val, $delim = 'and'): Builder
     {
         return $this->whereIs($col, $val, $delim, true);
     }
@@ -183,9 +183,9 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  mixed  $val
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereIsNot(string $col, $val): self
+    public function orWhereIsNot(string $col, $val): Builder
     {
         return $this->orWhereIs($col, $val, true);
     }
@@ -195,9 +195,9 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  mixed  $val
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereIsNot(string $col, $val): self
+    public function andWhereIsNot(string $col, $val): Builder
     {
         return $this->andWhereIs($col, $val, true);
     }
@@ -209,9 +209,9 @@ trait WhereTrait
      * @param  \Closure|mixed[]  $vals
      * @param  string  $delim
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function whereIn(string $col, $vals, string $delim = 'and', $not = false): self
+    public function whereIn(string $col, $vals, string $delim = 'and', $not = false): Builder
     {
         if ($vals instanceof Closure) {
             $vals[] = $this->newBuilderForNestedWhere($vals)->getSql();
@@ -229,9 +229,9 @@ trait WhereTrait
      * @param  string  $col
      * @param  \Closure|mixed[]  $vals
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereIn(string $col, $vals, $not = false): self
+    public function orWhereIn(string $col, $vals, $not = false): Builder
     {
         return $this->whereIn($col, $vals, 'or', $not);
     }
@@ -242,9 +242,9 @@ trait WhereTrait
      * @param  string  $col
      * @param  \Closure|mixed[]  $vals
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereIn(string $col, $vals, $not = false): self
+    public function andWhereIn(string $col, $vals, $not = false): Builder
     {
         return $this->whereIn($col, $vals, 'and', $not);
     }
@@ -255,9 +255,9 @@ trait WhereTrait
      * @param  string  $col
      * @param  \Closure|mixed[]  $vals
      * @param  string  $delim
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function whereNotIn(string $col, $vals, string $delim = 'and'): self
+    public function whereNotIn(string $col, $vals, string $delim = 'and'): Builder
     {
         return $this->whereIn($col, $vals, $delim, true);
     }
@@ -267,9 +267,9 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  \Closure|mixed[]  $vals
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereNotIn(string $col, $vals): self
+    public function orWhereNotIn(string $col, $vals): Builder
     {
         return $this->whereIn($col, $vals, 'or', true);
     }
@@ -279,9 +279,9 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  \Closure|mixed[]  $vals
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereNotIn(string $col, $vals): self
+    public function andWhereNotIn(string $col, $vals): Builder
     {
         return $this->whereIn($col, $vals, 'and', true);
     }
@@ -292,9 +292,9 @@ trait WhereTrait
      * @param  \Closure  $closure
      * @param  string  $delim
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function whereSub(Closure $closure, string $delim = 'and', bool $not = false): self
+    public function whereSub(Closure $closure, string $delim = 'and', bool $not = false): Builder
     {
         $sql =  $this->newBuilderForNestedWhere($closure)->getSql();
 
@@ -309,9 +309,9 @@ trait WhereTrait
      *
      * @param  \Closure  $closure
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereSub(Closure $closure, bool $not = false): self
+    public function orWhereSub(Closure $closure, bool $not = false): Builder
     {
         return $this->whereSub($closure, 'or', $not);
     }
@@ -321,9 +321,9 @@ trait WhereTrait
      *
      * @param  \Closure  $closure
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereSub(Closure $closure, bool $not = false): self
+    public function andWhereSub(Closure $closure, bool $not = false): Builder
     {
         return $this->whereSub($closure, 'and', $not);
     }
@@ -334,9 +334,9 @@ trait WhereTrait
      * @param  \Closure  $closure
      * @param  string  $delim
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function whereGroup(Closure $closure, string $delim = 'and', bool $not = false): self
+    public function whereGroup(Closure $closure, string $delim = 'and', bool $not = false): Builder
     {
         $sql =  $this->newBuilderForNestedWhere($closure)->getSqlForWheres();
 
@@ -351,9 +351,9 @@ trait WhereTrait
      *
      * @param  \Closure  $closure
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function orWhereGroup(Closure $closure, bool $not = false): self
+    public function orWhereGroup(Closure $closure, bool $not = false): Builder
     {
         return $this->whereGroup($closure, 'or', $not);
     }
@@ -363,9 +363,9 @@ trait WhereTrait
      *
      * @param  \Closure  $closure
      * @param  bool  $not
-     * @return self
+     * @return \Lazy\Db\Query\Builder
      */
-    public function andWhereGroup(Closure $closure, bool $not = false): self
+    public function andWhereGroup(Closure $closure, bool $not = false): Builder
     {
         return $this->whereGroup($closure, 'and', $not);
     }
