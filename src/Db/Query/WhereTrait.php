@@ -203,6 +203,90 @@ trait WhereTrait
     }
 
     /**
+     * where in...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed[]  $vals
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return self
+     */
+    public function whereIn(string $col, $vals, string $delim = 'and', $not = false): self
+    {
+        if ($vals instanceof Closure) {
+            $vals[] = $this->newBuilderForNestedWhere($vals)->getSql();
+        }
+
+        $type = 'in';
+        $this->wheres[] = compact('type', 'col', 'vals', 'delim', 'not');
+
+        return $this;
+    }
+
+    /**
+     * or where in...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed[]  $vals
+     * @param  bool  $not
+     * @return self
+     */
+    public function orWhereIn(string $col, $vals, $not = false): self
+    {
+        return $this->whereIn($col, $vals, 'or', $not);
+    }
+
+    /**
+     * and where in...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed[]  $vals
+     * @param  bool  $not
+     * @return self
+     */
+    public function andWhereIn(string $col, $vals, $not = false): self
+    {
+        return $this->whereIn($col, $vals, 'and', $not);
+    }
+
+    /**
+     * where not in...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed[]  $vals
+     * @param  string  $delim
+     * @return self
+     */
+    public function whereNotIn(string $col, $vals, string $delim = 'and'): self
+    {
+        return $this->whereIn($col, $vals, $delim, true);
+    }
+
+    /**
+     * or where not in...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed[]  $vals
+     * @return self
+     */
+    public function orWhereNotIn(string $col, $vals): self
+    {
+        return $this->whereIn($col, $vals, 'or', true);
+    }
+
+    /**
+     * and where not in...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed[]  $vals
+     * @return self
+     */
+    public function andWhereNotIn(string $col, $vals): self
+    {
+        return $this->whereIn($col, $vals, 'and', true);
+    }
+
+    /**
      * where ( select ... ) ...
      *
      * @param  \Closure  $closure
