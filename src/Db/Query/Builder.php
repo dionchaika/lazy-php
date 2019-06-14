@@ -11,7 +11,9 @@ class Builder
 {
     use JoinTrait,
         WhereTrait,
-        LimitTrait,
+        UnionTrait,
+        HavingTrait,
+        GroupByTrait,
         OrderByTrait;
 
     /**
@@ -54,7 +56,7 @@ class Builder
      *
      * @var int
      */
-    protected $queryType = 'select';
+    protected $statement = 'select';
 
     /**
      * The query builder constructor.
@@ -78,7 +80,7 @@ class Builder
      */
     public function select($cols = '*'): self
     {
-        $this->queryType = 'select';
+        $this->statement = 'select';
 
         $this->cols = is_array($cols)
             ? $cols

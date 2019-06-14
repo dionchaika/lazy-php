@@ -5,9 +5,6 @@ namespace Lazy\Db\Query\Compilers;
 use Lazy\Db\Query\CompilerInterface;
 
 /**
- * The base query compiler class.
+ * The query compiler base class.
  */
-class Compiler implements CompilerInterface
-{
-    
-}
+class Compiler implements CompilerInterface {}
