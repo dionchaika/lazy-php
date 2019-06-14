@@ -36,4 +36,48 @@ trait WhereTrait
 
         return $this;
     }
+
+    /**
+     * where (select ... ) ...
+     *
+     * @param  \Closure  $closure
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return self
+     */
+    public function whereSub(Closure $closure, string $delim = 'and', bool $not = false): self
+    {
+        return $this->addNestedWhere('sub', $closure, $delim, $not);
+    }
+
+    /**
+     * where ( ... ) ...
+     *
+     * @param  \Closure  $closure
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return self
+     */
+    public function whereGroup(Closure $closure, string $delim = 'and', bool $not = false): self
+    {
+        return $this->addNestedWhere('group', $closure, $delim, $not);
+    }
+
+    /**
+     * Add a nested query where clause.
+     *
+     * @param  string  $type
+     * @param  \Closure  $closure
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return void
+     */
+    protected function addNestedWhere(string $type, Closure $closure, string $delim = 'and', bool $not = false)
+    {
+        $closure($builder = new static($this->db, $this->table, $this->compiler));
+
+        $this->wheres[] = compact('type', 'builder', 'delim', 'not');
+
+        return $this;
+    }
 }
