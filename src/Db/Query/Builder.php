@@ -11,6 +11,7 @@ class Builder
 {
     use JoinTrait,
         WhereTrait,
+        LimitTrait,
         OrderByTrait;
 
     /**
@@ -40,20 +41,6 @@ class Builder
      * @var string[]
      */
     protected $cols = [];
-
-    /**
-     * The select query limit.
-     *
-     * @var int
-     */
-    protected $limit;
-
-    /**
-     * The select query offset.
-     *
-     * @var int
-     */
-    protected $offset;
 
     /**
      * Is the select query distinct.

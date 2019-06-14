@@ -214,7 +214,12 @@ trait WhereTrait
     public function whereIn(string $col, $vals, string $delim = 'and', $not = false): Builder
     {
         if ($vals instanceof Closure) {
-            $vals[] = $this->newBuilderForNestedWhere($vals)->getSql();
+            $vals($builder = new static(null, null, $this->compiler));
+
+            $type = 'in_sub';
+            $this->wheres[] = compact('type', 'col', 'builder', 'delim', 'not');
+
+            return $this;
         }
 
         $type = 'in';
@@ -299,7 +304,12 @@ trait WhereTrait
     public function whereLike(string $col, $val, ?int $criteria = null, string $delim = 'and', bool $not = false): Builder
     {
         if ($val instanceof Closure) {
-            $val = $this->newBuilderForNestedWhere($val)->getSql();
+            $val($builder = new static(null, null, $this->compiler));
+
+            $type = 'like_sub';
+            $this->wheres[] = compact('type', 'col', 'builder', 'criteria', 'delim', 'not');
+
+            return $this;
         }
 
         $type = 'like';
@@ -339,6 +349,23 @@ trait WhereTrait
     }
 
     /**
+     * where between...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed  $firstVal
+     * @param  \Closure|mixed  $secondVal
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function whereBetween(string $col, $firstVal, $secondVal, string $delim = 'and', bool $not = false): Builder
+    {
+        if ($firstVal instanceof Closure) {
+
+        }
+    }
+
+    /**
      * where ( select ... ) ...
      *
      * @param  \Closure  $closure
@@ -348,7 +375,9 @@ trait WhereTrait
      */
     public function whereSub(Closure $closure, string $delim = 'and', bool $not = false): Builder
     {
-        $sql =  $this->newBuilderForNestedWhere($closure)->getSql();
+        $closure($builder = new static(null, null, $this->compiler));
+
+        $sql = $builder->toSql();
 
         $type = 'sub';
         $this->wheres[] = compact('type', 'sql', 'delim', 'not');
@@ -390,10 +419,12 @@ trait WhereTrait
      */
     public function whereGroup(Closure $closure, string $delim = 'and', bool $not = false): Builder
     {
-        $sql =  $this->newBuilderForNestedWhere($closure)->getSqlForWheres();
+        $closure($builder = new static($this->db, $this->table, $this->compiler));
+
+        $wheres = $builder->wheres;
 
         $type = 'group';
-        $this->wheres[] = compact('type', 'sql', 'delim', 'not');
+        $this->wheres[] = compact('type', 'wheres', 'delim', 'not');
 
         return $this;
     }
@@ -432,17 +463,5 @@ trait WhereTrait
     protected function prepareOpAndVal($op, $val): array
     {
         return (null === $val) ? ['=', $op] : [$op, $val];
-    }
-
-    /**
-     * Create a new query builder for a nested query where clause.
-     *
-     * @param  \Closure  $closure
-     * @return \Lazy\Db\Query\Builder
-     */
-    protected function newBuilderForNestedWhere(Closure $closure): Builder
-    {
-        $closure($builder = new static($this->db, $this->table, $this->compiler));
-        return $builder;
     }
 }
