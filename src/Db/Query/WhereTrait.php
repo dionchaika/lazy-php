@@ -87,7 +87,7 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  mixed|null  $op
-     * @param  mixed|null  $val
+     * @param  \Closure|mixed|null  $val
      * @param string  $delim
      * @return \Lazy\Db\Query\Builder
      */
@@ -101,7 +101,7 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  mixed|null  $op
-     * @param  mixed|null  $val
+     * @param  \Closure|mixed|null  $val
      * @return \Lazy\Db\Query\Builder
      */
     public function orWhereNot($col, $op = null, $val = null): Builder
@@ -114,7 +114,7 @@ trait WhereTrait
      *
      * @param  string  $col
      * @param  mixed|null  $op
-     * @param  mixed|null  $val
+     * @param  \Closure|mixed|null  $val
      * @return \Lazy\Db\Query\Builder
      */
     public function andWhereNot($col, $op = null, $val = null): Builder
