@@ -99,6 +99,40 @@ trait WhereTrait
     }
 
     /**
+     * where in...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed  $vals
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return self
+     */
+    public function whereIn(string $col, $vals, string $delim = 'and', bool $not = false): self
+    {
+        if ($vals instanceof Closure) {
+            $vals[] = ($this->getNestedWhere($vals))->toSql();
+        }
+
+        $type = 'in';
+        $this->wheres[] = compact('type', 'cols', 'vals', 'delim', 'not');
+
+        return $this;
+    }
+
+    /**
+     * where in...
+     *
+     * @param  string  $col
+     * @param  \Closure|mixed  $vals
+     * @param  string  $delim
+     * @return self
+     */
+    public function whereNotIn(string $col, $vals, string $delim = 'and'): self
+    {
+        return $this->whereIn($col, $vals, $delim, true);
+    }
+
+    /**
      * where ( select ... ) ...
      *
      * @param  \Closure  $closure
@@ -108,7 +142,12 @@ trait WhereTrait
      */
     public function whereSub(Closure $closure, string $delim = 'and', bool $not = false): self
     {
-        return $this->addNestedWhere('sub', $closure, $delim, $not);
+        $builder =  $this->getNestedWhere($closure);
+
+        $type = 'sub';
+        $this->wheres[] = compact('type', 'builder', 'delim', 'not');
+
+        return $this;
     }
 
     /**
@@ -121,7 +160,22 @@ trait WhereTrait
      */
     public function whereGroup(Closure $closure, string $delim = 'and', bool $not = false): self
     {
-        return $this->addNestedWhere('group', $closure, $delim, $not);
+        $builder =  $this->getNestedWhere($closure);
+
+        $type = 'group';
+        $this->wheres[] = compact('type', 'builder', 'delim', 'not');
+
+        return $this;
+    }
+
+    /**
+     * Get the array of query where clauses.
+     *
+     * @return mixed[]
+     */
+    protected function getWheres(): array
+    {
+        return $this->wheres;
     }
 
     /**
@@ -137,20 +191,14 @@ trait WhereTrait
     }
 
     /**
-     * Add a nested query where clause.
+     * Get the nested query where clause.
      *
-     * @param  string  $type
      * @param  \Closure  $closure
-     * @param  string  $delim
-     * @param  bool  $not
-     * @return void
+     * @return \Lazy\Db\Query\Builder
      */
-    protected function addNestedWhere(string $type, Closure $closure, string $delim = 'and', bool $not = false)
+    protected function getNestedWhere(Closure $closure): Builder
     {
         $closure($builder = new static($this->db, $this->table, $this->compiler));
-
-        $this->wheres[] = compact('type', 'builder', 'delim', 'not');
-
-        return $this;
+        return $builder;
     }
 }
