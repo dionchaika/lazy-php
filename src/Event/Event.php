@@ -8,6 +8,13 @@ namespace Lazy\Event;
 class Event
 {
     /**
+     * The event type.
+     *
+     * @var string
+     */
+    public $type = '';
+
+    /**
      * The event target.
      *
      * @var mixed|null
