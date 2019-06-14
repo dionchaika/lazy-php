@@ -2,10 +2,6 @@
 
 namespace Lazy\Db\Query;
 
-/**
- * @property mixed[] $aliases
- * @method mixed[] devideAlias(string $name)
- */
 trait JoinTrait
 {
     /**
@@ -97,12 +93,6 @@ trait JoinTrait
      */
     protected function addJoin(string $table, string $firstCol, string $op, ?string $secondCol = null, string $type): self
     {
-        [$table, $alias] = $this->devideAlias($table);
-
-        if ($alias) {
-            $this->aliases[$table] = $alias;
-        }
-
         [$op, $secondCol] = (null === $secondCol) ? ['=', $op] : [$op, $secondCol];
 
         $this->joins[] = compact('table', 'firstCol', 'op', 'secondCol', 'type');
