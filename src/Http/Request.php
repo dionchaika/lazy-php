@@ -67,13 +67,13 @@ class Request extends Message implements RequestInterface
             $this->setHostHeader();
         }
 
-        if (null !== $body) {
-            if ($body instanceof StreamInterface) {
-                $this->body = $body;
-            } else {
-                $this->body = new Stream($body);
-            }
+        if (null === $body) {
+            $body = new Stream;
+        } else if (is_string($body) || is_resource($body)) {
+            $body = new Stream($body);
         }
+
+        $this->body = $body;
 
         $this->protocolVersion = $protocolVersion;
     }
