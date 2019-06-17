@@ -26,7 +26,7 @@ trait JoinTrait
      * @param  string  $type
      * @return \Lazy\Db\Query\Builder
      */
-    public function join(string $joinedTable, string $firstCol, $op, $secondCol = null, string $type = 'Inner'): Builder
+    public function join(string $joinedTable, string $firstCol, $op, $secondCol = null, string $type = 'inner'): Builder
     {
         return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, $type);
     }
@@ -42,7 +42,7 @@ trait JoinTrait
      */
     public function innerJoin(string $joinedTable, string $firstCol, $op, $secondCol = null): Builder
     {
-        return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, 'Inner');
+        return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, 'inner');
     }
 
     /**
@@ -56,7 +56,7 @@ trait JoinTrait
      */
     public function leftJoin(string $joinedTable, string $firstCol, $op, $secondCol = null): Builder
     {
-        return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, 'Left');
+        return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, 'left');
     }
 
     /**
@@ -70,7 +70,7 @@ trait JoinTrait
      */
     public function rightJoin(string $joinedTable, string $firstCol, $op, $secondCol = null): Builder
     {
-        return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, 'Right');
+        return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, 'right');
     }
 
     /**
@@ -84,7 +84,7 @@ trait JoinTrait
      */
     public function fullJoin(string $joinedTable, string $firstCol, $op, $secondCol = null): Builder
     {
-        return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, 'Full');
+        return $this->addJoin($joinedTable, $firstCol, $op, $secondCol, 'full');
     }
 
     /**
@@ -106,7 +106,6 @@ trait JoinTrait
 
             $secondCol($query);
 
-            $type = $type.'Select';
             $this->joins[] = compact('type', 'joinedTable', 'firstCol', 'op', 'query');
         } else {
             $this->joins[] = compact('type', 'joinedTable', 'firstCol', 'op', 'secondCol');

@@ -25,6 +25,7 @@ class Compiler implements CompilerInterface
 
         $sql .= $this->compileCols($query);
         $sql .= $this->compileFrom($query);
+        $sql .= $this->compileJoin($query);
         $sql .= $this->compileWhere($query);
         $sql .= $this->compileOrderBy($query);
 
@@ -93,6 +94,32 @@ class Compiler implements CompilerInterface
     protected function compileFrom(Builder $query): string
     {
         return ' from '.(($query->table instanceof Raw) ? (string) $query->table : $query->table);
+    }
+
+    /**
+     * Compile a query join clause.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileJoin(Builder $query): string
+    {
+        if (empty($query->joins)) {
+            return '';
+        }
+
+        $sql = '';
+        foreach ($query->joins as $join) {
+            $sql .= ' '.$join['type'].' join '.$join['joinedTable'].' on '.$join['firstCol'].' '.$join['op'].' ';
+
+            if ($join['secondCol'] instanceof Builder) {
+                $join['secondCol'] = '('.rtrim($join['secondCol']->toSql(), ';').')';
+            }
+
+            $sql .= $join['secondCol'];
+        }
+
+        return ltrim($sql, ' ');
     }
 
     /**
