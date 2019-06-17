@@ -132,11 +132,11 @@ class Builder
     public function where($column, $operator = null, $value = null, string $delimiter = 'and', bool $negative = false): self
     {
         if ($column instanceof Closure) {
-            return $this->whereGroup($column, $delimiter, $negative);
+            return $this->whereGroup($column);
         }
 
         if (1 === func_num_args()) {
-            return $this->whereIsNot($column, null, $delimiter);
+            return $this->whereIsNot($column, null);
         }
 
         [$value, $operator] = $this->prepareValueAndOperator($value, $operator);
