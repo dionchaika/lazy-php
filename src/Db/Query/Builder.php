@@ -40,6 +40,20 @@ class Builder
     public $distinct = false;
 
     /**
+     * The array of query where clauses.
+     *
+     * @var mixed[]
+     */
+    public $wheres = [];
+
+    /**
+     * The array of query order by clauses.
+     *
+     * @var mixed[]
+     */
+    public $ordersBy = [];
+
+    /**
      * The query compiler.
      *
      * @var \Lazy\Db\Query\CompilerInterface
@@ -139,6 +153,36 @@ class Builder
         $this->wheres[] = compact('type', 'column', 'operator', 'value', 'delimiter', 'negative');
 
         return $this;
+    }
+
+    /**
+     * where is...
+     *
+     * @param  string  $column
+     * @param  mixed  $value
+     * @param  string  $delimiter
+     * @param  bool  $negative
+     * @return self
+     */
+    public function whereIs(string $column, $value, $delimiter = 'and', $negative = false): self
+    {
+        $type = 'Is';
+        $this->wheres[] = compact('type', 'column', 'operator', 'value', 'delimiter', 'negative');
+
+        return $this;
+    }
+
+    /**
+     * where is not...
+     *
+     * @param  string  $column
+     * @param  mixed  $value
+     * @param  string  $delimiter
+     * @return self
+     */
+    public function whereIsNot(string $column, $value, $delimiter = 'and'): self
+    {
+        return $this->whereIs($column, $value, $delimiter, true);
     }
 
     /**
