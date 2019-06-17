@@ -18,25 +18,11 @@ class Builder
         OrderByTrait;
 
     /**
-     * The query DB.
-     *
-     * @var string
-     */
-    public $db;
-
-    /**
      * The query table.
      *
      * @var string
      */
     public $table;
-
-    /**
-     * The array of query columns.
-     *
-     * @var string[]
-     */
-    public $cols = [];
 
     /**
      * The array of query values.
@@ -46,7 +32,14 @@ class Builder
     public $vals = [];
 
     /**
-     * Is the select query distinct.
+     * The array of query columns.
+     *
+     * @var mixed[]
+     */
+    public $cols = [];
+
+    /**
+     * Is the query select statement distinct.
      *
      * @var bool
      */
@@ -60,9 +53,9 @@ class Builder
     protected $compiler;
 
     /**
-     * The current query type.
+     * The current query statement.
      *
-     * @var int
+     * @var string
      */
     protected $statement = 'Select';
 
