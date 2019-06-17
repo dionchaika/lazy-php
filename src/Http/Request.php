@@ -238,7 +238,16 @@ class Request extends Message implements RequestInterface
                 $host .= ':'.$port;
             }
 
-            $this->setHeader('Host', $host);
+            $host = [
+                'host' => [
+
+                    'name'   => 'Host',
+                    'values' => [$host]
+
+                ]
+            ];
+
+            $this->headers = array_merge($host, $this->headers);
         }
     }
 
