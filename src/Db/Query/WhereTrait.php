@@ -164,10 +164,8 @@ trait WhereTrait
 
         $callback($query);
 
-        $wheres = $query->wheres;
-
         $type = $not ? 'GroupNot' : 'Group';
-        $this->wheres[] = compact('type', 'wheres', 'delim');
+        $this->wheres[] = compact('type', 'query', 'delim');
 
         return $this;
     }

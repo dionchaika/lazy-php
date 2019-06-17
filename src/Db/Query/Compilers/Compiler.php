@@ -124,7 +124,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereSimple(array $where): string
     {
-        return $
+        return $where['col'].' '.$where['op'].' '.$this->compileVal($where['val']);
     }
 
     /**
@@ -135,7 +135,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereSimpleNot(array $where): string
     {
-        
+        return 'not '.$this->compileWhereSimple($where);
     }
 
     /**
@@ -146,7 +146,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereIs(array $where): string
     {
-        
+        return $where['col'].' is '.$this->compileVal($where['val']);
     }
 
     /**
@@ -157,7 +157,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereIsNot(array $where): string
     {
-        
+        return $where['col'].' is not '.$this->compileVal($where['val']);
     }
 
     /**
@@ -168,7 +168,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereGroup(array $where): string
     {
-        
+        return '('.$this->compileWhere($where['query']).')';
     }
 
     /**
@@ -179,7 +179,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereGroupNot(array $where): string
     {
-        
+        return 'not '.$this->compileWhereGroup($where);
     }
 
     /**
@@ -190,7 +190,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereSelect(array $where): string
     {
-        
+        return '('.$where['query']->toSql().')';
     }
 
     /**
@@ -201,6 +201,6 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereSelectNot(array $where): string
     {
-        
+        return 'not '.$this->compileWhereSelect($where);
     }
 }
