@@ -204,7 +204,7 @@ abstract class Message implements MessageInterface
      *
      * @throws \InvalidArgumentException
      */
-    protected function setHeader($name, $value)
+    public function setHeader($name, $value)
     {
         $this->headers[strtolower($name)] = [
 
@@ -212,6 +212,21 @@ abstract class Message implements MessageInterface
             'values' => $this->filterHeaderValue($value)
 
         ];
+    }
+
+    /**
+     * Set the message headers.
+     *
+     * @param mixed[] $headers
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setHeaders($headers)
+    {
+        foreach ($headers as $name => $value) {
+            $this->setHeader($name, $value);
+        }
     }
 
     /**
@@ -223,7 +238,7 @@ abstract class Message implements MessageInterface
      *
      * @throws \InvalidArgumentException
      */
-    protected function appendHeader($name, $value)
+    public function appendHeader($name, $value)
     {
         $normalizedName = strtolower($name);
 
@@ -237,6 +252,21 @@ abstract class Message implements MessageInterface
         }
 
         $this->headers[$normalizedName]['values'] = array_merge($this->headers[$normalizedName]['values'], $this->filterHeaderValue($value));
+    }
+
+    /**
+     * Append the message headers.
+     *
+     * @param mixed[] $headers
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function appendHeaders($headers)
+    {
+        foreach ($headers as $name => $value) {
+            $this->appendHeader($name, $value);
+        }
     }
 
     /**
