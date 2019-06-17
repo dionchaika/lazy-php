@@ -138,6 +138,17 @@ class Compiler implements CompilerInterface
     }
 
     /**
+     * Compile a raw query where clause.
+     *
+     * @param  mixed[]  $where
+     * @return string
+     */
+    protected function compileWhereRaw(array $where): string
+    {
+        return (string) $where['val'];
+    }
+
+    /**
      * Compile a query where clause simple expression.
      *
      * @param  mixed[]  $where
