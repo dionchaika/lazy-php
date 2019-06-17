@@ -9,5 +9,5 @@ trait HavingTrait
      *
      * @var mixed[]
      */
-    protected $havings = [];
+    public $havings = [];
 }
