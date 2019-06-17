@@ -19,6 +19,34 @@ trait WhereTrait
     public $wheres = [];
 
     /**
+     * where (raw)...
+     *
+     * @param  mixed  $val
+     * @param  string  $delim
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function whereRaw($val, string $delim = 'and'): Builder
+    {
+        $val = ($val instanceof Raw) ? $val : new Raw($val);
+
+        $type = 'Raw';
+        $this->wheres[] = compact('type', 'val', 'delim');
+
+        return $this;
+    }
+
+    /**
+     * or where (raw)...
+     *
+     * @param  mixed  $val
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereRaw($val): Builder
+    {
+        return $this->whereRaw($val, 'or');
+    }
+
+    /**
      * where...
      *
      * @param  mixed  $col
@@ -171,6 +199,18 @@ trait WhereTrait
     }
 
     /**
+     * or where ( ... ) ...
+     *
+     * @param  \Closure  $callback
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereGroup(Closure $callback, bool $not = false): Builder
+    {
+        return $this->whereGroup($callback, 'or', $not);
+    }
+
+    /**
      * where ( select ... ) ...
      *
      * @param  string  $col
@@ -190,6 +230,20 @@ trait WhereTrait
         $this->wheres[] = compact('type', 'col', 'op', 'query', 'delim');
 
         return $this;
+    }
+
+    /**
+     * or where ( select ... ) ...
+     *
+     * @param  string  $col
+     * @param  string  $op
+     * @param  \Closure  $callback
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereSelect(string $col, string $op, Closure $callback, bool $not = false): Builder
+    {
+        return $this->whereSelect($col, $op, $callback, 'or', $not);
     }
 
     /**
