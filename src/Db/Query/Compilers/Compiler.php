@@ -104,4 +104,92 @@ class Compiler implements CompilerInterface
     {
         
     }
+
+    /**
+     * Compile a query where clause simple expression.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhereSimple(Builder $query): string
+    {
+        
+    }
+
+    /**
+     * Compile a query where clause simple negative expression.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhereSimpleNot(Builder $query): string
+    {
+        
+    }
+
+    /**
+     * Compile a query where clause is expression.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhereIs(Builder $query): string
+    {
+        
+    }
+
+    /**
+     * Compile a query where clause is not expression.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhereIsNot(Builder $query): string
+    {
+        
+    }
+
+    /**
+     * Compile a group of query where expressions.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhereGroup(Builder $query): string
+    {
+        
+    }
+
+    /**
+     * Compile a negative group of query where expressions.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhereGroupNot(Builder $query): string
+    {
+        
+    }
+
+    /**
+     * Compile a query where select expressions.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhereSelect(Builder $query): string
+    {
+        
+    }
+
+    /**
+     * Compile a query where negative select expressions.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhereSelectNot(Builder $query): string
+    {
+        
+    }
 }
