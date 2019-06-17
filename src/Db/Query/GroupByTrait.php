@@ -9,5 +9,5 @@ trait GroupByTrait
      *
      * @var mixed[]
      */
-    public $groupsBy = [];
+    protected $groupsBy = [];
 }

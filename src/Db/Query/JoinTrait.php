@@ -9,5 +9,5 @@ trait JoinTrait
      *
      * @var mixed[]
      */
-    public $joins = [];
+    protected $joins = [];
 }

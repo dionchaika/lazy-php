@@ -9,7 +9,7 @@ trait OrderByTrait
      *
      * @var mixed[]
      */
-    public $ordersBy = [];
+    protected $ordersBy = [];
 
     /**
      * order by...

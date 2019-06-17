@@ -9,5 +9,5 @@ trait UnionTrait
      *
      * @var mixed[]
      */
-    public $unions = [];
+    protected $unions = [];
 }
