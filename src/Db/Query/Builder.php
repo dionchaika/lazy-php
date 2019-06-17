@@ -139,12 +139,12 @@ class Builder
     /**
      * Prepare an operator and a value.
      *
-     * @param  mixed  $op
+     * @param  mixed  $oper
      * @param  mixed  $val
      * @return mixed[]
      */
-    protected function prepareOpAndVal($op, $val): array
+    protected function prepareOpAndVal($oper, $val): array
     {
-        return (null === $val) ? ['=', $op] : [$op, $val];
+        return (null === $val) ? ['=', $oper] : [$oper, $val];
     }
 }
