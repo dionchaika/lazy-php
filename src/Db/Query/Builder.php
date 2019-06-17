@@ -69,14 +69,10 @@ class Builder
     /**
      * The query builder constructor.
      *
-     * @param  string|null  $db
-     * @param  string|null  $table
      * @param  \Lazy\Db\Query\CompilerInterface|null  $compiler
      */
-    public function __construct(?string $db = null, ?string $table = null, ?CompilerInterface $compiler = null)
+    public function __construct(?CompilerInterface $compiler = null)
     {
-        $this->db = $db;
-        $this->table = $table;
         $this->compiler = $compiler ?? new BaseCompiler;
     }
 
