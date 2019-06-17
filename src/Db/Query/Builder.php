@@ -10,13 +10,6 @@ use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
  */
 class Builder
 {
-    use JoinTrait,
-        WhereTrait,
-        UnionTrait,
-        HavingTrait,
-        GroupByTrait,
-        OrderByTrait;
-
     /**
      * The query table.
      *
