@@ -27,7 +27,7 @@ class Builder
     /**
      * The query database.
      *
-     * @var mixed
+     * @var string
      */
     public $database;
 
