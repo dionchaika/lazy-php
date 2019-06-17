@@ -102,27 +102,38 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhere(Builder $query): string
     {
-        
+        if (empty($query->wheres)) {
+            return '';
+        }
+
+        $firstDelim = $query->wheres[0]['delim'];
+
+        $sql = '';
+        foreach ($query->wheres as $where) {
+            $sql .= $where['delim'].' '.$this->{'compileWhere'.$where['type']}($query);
+        }
+
+        return ' where '.substr($sql, strlen($firstDelim) + 1);
     }
 
     /**
      * Compile a query where clause simple expression.
      *
-     * @param  \Lazy\Db\Query\Builder  $query
+     * @param  mixed[]  $where
      * @return string
      */
-    protected function compileWhereSimple(Builder $query): string
+    protected function compileWhereSimple(array $where): string
     {
-        
+        return $
     }
 
     /**
      * Compile a query where clause simple negative expression.
      *
-     * @param  \Lazy\Db\Query\Builder  $query
+     * @param  mixed[]  $where
      * @return string
      */
-    protected function compileWhereSimpleNot(Builder $query): string
+    protected function compileWhereSimpleNot(array $where): string
     {
         
     }
@@ -130,10 +141,10 @@ class Compiler implements CompilerInterface
     /**
      * Compile a query where clause is expression.
      *
-     * @param  \Lazy\Db\Query\Builder  $query
+     * @param  mixed[]  $where
      * @return string
      */
-    protected function compileWhereIs(Builder $query): string
+    protected function compileWhereIs(array $where): string
     {
         
     }
@@ -141,10 +152,10 @@ class Compiler implements CompilerInterface
     /**
      * Compile a query where clause is not expression.
      *
-     * @param  \Lazy\Db\Query\Builder  $query
+     * @param  mixed[]  $where
      * @return string
      */
-    protected function compileWhereIsNot(Builder $query): string
+    protected function compileWhereIsNot(array $where): string
     {
         
     }
@@ -152,10 +163,10 @@ class Compiler implements CompilerInterface
     /**
      * Compile a group of query where clause expressions.
      *
-     * @param  \Lazy\Db\Query\Builder  $query
+     * @param  mixed[]  $where
      * @return string
      */
-    protected function compileWhereGroup(Builder $query): string
+    protected function compileWhereGroup(array $where): string
     {
         
     }
@@ -163,10 +174,10 @@ class Compiler implements CompilerInterface
     /**
      * Compile a negative group of query where clause expressions.
      *
-     * @param  \Lazy\Db\Query\Builder  $query
+     * @param  mixed[]  $where
      * @return string
      */
-    protected function compileWhereGroupNot(Builder $query): string
+    protected function compileWhereGroupNot(array $where): string
     {
         
     }
@@ -174,10 +185,10 @@ class Compiler implements CompilerInterface
     /**
      * Compile a query where clause select expression.
      *
-     * @param  \Lazy\Db\Query\Builder  $query
+     * @param  mixed[]  $where
      * @return string
      */
-    protected function compileWhereSelect(Builder $query): string
+    protected function compileWhereSelect(array $where): string
     {
         
     }
@@ -185,10 +196,10 @@ class Compiler implements CompilerInterface
     /**
      * Compile a query where clause negative select expression.
      *
-     * @param  \Lazy\Db\Query\Builder  $query
+     * @param  mixed[]  $where
      * @return string
      */
-    protected function compileWhereSelectNot(Builder $query): string
+    protected function compileWhereSelectNot(array $where): string
     {
         
     }
