@@ -25,6 +25,13 @@ class Builder
     public $table;
 
     /**
+     * The query database.
+     *
+     * @var string
+     */
+    public $database;
+
+    /**
      * The array of query values.
      *
      * @var mixed[]
@@ -70,17 +77,6 @@ class Builder
     }
 
     /**
-     * Get the raw SQL.
-     *
-     * @param  mixed  $val
-     * @return \Lazy\Db\Query\Raw
-     */
-    public static function raw($val): Raw
-    {
-        return new Raw($val);
-    }
-
-    /**
      * select...
      *
      * @param  mixed  $cols
@@ -90,9 +86,11 @@ class Builder
     {
         $this->statement = 'Select';
 
-        $this->cols = is_array($cols)
+        $cols = is_array($cols)
             ? $cols
             : func_get_args();
+
+        $this->cols = array_merge($this->cols, $cols);
 
         return $this;
     }
