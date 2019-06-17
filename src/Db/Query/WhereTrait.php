@@ -2,6 +2,8 @@
 
 namespace Lazy\Db\Query;
 
+use Closure;
+
 trait WhereTrait
 {
     /**
@@ -23,6 +25,27 @@ trait WhereTrait
      */
     public function where($col, $op = null, $val = null, string $delim = 'and', bool $not = false): Builder
     {
+        if ($col instanceof Closure) {
+            return $this->whereGroup($col, $delim, $not);
+        }
+
+        if (1 === func_num_args()) {
+            return $this->whereIsNot($col, null);
+        }
+
+        if ($val instanceof Closure) {
+            return $this->whereSelect($val, $delim, $not);
+        }
+
+        [$op, $val] = $this->prepareOpAndVal($op, $val);
+
+        if ((null === $val || is_bool($val)) && '=' === $op) {
+            return $this->whereIs($col, $val);
+        }
+
+        $type = 'Simple';
+        $this->wheres[] = compact('type', 'col', 'op', 'val', 'delim', 'not');
+
         return $this;
     }
 }
