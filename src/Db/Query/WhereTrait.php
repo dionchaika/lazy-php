@@ -9,5 +9,5 @@ trait WhereTrait
      *
      * @var mixed[]
      */
-    public $wheres = [];
+    protected $wheres = [];
 }

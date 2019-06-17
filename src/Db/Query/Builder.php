@@ -22,28 +22,14 @@ class Builder
      *
      * @var string
      */
-    public $db;
+    protected $db;
 
     /**
      * The query table.
      *
      * @var string
      */
-    public $table;
-
-    /**
-     * The array of query columns.
-     *
-     * @var string[]
-     */
-    public $cols = [];
-
-    /**
-     * Is the select query distinct.
-     *
-     * @var bool
-     */
-    public $distinct = false;
+    protected $table;
 
     /**
      * The query compiler.
@@ -51,6 +37,20 @@ class Builder
      * @var \Lazy\Db\Query\CompilerInterface
      */
     protected $compiler;
+
+    /**
+     * The array of query columns.
+     *
+     * @var string[]
+     */
+    protected $cols = [];
+
+    /**
+     * Is the select query distinct.
+     *
+     * @var bool
+     */
+    protected $distinct = false;
 
     /**
      * The current query type.
@@ -71,6 +71,17 @@ class Builder
         $this->db = $db;
         $this->table = $table;
         $this->compiler = $compiler ?? new BaseCompiler;
+    }
+
+    /**
+     * Get the raw SQL.
+     *
+     * @param  mixed  $val
+     * @return \Lazy\Db\Query\Raw
+     */
+    public static function raw($val): Raw
+    {
+        return new Raw($val);
     }
 
     /**
@@ -120,7 +131,7 @@ class Builder
      */
     public function toSql(): string
     {
-        return $this->compiler->{'compile'.$this->statement}($this);
+        return $this->compiler->{'compile'.$this->statement}();
     }
 
     /**
