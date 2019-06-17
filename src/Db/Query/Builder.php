@@ -20,14 +20,14 @@ class Builder
     /**
      * The query table.
      *
-     * @var string
+     * @var mixed
      */
     public $table;
 
     /**
      * The query database.
      *
-     * @var string
+     * @var mixed
      */
     public $database;
 
