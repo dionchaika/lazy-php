@@ -189,7 +189,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereGroup(array $where): string
     {
-        return '('.substr($this->compileWhere($where['query']), 7).')';
+        return '('.ltrim($this->compileWhere($where['query']), ' where ').')';
     }
 
     /**
