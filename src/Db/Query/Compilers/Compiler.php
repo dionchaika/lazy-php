@@ -172,7 +172,7 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Compile a query where select expressions.
+     * Compile a query where select expression.
      *
      * @param  \Lazy\Db\Query\Builder  $query
      * @return string
@@ -183,7 +183,7 @@ class Compiler implements CompilerInterface
     }
 
     /**
-     * Compile a query where negative select expressions.
+     * Compile a query where negative select expression.
      *
      * @param  \Lazy\Db\Query\Builder  $query
      * @return string
