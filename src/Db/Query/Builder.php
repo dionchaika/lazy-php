@@ -2,6 +2,7 @@
 
 namespace Lazy\Db\Query;
 
+use Closure;
 use Throwable;
 use Lazy\Db\Query\Compilers\Compiler as BaseCompiler;
 
@@ -101,6 +102,42 @@ class Builder
     public function from($table): self
     {
         $this->table = $table;
+        return $this;
+    }
+
+    /**
+     * where...
+     *
+     * @param  mixed  $column
+     * @param  mixed|null  $operator
+     * @param  mixed|null  $value
+     * @param  string  $delimiter
+     * @param  bool  $negative
+     * @return self
+     */
+    public function where($column, $operator = null, $value = null, string $delimiter = 'and', bool $negative = false): self
+    {
+        if ($column instanceof Closure) {
+            return $this->whereGroup($column);
+        }
+
+        if (1 === func_num_args()) {
+            return $this->whereIsNot($column, null, $delimiter);
+        }
+
+        [$value, $operator] = $this->prepareValueAndOperator($value, $operator);
+
+        if ((null === $value || is_bool($value)) && '=' === $operator) {
+            return $this->whereIs($column, $value, $delimiter, $negative);
+        }
+
+        if ($value instanceof Closure) {
+            return $this->whereSelect($column, $operator, $value);
+        }
+
+        $type = 'Simple';
+        $this->wheres[] = compact('type', 'column', 'operator', 'value', 'delimiter', 'negative');
+
         return $this;
     }
 
