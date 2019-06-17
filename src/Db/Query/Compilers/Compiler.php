@@ -93,4 +93,15 @@ class Compiler implements CompilerInterface
     {
         return ' from '.(($query->table instanceof Raw) ? (string) $query->table : $query->table);
     }
+
+    /**
+     * Compile a query where clause.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileWhere(Builder $query): string
+    {
+        
+    }
 }
