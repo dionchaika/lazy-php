@@ -48,7 +48,7 @@ trait WhereTrait
             return $this->whereIs($col, $val);
         }
 
-        $type = $not ? 'NotSimple' : 'Simple';
+        $type = $not ? 'SimpleNot' : 'Simple';
         $this->wheres[] = compact('type', 'col', 'op', 'val', 'delim');
 
         return $this;
@@ -166,7 +166,7 @@ trait WhereTrait
 
         $wheres = $query->wheres;
 
-        $type = $not ? 'NotGroup' : 'Group';
+        $type = $not ? 'GroupNot' : 'Group';
         $this->wheres[] = compact('type', 'wheres', 'delim');
 
         return $this;
@@ -186,7 +186,7 @@ trait WhereTrait
 
         $callback($query);
 
-        $type = $not ? 'NotSelect' : 'Select';
+        $type = $not ? 'SelectNot' : 'Select';
         $this->wheres[] = compact('type', 'query', 'delim');
 
         return $this;
