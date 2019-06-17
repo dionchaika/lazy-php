@@ -195,7 +195,7 @@ class Builder
      */
     public function whereGroup(Closure $callback, string $delimiter = 'and', bool $negative = false): self
     {
-        $query = $this->getSubSelect($callback);
+        $callback($query = $this->getSubSelectQuery());
 
         $type = 'Group';
         $this->wheres[] = compact('type', 'query', 'delimiter', 'negative');
@@ -215,12 +215,53 @@ class Builder
      */
     public function whereSelect(string $column, string $operator, Closure $callback, string $delimiter = 'and', bool $negative = false): self
     {
-        $query = $this->getSubSelect($callback);
+        $callback($query = $this->getSubSelectQuery());
 
         $type = 'Select';
         $this->wheres[] = compact('type', 'column', 'operator', 'query', 'delimiter', 'negative');
 
         return $this;
+    }
+
+    /**
+     * order by...
+     *
+     * @param  string|string[]  $columns
+     * @param  string  $order
+     * @return self
+     */
+    public function orderBy($columns, $order = 'asc'): self
+    {
+        $this->ordersBy[] = [
+
+            'Order'  => $order,
+            'Columns' => is_array($columns) ? $columns : [$columns]
+
+        ];
+
+        return $this;
+    }
+
+    /**
+     * order by asc...
+     *
+     * @param  mixed  $columns
+     * @return self
+     */
+    public function orderByAsc($columns): self
+    {
+        return $this->orderBy(is_array($columns) ? $columns : func_get_args(), 'asc');
+    }
+
+    /**
+     * order by desc...
+     *
+     * @param  mixed  $columns
+     * @return self
+     */
+    public function orderByDesc($columns): self
+    {
+        return $this->orderBy(is_array($columns) ? $columns : func_get_args(), 'desc');
     }
 
     /**
@@ -249,23 +290,13 @@ class Builder
     }
 
     /**
-     * Get the sub-select for the query.
+     * Get the sub-select query.
      *
-     * @param  \Closure  $callback
      * @return \Lazy\Db\Query\Builder
      */
-    protected function getSubSelect(Closure $callback): Builder
+    protected function getSubSelectQuery(): Builder
     {
-        $query = new static(
-            $this->compiler
-        );
-
-        $query->table = $this->table;
-        $query->database = $this->database;
-
-        $callback($query);
-
-        return $query;
+        return (new static($this->compiler))->from($this->table);
     }
 
     /**
