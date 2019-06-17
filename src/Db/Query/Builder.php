@@ -32,13 +32,6 @@ class Builder
     public $database;
 
     /**
-     * The array of query values.
-     *
-     * @var mixed[]
-     */
-    public $vals = [];
-
-    /**
      * The array of query columns.
      *
      * @var mixed[]
@@ -109,109 +102,12 @@ class Builder
     /**
      * from...
      *
-     * @param  string  $table
+     * @param  mixed  $table
      * @return self
      */
-    public function from(string $table): self
+    public function from($table): self
     {
         $this->table = $table;
-        return $this;
-    }
-
-    /**
-     * insert...
-     *
-     * @param  mixed[]  $vals
-     * @return self
-     */
-    public function insert(array $vals = []): self
-    {
-        $this->statement = 'Insert';
-
-        $this->vals = $vals;
-
-        return $this;
-    }
-
-    /**
-     * into...
-     *
-     * @param  string  $table
-     * @return self
-     */
-    public function into(string $table): self
-    {
-        $this->table = $table;
-        return $this;
-    }
-
-    /**
-     * values...
-     *
-     * @param  mixed[]  $vals
-     * @return self
-     */
-    public function values(array $vals): self
-    {
-        $this->vals = $vals;
-        return $this;
-    }
-
-    /**
-     * update...
-     *
-     * @param  string|null  $table
-     * @return self
-     */
-    public function update(?string $table = null): self
-    {
-        $this->statement = 'Update';
-
-        if (null !== $table) {
-            return $this->table($table);
-        }
-
-        return $this;
-    }
-
-    /**
-     * table...
-     *
-     * @param  string  $table
-     * @return self
-     */
-    public function table(string $table): self
-    {
-        $this->table = $table;
-        return $this;
-    }
-
-    /**
-     * set...
-     *
-     * @param  mixed[]  $vals
-     * @return self
-     */
-    public function set(array $vals): self
-    {
-        $this->vals = $vals;
-        return $this;
-    }
-
-    /**
-     * delete...
-     *
-     * @param  string|null  $table
-     * @return self
-     */
-    public function delete(?string $table = null): self
-    {
-        $this->statement = 'Delete';
-
-        if (null !== $table) {
-            return $this->table($table);
-        }
-
         return $this;
     }
 
