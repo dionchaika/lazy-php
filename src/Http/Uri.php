@@ -145,7 +145,7 @@ class Uri implements UriInterface
         }
 
         if (! empty($_SERVER['SERVER_PORT'])) {
-            $port = (int)$_SERVER['SERVER_PORT'];
+            $port = (int) $_SERVER['SERVER_PORT'];
         } else {
             $port = $secured ? 443 : 80;
         }

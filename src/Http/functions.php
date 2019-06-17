@@ -142,7 +142,7 @@ if (! function_exists('parse_response')) {
         }
 
         $protocolVersion = explode('/', $statusLineParts[0], 2)[1];
-        $statusCode = (int)$statusLineParts[1];
+        $statusCode = (int) $statusLineParts[1];
         $reasonPhrase = isset($statusLineParts[2]) ? $statusLineParts[2] : '';
 
         $response = (new Response)
