@@ -110,10 +110,10 @@ class Compiler implements CompilerInterface
 
         $sql = '';
         foreach ($query->wheres as $where) {
-            $sql .= $where['delim'].' '.$this->{'compileWhere'.$where['type']}($where);
+            $sql .= ' '.$where['delim'].' '.$this->{'compileWhere'.$where['type']}($where);
         }
 
-        return ' where '.substr($sql, strlen($firstDelim) + 1);
+        return ' where '.substr($sql, strlen($firstDelim) + 2);
     }
 
     /**
@@ -168,7 +168,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereGroup(array $where): string
     {
-        return '('.$this->compileWhere($where['query']).')';
+        return '('.substr($this->compileWhere($where['query']), 7).')';
     }
 
     /**
@@ -190,7 +190,7 @@ class Compiler implements CompilerInterface
      */
     protected function compileWhereSelect(array $where): string
     {
-        return '('.$where['query']->toSql().')';
+        return $where['col'].' '.$where['op'].' ('.rtrim($where['query']->toSql(), ';').')';
     }
 
     /**

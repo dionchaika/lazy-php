@@ -39,7 +39,7 @@ trait WhereTrait
         }
 
         if ($val instanceof Closure) {
-            return $this->whereSelect($val, $delim, $not);
+            return $this->whereSelect($col, $op, $val, $delim, $not);
         }
 
         [$op, $val] = $this->prepareOpAndVal($op, $val);
@@ -173,19 +173,21 @@ trait WhereTrait
     /**
      * where ( select ... ) ...
      *
+     * @param  string  $col
+     * @param  string  $op
      * @param  \Closure  $callback
      * @param  string  $delim
      * @param  bool  $not
      * @return \Lazy\Db\Query\Builder
      */
-    public function whereSelect(Closure $callback, string $delim = 'and', bool $not = false): Builder
+    public function whereSelect(string $col, string $op, Closure $callback, string $delim = 'and', bool $not = false): Builder
     {
         $query = new static(null, null, $this->compiler);
 
         $callback($query);
 
         $type = $not ? 'SelectNot' : 'Select';
-        $this->wheres[] = compact('type', 'query', 'delim');
+        $this->wheres[] = compact('type', 'col', 'op', 'query', 'delim');
 
         return $this;
     }
