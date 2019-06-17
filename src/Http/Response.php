@@ -5,7 +5,6 @@ namespace Lazy\Http;
 use Throwable;
 use Lazy\Cookie\Cookie;
 use InvalidArgumentException;
-use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
