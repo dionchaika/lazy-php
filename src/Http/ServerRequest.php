@@ -90,12 +90,10 @@ class ServerRequest extends Request implements ServerRequestInterface
             $method = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         }
 
-        $protocolVersion = '1.1';
-        if (!empty($_SERVER['SERVER_PROTOCOL'])) {
-            $serverProtocolParts = explode('/', $_SERVER['SERVER_PROTOCOL'], 2);
-            if (!empty($serverProtocolParts[1]) && preg_match('/^\d\.\d$/', $serverProtocolParts[1])) {
-                $protocolVersion = $serverProtocolParts[1];
-            }
+        if (!empty($_SERVER['SERVER_PROTOCOL']) && preg_match('/^HTTP\/(\d\.\d)$/', $_SERVER['SERVER_PROTOCOL'], $matches)) {
+            $protocolVersion = $matches[1];
+        } else {
+            $protocolVersion = '1.1';
         }
 
         $uri = Uri::fromGlobals();
