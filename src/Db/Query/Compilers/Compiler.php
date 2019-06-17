@@ -114,7 +114,7 @@ class Compiler implements CompilerInterface
             $sql .= ' '.$where['delim'].' '.$this->{'compileWhere'.$where['type']}($where);
         }
 
-        return ' where '.substr($sql, strlen($firstDelim) + 2);
+        return ' where '.ltrim($sql, ' '.$firstDelim.' ');
     }
 
     /**
