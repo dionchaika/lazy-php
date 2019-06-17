@@ -46,6 +46,13 @@ class Builder
     protected $cols = [];
 
     /**
+     * The array of query values.
+     *
+     * @var mixed[]
+     */
+    protected $vals = [];
+
+    /**
      * Is the select query distinct.
      *
      * @var bool
@@ -121,6 +128,87 @@ class Builder
     public function from(string $table): self
     {
         $this->table = $table;
+        return $this;
+    }
+
+    /**
+     * insert...
+     *
+     * @return self
+     */
+    public function insert(): self
+    {
+        $this->statement = 'Insert';
+        return $this;
+    }
+
+    /**
+     * into...
+     *
+     * @param  string  $table
+     * @return self
+     */
+    public function into(string $table): self
+    {
+        $this->table = $table;
+        return $this;
+    }
+
+    /**
+     * values...
+     *
+     * @param  mixed[]  $vals
+     * @return self
+     */
+    public function values(array $vals): self
+    {
+        $this->vals = $vals;
+        return $this;
+    }
+
+    /**
+     * update...
+     *
+     * @return self
+     */
+    public function update(): self
+    {
+        $this->statement = 'Update';
+        return $this;
+    }
+
+    /**
+     * table...
+     *
+     * @param  string  $table
+     * @return self
+     */
+    public function table(string $table): self
+    {
+        $this->table = $table;
+        return $this;
+    }
+
+    /**
+     * set...
+     *
+     * @param  mixed[]  $vals
+     * @return self
+     */
+    public function set(array $vals): self
+    {
+        $this->vals = $vals;
+        return $this;
+    }
+
+    /**
+     * delete...
+     *
+     * @return self
+     */
+    public function delete(): self
+    {
+        $this->statement = 'Delete';
         return $this;
     }
 
