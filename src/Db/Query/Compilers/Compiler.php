@@ -16,19 +16,7 @@ class Compiler implements CompilerInterface
      */
     public function compileSelect(Builder $query): string
     {
-        if (! $query->table) {
-            throw new RuntimeException('Invalid query! Table is not defined.');
-        }
-
-        $columns = $query->columns;
-
-        if (empty($columns)) {
-            $columns[] = '*';
-        }
-
-        $sql = $query->distinct ? 'select distinct' : 'select';
-
-        return $sql.';';
+        return '';
     }
 
     /**
