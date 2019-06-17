@@ -26,6 +26,7 @@ class Compiler implements CompilerInterface
         $sql .= $this->compileCols($query);
         $sql .= $this->compileFrom($query);
         $sql .= $this->compileWhere($query);
+        $sql .= $this->compileOrderBy($query);
 
         return $sql.';';
     }
@@ -114,6 +115,26 @@ class Compiler implements CompilerInterface
         }
 
         return ' where '.substr($sql, strlen($firstDelim) + 2);
+    }
+
+    /**
+     * Compile a query order by clause.
+     *
+     * @param  \Lazy\Db\Query\Builder  $query
+     * @return string
+     */
+    protected function compileOrderBy(Builder $query): string
+    {
+        if (empty($query->ordersBy)) {
+            return '';
+        }
+
+        $sql = '';
+        foreach ($query->ordersBy as $orderBy) {
+            $sql .= implode(', ', $orderBy['Cols']).' '.$orderBy['Order'].', ';
+        }
+
+        return ' order by '.rtrim($sql, ', ');
     }
 
     /**
