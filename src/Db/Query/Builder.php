@@ -132,7 +132,7 @@ class Builder
     public function where($column, $operator = null, $value = null, string $delimiter = 'and', bool $negative = false): self
     {
         if ($column instanceof Closure) {
-            return $this->whereGroup($column);
+            return $this->whereGroup($column, $delimiter, $negative);
         }
 
         if (1 === func_num_args()) {
@@ -146,7 +146,7 @@ class Builder
         }
 
         if ($value instanceof Closure) {
-            return $this->whereSelect($column, $operator, $value);
+            return $this->whereSelect($column, $operator, $value, $delimiter, $negative);
         }
 
         $type = 'Simple';
@@ -164,10 +164,10 @@ class Builder
      * @param  bool  $negative
      * @return self
      */
-    public function whereIs(string $column, $value, $delimiter = 'and', $negative = false): self
+    public function whereIs(string $column, $value, string $delimiter = 'and', bool $negative = false): self
     {
         $type = 'Is';
-        $this->wheres[] = compact('type', 'column', 'operator', 'value', 'delimiter', 'negative');
+        $this->wheres[] = compact('type', 'column', 'value', 'delimiter', 'negative');
 
         return $this;
     }
@@ -180,9 +180,47 @@ class Builder
      * @param  string  $delimiter
      * @return self
      */
-    public function whereIsNot(string $column, $value, $delimiter = 'and'): self
+    public function whereIsNot(string $column, $value, string $delimiter = 'and'): self
     {
         return $this->whereIs($column, $value, $delimiter, true);
+    }
+
+    /**
+     * where ( ... ) ...
+     *
+     * @param  \Closure  $callback
+     * @param  string  $delimiter
+     * @param  bool  $negative
+     * @return self
+     */
+    public function whereGroup(Closure $callback, string $delimiter = 'and', bool $negative = false): self
+    {
+        $query = $this->getSubSelect($callback);
+
+        $type = 'Group';
+        $this->wheres[] = compact('type', 'query', 'delimiter', 'negative');
+
+        return $this;
+    }
+
+    /**
+     * where ( select ... ) ...
+     *
+     * @param  string  $column
+     * @param  string  $operator
+     * @param  \Closure  $callback
+     * @param  string  $delimiter
+     * @param  bool  $negative
+     * @return self
+     */
+    public function whereSelect(string $column, string $operator, Closure $callback, string $delimiter = 'and', bool $negative = false): self
+    {
+        $query = $this->getSubSelect($callback);
+
+        $type = 'Select';
+        $this->wheres[] = compact('type', 'column', 'operator', 'query', 'delimiter', 'negative');
+
+        return $this;
     }
 
     /**
@@ -208,6 +246,26 @@ class Builder
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
+    }
+
+    /**
+     * Get a sub-select for the query.
+     *
+     * @param  \Closure  $callback
+     * @return \Lazy\Db\Query\Builder
+     */
+    protected function getSubSelect(Closure $callback): Builder
+    {
+        $query = new static(
+            $this->compiler
+        );
+
+        $query->table = $this->table;
+        $query->database = $this->database;
+
+        $callback($query);
+
+        return $query;
     }
 
     /**
