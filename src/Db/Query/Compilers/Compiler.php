@@ -119,7 +119,7 @@ class Compiler implements CompilerInterface
             $sql .= $join['secondCol'];
         }
 
-        return ltrim($sql, ' ');
+        return $sql;
     }
 
     /**
