@@ -51,28 +51,22 @@ class Request extends Message implements RequestInterface
         $this->method = $this->filterMethod($method);
 
         if (null === $uri) {
-            $uri = new Uri;
+            $this->uri = new Uri;
         } else if (is_string($uri)) {
-            $uri = new Uri($uri);
+            $this->uri = new Uri($uri);
         }
 
-        $this->uri = $uri;
-
-        foreach ($headers as $name => $value) {
-            $this->setHeader($name, $value);
-        }
+        $this->setHeaders($headers);
 
         if ('1.1' === $this->protocolVersion && ! $this->hasHeader('Host')) {
             $this->setHostHeader();
         }
 
         if (null === $body) {
-            $body = new Stream;
+            $this->body = new Stream;
         } else if (is_string($body) || is_resource($body)) {
-            $body = new Stream($body);
+            $this->body = new Stream($body);
         }
-
-        $this->body = $body;
 
         $this->protocolVersion = $protocolVersion;
     }
