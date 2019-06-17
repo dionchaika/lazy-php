@@ -48,10 +48,40 @@ trait WhereTrait
             return $this->whereIs($col, $val);
         }
 
-        $type = 'Simple';
-        $this->wheres[] = compact('type', 'col', 'op', 'val', 'delim', 'not');
+        $type = $not ? 'NotSimple' : 'Simple';
+        $this->wheres[] = compact('type', 'col', 'op', 'val', 'delim');
 
         return $this;
+    }
+
+    /**
+     * where is...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @param  string  $delim
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function whereIs(string $col, $val, string $delim = 'and', bool $not = false): Builder
+    {
+        $type = $not ? 'IsNot' : 'Is';
+        $this->wheres[] = compact('type', 'col', 'val', 'delim');
+
+        return $this;
+    }
+
+    /**
+     * where is not...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @param  string  $delim
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function whereIsNot(string $col, $val, string $delim = 'and'): Builder
+    {
+        return $this->whereIs($col, $val, $delim, true);
     }
 
     /**
@@ -70,8 +100,8 @@ trait WhereTrait
 
         $wheres = $query->wheres;
 
-        $type = 'Group';
-        $this->wheres[] = compact('type', 'wheres', 'delim', 'not');
+        $type = $not ? 'NotGroup' : 'Group';
+        $this->wheres[] = compact('type', 'wheres', 'delim');
 
         return $this;
     }
@@ -90,8 +120,8 @@ trait WhereTrait
 
         $callback($query);
 
-        $type = 'Group';
-        $this->wheres[] = compact('type', 'query', 'delim', 'not');
+        $type = $not ? 'NotSelect' : 'Select';
+        $this->wheres[] = compact('type', 'query', 'delim');
 
         return $this;
     }
