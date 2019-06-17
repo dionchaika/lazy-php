@@ -105,11 +105,10 @@ trait JoinTrait
             $query = new static(null, null, $this->compiler);
 
             $secondCol($query);
-
-            $this->joins[] = compact('type', 'joinedTable', 'firstCol', 'op', 'query');
-        } else {
-            $this->joins[] = compact('type', 'joinedTable', 'firstCol', 'op', 'secondCol');
+            $secondCol = $query;
         }
+
+        $this->joins[] = compact('type', 'joinedTable', 'firstCol', 'op', 'secondCol');
 
         return $this;
     }
