@@ -22,14 +22,28 @@ class Builder
      *
      * @var string
      */
-    protected $db;
+    public $db;
 
     /**
      * The query table.
      *
      * @var string
      */
-    protected $table;
+    public $table;
+
+    /**
+     * The array of query columns.
+     *
+     * @var string[]
+     */
+    public $cols = [];
+
+    /**
+     * Is the select query distinct.
+     *
+     * @var bool
+     */
+    public $distinct = false;
 
     /**
      * The query compiler.
@@ -37,20 +51,6 @@ class Builder
      * @var \Lazy\Db\Query\CompilerInterface
      */
     protected $compiler;
-
-    /**
-     * The array of query columns.
-     *
-     * @var string[]
-     */
-    protected $cols = [];
-
-    /**
-     * Is the select query distinct.
-     *
-     * @var bool
-     */
-    protected $distinct = false;
 
     /**
      * The current query type.
