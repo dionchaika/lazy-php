@@ -166,6 +166,11 @@ class Builder
      */
     public function whereIs(string $column, $value, string $delimiter = 'and', bool $negative = false): self
     {
+        if ($value instanceof Closure) {
+            $callback = $value;
+            $callback($value = $this->getSubSelectQuery());
+        }
+
         $type = 'Is';
         $this->wheres[] = compact('type', 'column', 'value', 'delimiter', 'negative');
 
@@ -183,6 +188,41 @@ class Builder
     public function whereIsNot(string $column, $value, string $delimiter = 'and'): self
     {
         return $this->whereIs($column, $value, $delimiter, true);
+    }
+
+    /**
+     * where in...
+     *
+     * @param  string  $column
+     * @param  \Closure|mixed[]  $values
+     * @param  string  $delimiter
+     * @param  bool  $negative
+     * @return self
+     */
+    public function whereIn(string $column, array $values, string $delimiter = 'and', bool $negative = false): self
+    {
+        if ($values instanceof Closure) {
+            $callback = $values;
+            $callback($values = $this->getSubSelectQuery());
+        }
+
+        $type = 'In';
+        $this->wheres[] = compact('type', 'column', 'values', 'delimiter', 'negative');
+
+        return $this;
+    }
+
+    /**
+     * where not in...
+     *
+     * @param  string  $column
+     * @param  \Closure|mixed[]  $values
+     * @param  string  $delimiter
+     * @return self
+     */
+    public function whereNotIn(string $column, array $values, string $delimiter = 'and'): self
+    {
+        return $this->whereIn($column, $values, $delimiter, true);
     }
 
     /**
