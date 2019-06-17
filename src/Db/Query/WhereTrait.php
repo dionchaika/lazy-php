@@ -55,6 +55,47 @@ trait WhereTrait
     }
 
     /**
+     * or where...
+     *
+     * @param  mixed  $col
+     * @param  mixed|null  $op
+     * @param  mixed|null  $val
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhere($col, $op = null, $val = null, bool $not = false): Builder
+    {
+        return $this->where($col, $op, $val, 'or', $not);
+    }
+
+    /**
+     * where not...
+     *
+     * @param  mixed  $col
+     * @param  mixed|null  $op
+     * @param  mixed|null  $val
+     * @param  string  $delim
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function whereNot($col, $op = null, $val = null, string $delim = 'and'): Builder
+    {
+        return $this->where($col, $op, $val, $delim, true);
+    }
+
+    /**
+     * or where not...
+     *
+     * @param  mixed  $col
+     * @param  mixed|null  $op
+     * @param  mixed|null  $val
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereNot($col, $op = null, $val = null): Builder
+    {
+        return $this->orWhere($col, $op, $val, true);
+    }
+
+    /**
      * where is...
      *
      * @param  string  $col
@@ -72,6 +113,19 @@ trait WhereTrait
     }
 
     /**
+     * or where is...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @param  bool  $not
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereIs(string $col, $val, bool $not = false): Builder
+    {
+        return $this->whereIs($col, $val, 'or', $not);
+    }
+
+    /**
      * where is not...
      *
      * @param  string  $col
@@ -82,6 +136,18 @@ trait WhereTrait
     public function whereIsNot(string $col, $val, string $delim = 'and'): Builder
     {
         return $this->whereIs($col, $val, $delim, true);
+    }
+
+    /**
+     * or where is not...
+     *
+     * @param  string  $col
+     * @param  mixed  $val
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function orWhereIsNot(string $col, $val): Builder
+    {
+        return $this->orWhereIs($col, $val, true);
     }
 
     /**
