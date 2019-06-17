@@ -2,6 +2,11 @@
 
 namespace Lazy\Db\Query;
 
+use Closure;
+
+/**
+ * @property \Lazy\Db\Query\CompilerInterface $compiler
+ */
 trait JoinTrait
 {
     /**
@@ -95,6 +100,19 @@ trait JoinTrait
     protected function addJoin(string $joinedTable, string $firstCol, $op, $secondCol = null, string $type): Builder
     {
         [$op, $secondCol] = $this->prepareOpAndSecondCol($op, $secondCol);
+
+        if ($secondCol instanceof Closure) {
+            $query = new static(null, null, $this->compiler);
+
+            $secondCol($query);
+
+            $type = $type.'Select';
+            $this->joins[] = compact('type', 'joinedTable', 'firstCol', 'op', 'query');
+        } else {
+            $this->joins[] = compact('type', 'joinedTable', 'firstCol', 'op', 'secondCol');
+        }
+
+        return $this;
     }
 
     /**
