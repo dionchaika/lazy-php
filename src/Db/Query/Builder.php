@@ -234,7 +234,7 @@ class Builder
     {
         $this->ordersBy[] = [
 
-            'Order'  => $order,
+            'Order'   => $order,
             'Columns' => is_array($columns) ? $columns : [$columns]
 
         ];
