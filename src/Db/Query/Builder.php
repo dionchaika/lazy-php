@@ -36,7 +36,7 @@ class Builder
      *
      * @var mixed[]
      */
-    public $cols = [];
+    public $columns = [];
 
     /**
      * Is the query select statement distinct.
@@ -72,18 +72,18 @@ class Builder
     /**
      * select...
      *
-     * @param  mixed  $cols
+     * @param  mixed  $columns
      * @return self
      */
-    public function select($cols = '*'): self
+    public function select($columns = '*'): self
     {
         $this->statement = 'Select';
 
-        $cols = is_array($cols)
-            ? $cols
+        $columns = is_array($columns)
+            ? $columns
             : func_get_args();
 
-        $this->cols = array_merge($this->cols, $cols);
+        $this->columns = array_merge($this->columns, $columns);
 
         return $this;
     }
@@ -137,14 +137,14 @@ class Builder
     }
 
     /**
-     * Prepare an operator and a value.
+     * Prepare a value and an operator.
      *
-     * @param  mixed  $oper
-     * @param  mixed  $val
+     * @param  mixed  $value
+     * @param  mixed  $operator
      * @return mixed[]
      */
-    protected function prepareOpAndVal($oper, $val): array
+    protected function prepareValueAndOperator($value, $operator): array
     {
-        return (null === $val) ? ['=', $oper] : [$oper, $val];
+        return (null === $value) ? [$operator, '='] : [$value, $operator];
     }
 }

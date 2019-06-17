@@ -3,7 +3,7 @@
 namespace Lazy\Db\Query;
 
 /**
- * @method mixed[] prepareOpAndVal($op, $val)
+ * @method mixed[] prepareOperAndVal($oper, $val)
  */
 trait HavingTrait
 {
