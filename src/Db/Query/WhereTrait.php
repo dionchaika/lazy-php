@@ -16,7 +16,7 @@ trait WhereTrait
      *
      * @var mixed[]
      */
-    protected $wheres = [];
+    public $wheres = [];
 
     /**
      * where...

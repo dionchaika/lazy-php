@@ -22,14 +22,35 @@ class Builder
      *
      * @var string
      */
-    protected $db;
+    public $db;
 
     /**
      * The query table.
      *
      * @var string
      */
-    protected $table;
+    public $table;
+
+    /**
+     * The array of query columns.
+     *
+     * @var string[]
+     */
+    public $cols = [];
+
+    /**
+     * The array of query values.
+     *
+     * @var mixed[]
+     */
+    public $vals = [];
+
+    /**
+     * Is the select query distinct.
+     *
+     * @var bool
+     */
+    public $distinct = false;
 
     /**
      * The query compiler.
@@ -37,27 +58,6 @@ class Builder
      * @var \Lazy\Db\Query\CompilerInterface
      */
     protected $compiler;
-
-    /**
-     * The array of query columns.
-     *
-     * @var string[]
-     */
-    protected $cols = [];
-
-    /**
-     * The array of query values.
-     *
-     * @var mixed[]
-     */
-    protected $vals = [];
-
-    /**
-     * Is the select query distinct.
-     *
-     * @var bool
-     */
-    protected $distinct = false;
 
     /**
      * The current query type.
@@ -235,7 +235,7 @@ class Builder
      */
     public function toSql(): string
     {
-        return $this->compiler->{'compile'.$this->statement}();
+        return $this->compiler->{'compile'.$this->statement}($this);
     }
 
     /**
