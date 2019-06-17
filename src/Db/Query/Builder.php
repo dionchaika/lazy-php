@@ -135,4 +135,16 @@ class Builder
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
     }
+
+    /**
+     * Prepare an operator and a value.
+     *
+     * @param  mixed  $op
+     * @param  mixed  $val
+     * @return mixed[]
+     */
+    protected function prepareOpAndVal($op, $val): array
+    {
+        return (null === $val) ? ['=', $op] : [$op, $val];
+    }
 }

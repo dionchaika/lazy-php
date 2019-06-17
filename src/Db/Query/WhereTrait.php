@@ -245,16 +245,4 @@ trait WhereTrait
     {
         return $this->whereSelect($col, $op, $callback, 'or', $not);
     }
-
-    /**
-     * Prepare an operator and a value.
-     *
-     * @param  mixed  $op
-     * @param  mixed  $val
-     * @return mixed[]
-     */
-    protected function prepareOpAndVal($op, $val): array
-    {
-        return (null === $val) ? ['=', $op] : [$op, $val];
-    }
 }
