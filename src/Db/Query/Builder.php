@@ -134,11 +134,15 @@ class Builder
     /**
      * insert...
      *
+     * @param  mixed[]  $vals
      * @return self
      */
-    public function insert(): self
+    public function insert(array $vals = []): self
     {
         $this->statement = 'Insert';
+
+        $this->vals = $vals;
+
         return $this;
     }
 
@@ -169,11 +173,17 @@ class Builder
     /**
      * update...
      *
+     * @param  string|null  $table
      * @return self
      */
-    public function update(): self
+    public function update(?string $table = null): self
     {
         $this->statement = 'Update';
+
+        if (null !== $table) {
+            return $this->table($table);
+        }
+
         return $this;
     }
 
@@ -204,11 +214,17 @@ class Builder
     /**
      * delete...
      *
+     * @param  string|null  $table
      * @return self
      */
-    public function delete(): self
+    public function delete(?string $table = null): self
     {
         $this->statement = 'Delete';
+
+        if (null !== $table) {
+            return $this->table($table);
+        }
+
         return $this;
     }
 
