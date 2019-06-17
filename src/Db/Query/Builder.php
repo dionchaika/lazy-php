@@ -249,7 +249,7 @@ class Builder
     }
 
     /**
-     * Get a sub-select for the query.
+     * Get the sub-select for the query.
      *
      * @param  \Closure  $callback
      * @return \Lazy\Db\Query\Builder
