@@ -217,7 +217,7 @@ abstract class Message implements MessageInterface
     /**
      * Set the message headers.
      *
-     * @param mixed[] $headers
+     * @param  mixed[]  $headers
      * @return void
      *
      * @throws \InvalidArgumentException
@@ -257,7 +257,7 @@ abstract class Message implements MessageInterface
     /**
      * Append the message headers.
      *
-     * @param mixed[] $headers
+     * @param  mixed[]  $headers
      * @return void
      *
      * @throws \InvalidArgumentException
