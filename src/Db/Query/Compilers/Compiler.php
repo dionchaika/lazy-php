@@ -193,6 +193,56 @@ class Compiler implements CompilerInterface
     }
 
     /**
+     * Compile a query where clause in expression.
+     *
+     * @param  mixed[]  $where
+     * @return string
+     */
+    protected function compileWhereIn(array $where): string
+    {
+        return $where['col'].' in ('.implode(', ', array_map(['static', 'compileVal'], $where['vals'])).')';
+    }
+
+    /**
+     * Compile a query where clause not in expression.
+     *
+     * @param  mixed[]  $where
+     * @return string
+     */
+    protected function compileWhereNotIn(array $where): string
+    {
+        return $where['col'].' not in ('.implode(', ', array_map(['static', 'compileVal'], $where['vals'])).')';
+    }
+
+    /**
+     * Compile a query where clause between expression.
+     *
+     * @param  mixed[]  $where
+     * @return string
+     */
+    protected function compileWhereBetween(array $where): string
+    {
+        $firstVal = $this->compileVal($where['firstVal']);
+        $secondVal = $this->compileVal($where['secondVal']);
+
+        return $where['col'].' between '.$firstVal.' and '.$secondVal;
+    }
+
+    /**
+     * Compile a query where clause not between expression.
+     *
+     * @param  mixed[]  $where
+     * @return string
+     */
+    protected function compileWhereNotBetween(array $where): string
+    {
+        $firstVal = $this->compileVal($where['firstVal']);
+        $secondVal = $this->compileVal($where['secondVal']);
+
+        return $where['col'].' not between '.$firstVal.' and '.$secondVal;
+    }
+
+    /**
      * Compile a group of query where clause expressions.
      *
      * @param  mixed[]  $where
