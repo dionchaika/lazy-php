@@ -89,7 +89,6 @@ if (! function_exists('parse_request')) {
 
         $request = (new Request)
             ->withMethod($method)
-            ->withoutHeader('Host')
             ->withRequestTarget($requestTarget)
             ->withProtocolVersion($protocolVersion);
 
@@ -105,7 +104,7 @@ if (! function_exists('parse_request')) {
                 $headerValues = array_map('trim', explode(',', $headerParts[1]));
             }
 
-            $request = $request->withAddedHeader($headerName, $headerValues);
+            $request = $request->withHeader($headerName, $headerValues);
         }
 
         if ('1.1' === $protocolVersion && ! $request->hasHeader('Host')) {
