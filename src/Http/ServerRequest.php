@@ -84,6 +84,14 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function fromString($request)
+    {
+        throw new BadMethodCallException('Method "fromString" is unavaliable for server requests!');
+    }
+
+    /**
      * Create a new request from globals.
      *
      * @return self
@@ -144,14 +152,6 @@ class ServerRequest extends Request implements ServerRequestInterface
         }
 
         return $request->withBody(new Stream('php://input'));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function fromString($request)
-    {
-        throw new BadMethodCallException('Method "fromString" is unavaliable for server requests!');
     }
 
     /**
