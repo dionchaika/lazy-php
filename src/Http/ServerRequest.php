@@ -37,7 +37,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $queryParams = [];
 
     /**
-     * The array of server parameters.
+     * The array of request server parameters.
      *
      * @var mixed[]
      */
@@ -51,7 +51,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $cookieParams = [];
 
     /**
-     * The array of uploaded files.
+     * The array of request uploaded files.
      *
      * @var mixed[]
      */
@@ -153,7 +153,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of server parameters.
+     * Get the array of request server parameters.
      *
      * @return mixed[]
      */
@@ -215,7 +215,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of uploaded files.
+     * Get the array of request uploaded files.
      *
      * @return mixed[]
      */
@@ -226,7 +226,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance
-     * with the specified uploaded files.
+     * with the specified request uploaded files.
      *
      * @param  mixed[]  $uploadedFiles
      * @return static
@@ -338,7 +338,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Filter an array of uploaded files.
+     * Filter an array of request uploaded files.
      *
      * @param  mixed[]  $uploadedFiles
      * @return mixed[]
