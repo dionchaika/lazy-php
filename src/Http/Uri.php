@@ -258,12 +258,16 @@ class Uri implements UriInterface
     /**
      * Get the URI query parameter.
      *
-     * @param  string  $name
+     * @param  string|null  $name
      * @return string
      */
-    public function getQueryParam($name)
+    public function getQueryParam($name = null)
     {
         parse_str($this->query, $queryParams);
+
+        if (null === $name) {
+            return $queryParams;
+        }
 
         return isset($queryParams[$name]) ? $queryParams[$name] : '';
     }
