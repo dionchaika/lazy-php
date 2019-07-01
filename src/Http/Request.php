@@ -45,6 +45,8 @@ class Request extends Message implements RequestInterface
      * @param  mixed[]  $headers
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
                                 $uri = null,
