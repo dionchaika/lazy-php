@@ -129,6 +129,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         if ($request->hasHeader('X-HTTP-Method')) {
             $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method'));
+        } else if ($request->hasHeader('X-HTTP-Method-Override')) {
+            $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method-Override'));
         }
 
         if ('1.1' === $protocolVersion && ! $request->hasHeader('Host')) {
