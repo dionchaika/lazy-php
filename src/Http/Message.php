@@ -148,7 +148,7 @@ abstract class Message implements MessageInterface
     {
         $new = clone $this;
 
-        $new->appendHeader($name, $value);
+        $new->addHeader($name, $value);
 
         return $new;
     }
@@ -238,7 +238,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Append the message header.
+     * Add the message header.
      *
      * @param  string  $name
      * @param  string|string[]  $value
@@ -246,7 +246,7 @@ abstract class Message implements MessageInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function appendHeader($name, $value)
+    public function addHeader($name, $value)
     {
         $normalizedName = strtolower($name);
 
@@ -265,17 +265,17 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * Append the message headers.
+     * Add the message headers.
      *
      * @param  mixed[]  $headers
      * @return void
      *
      * @throws \InvalidArgumentException
      */
-    public function appendHeaders($headers)
+    public function addHeaders($headers)
     {
         foreach ($headers as $name => $value) {
-            $this->appendHeader($name, $value);
+            $this->addHeader($name, $value);
         }
     }
 
