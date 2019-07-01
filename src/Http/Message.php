@@ -69,6 +69,7 @@ abstract class Message implements MessageInterface
     public function getHeaders()
     {
         $headers = [];
+
         foreach ($this->headers as $header) {
             $headers[$header['name']] = $header['values'];
         }

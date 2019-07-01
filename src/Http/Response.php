@@ -136,15 +136,7 @@ class Response extends Message implements ResponseInterface
     {
         $this->statusCode = $this->filterStatusCode($code);
 
-        if (
-            '' === $reasonPhrase
-            && isset(static::REASON_PHRASES[$this->statusCode])
-        ) {
-            $this->reasonPhrase = static::REASON_PHRASES[$this->statusCode];
-        } else {
-            $this->reasonPhrase = $reasonPhrase;
-        }
-
+        $this->setReasonPhrase($reasonPhrase);
         $this->setHeaders($headers);
 
         if (! $body) {
@@ -195,14 +187,7 @@ class Response extends Message implements ResponseInterface
 
         $new->statusCode = $new->filterStatusCode($code);
 
-        if (
-            '' === $reasonPhrase
-            && isset(static::REASON_PHRASES[$new->statusCode])
-        ) {
-            $new->reasonPhrase = static::REASON_PHRASES[$new->statusCode];
-        } else {
-            $new->reasonPhrase = $reasonPhrase;
-        }
+        $new->setReasonPhrase($reasonPhrase);
 
         return $new;
     }
@@ -241,6 +226,23 @@ class Response extends Message implements ResponseInterface
             return to_string($this);
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
+        }
+    }
+
+    /**
+     * Set the response reason phrase.
+     *
+     * @param  string  $reasonPhrase
+     * @return void
+     */
+    protected function setReasonPhrase($reasonPhrase)
+    {
+        if ('' !== $reasonPhrase) {
+            $this->reasonPhrase = $reasonPhrase;
+        } else {
+            $this->reasonPhrase = ! isset(static::REASON_PHRASES[$this->statusCode])
+                ? ''
+                : static::REASON_PHRASES[$this->statusCode];
         }
     }
 
