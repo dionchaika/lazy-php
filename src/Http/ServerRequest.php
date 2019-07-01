@@ -118,9 +118,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         foreach ($_SERVER as $key => $value) {
             if (0 === strpos($key, 'HTTP_')) {
                 $headerName = strtolower(str_replace('_', '-', substr($key, 5)));
-                $headerNameParts = array_map('ucfirst', explode('-', $headerName));
-
-                $headerName = implode('-', $headerNameParts);
+                $headerName = implode('-', array_map('ucfirst', explode('-', $headerName)));
 
                 if (0 === strcasecmp($headerName, 'cookie')) {
                     $headerValues = array_map('trim', explode(';', $value));
