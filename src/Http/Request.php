@@ -208,16 +208,6 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request an XHR request.
-     *
-     * @return bool
-     */
-    public function isXhr()
-    {
-        return 0 === strcasecmp($this->getHeaderLine('X-Requested-With'), 'XMLHttpRequest');
-    }
-
-    /**
      * Check is the request an AJAX request.
      *
      * An alias method name to isXhr.
@@ -230,13 +220,13 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request secured.
+     * Check is the request an XHR request.
      *
      * @return bool
      */
-    public function isSecured(): bool
+    public function isXhr()
     {
-        return 'https' === $this->uri->getScheme();
+        return 0 === strcasecmp($this->getHeaderLine('X-Requested-With'), 'XMLHttpRequest');
     }
 
     /**
@@ -246,9 +236,19 @@ class Request extends Message implements RequestInterface
      *
      * @return bool
      */
-    public function isHttps(): bool
+    public function isHttps()
     {
         return $this->isSecured();
+    }
+
+    /**
+     * Check is the request secured.
+     *
+     * @return bool
+     */
+    public function isSecured()
+    {
+        return 'https' === $this->uri->getScheme();
     }
 
     /**
