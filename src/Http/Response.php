@@ -136,7 +136,12 @@ class Response extends Message implements ResponseInterface
     {
         $this->statusCode = $this->filterStatusCode($code);
 
-        $this->setReasonPhrase($reasonPhrase);
+        if ($reasonPhrase) {
+            $this->reasonPhrase = $reasonPhrase;
+        } else {
+            $this->setReasonPhraseFromStatusCode($this->statusCode);
+        }
+
         $this->setHeaders($headers);
 
         if (! $body) {
@@ -156,7 +161,7 @@ class Response extends Message implements ResponseInterface
      *
      * @throws \InvalidArgumentException
      */
-    public static function fromString(string $response): self
+    public static function fromString($response)
     {
         return parse_response($response);
     }
@@ -187,7 +192,11 @@ class Response extends Message implements ResponseInterface
 
         $new->statusCode = $new->filterStatusCode($code);
 
-        $new->setReasonPhrase($reasonPhrase);
+        if ($reasonPhrase) {
+            $new->reasonPhrase = $reasonPhrase;
+        } else {
+            $new->setReasonPhraseFromStatusCode($new->statusCode);
+        }
 
         return $new;
     }
@@ -215,8 +224,41 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Get the string
-     * representation of the response.
+     * Check is the response a redirect response.
+     *
+     * @return bool
+     */
+    public function isRedirect()
+    {
+        return 300 < $this->statusCode
+            && 400 > $this->statusCode
+            && $this->hasHeader('Location');
+    }
+
+    /**
+     * Check is the response secured.
+     *
+     * @return bool
+     */
+    public function isSecured(): bool
+    {
+        return 'https' === $this->uri->getScheme();
+    }
+
+    /**
+     * Check is the response an HTTPS response.
+     *
+     * An alias method name to isSecured.
+     *
+     * @return bool
+     */
+    public function isHttps(): bool
+    {
+        return $this->isSecured();
+    }
+
+    /**
+     * Stringify the response.
      *
      * @return string
      */
@@ -230,20 +272,15 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Set the response reason phrase.
+     * Set the response reason phrase from the status code.
      *
-     * @param  string  $reasonPhrase
+     * @param  int  $statusCode
      * @return void
      */
-    protected function setReasonPhrase($reasonPhrase)
+    protected function setReasonPhraseFromStatusCode($statusCode)
     {
-        if ('' !== $reasonPhrase) {
-            $this->reasonPhrase = $reasonPhrase;
-        } else {
-            $this->reasonPhrase = ! isset(static::REASON_PHRASES[$this->statusCode])
-                ? ''
-                : static::REASON_PHRASES[$this->statusCode];
-        }
+        $this->reasonPhrase = isset(static::REASON_PHRASES[$statusCode])
+            ? static::REASON_PHRASES[$statusCode] : '';
     }
 
     /**
