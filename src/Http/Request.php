@@ -50,7 +50,7 @@ class Request extends Message implements RequestInterface
     {
         $this->method = $this->filterMethod($method);
 
-        if (null === $uri) {
+        if (! $uri) {
             $this->uri = new Uri;
         } else if (is_string($uri)) {
             $this->uri = new Uri($uri);
@@ -62,7 +62,7 @@ class Request extends Message implements RequestInterface
             $this->setHostHeader();
         }
 
-        if (null === $body) {
+        if (! $body) {
             $this->body = new Stream;
         } else if (is_string($body) || is_resource($body)) {
             $this->body = new Stream($body);
@@ -91,17 +91,19 @@ class Request extends Message implements RequestInterface
      */
     public function getRequestTarget()
     {
-        if (null !== $this->requestTarget && '' !== $this->requestTarget) {
+        if (! empty($this->requestTarget)) {
             return $this->requestTarget;
         }
 
-        if (null !== $this->uri) {
+        if ($this->uri) {
             $requestTarget = $this->uri->getPath();
+
             if ('' === $requestTarget) {
                 $requestTarget = '/';
             }
 
             $query = $this->uri->getQuery();
+
             if ('' !== $query) {
                 $requestTarget .= '?'.$query;
             }
@@ -122,6 +124,7 @@ class Request extends Message implements RequestInterface
     public function withRequestTarget($requestTarget)
     {
         $new = clone $this;
+
         $new->requestTarget = $requestTarget;
 
         return $new;
@@ -149,6 +152,7 @@ class Request extends Message implements RequestInterface
     public function withMethod($method)
     {
         $new = clone $this;
+
         $new->method = $new->filterMethod($method);
 
         return $new;
@@ -161,7 +165,7 @@ class Request extends Message implements RequestInterface
      */
     public function getUri()
     {
-        if (null === $this->uri) {
+        if (! $this->uri) {
             $this->uri = new Uri;
         }
 
@@ -226,19 +230,23 @@ class Request extends Message implements RequestInterface
     protected function setHostHeader()
     {
         $host = $this->uri->getHost();
+
         if ('' !== $host) {
             $port = $this->uri->getPort();
+
             if (null !== $port) {
                 $host .= ':'.$port;
             }
 
             $host = [
+
                 'host' => [
 
                     'name'   => 'Host',
                     'values' => [$host]
 
                 ]
+
             ];
 
             $this->headers = array_merge($host, $this->headers);

@@ -132,7 +132,10 @@ class Response extends Message implements ResponseInterface
     {
         $this->statusCode = $this->filterStatusCode($code);
 
-        if ('' === $reasonPhrase && isset(static::REASON_PHRASES[$this->statusCode])) {
+        if (
+            '' === $reasonPhrase
+            && isset(static::REASON_PHRASES[$this->statusCode])
+        ) {
             $this->reasonPhrase = static::REASON_PHRASES[$this->statusCode];
         } else {
             $this->reasonPhrase = $reasonPhrase;
@@ -140,7 +143,7 @@ class Response extends Message implements ResponseInterface
 
         $this->setHeaders($headers);
 
-        if (null === $body) {
+        if (! $body) {
             $this->body = new Stream;
         } else if (is_string($body) || is_resource($body)) {
             $this->body = new Stream($body);
@@ -188,7 +191,10 @@ class Response extends Message implements ResponseInterface
 
         $new->statusCode = $new->filterStatusCode($code);
 
-        if ('' === $reasonPhrase && isset(static::REASON_PHRASES[$new->statusCode])) {
+        if (
+            '' === $reasonPhrase
+            && isset(static::REASON_PHRASES[$new->statusCode])
+        ) {
             $new->reasonPhrase = static::REASON_PHRASES[$new->statusCode];
         } else {
             $new->reasonPhrase = $reasonPhrase;
