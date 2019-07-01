@@ -100,7 +100,7 @@ class Stream implements StreamInterface
         } else if (is_resource($body)) {
             $this->resource = $body;
         } else {
-            throw new InvalidArgumentException('Resource must be the PHP resource!');
+            throw new InvalidArgumentException('Body must be a string, a filename or the PHP resource!');
         }
 
         if (isset($opts['size'])) {
