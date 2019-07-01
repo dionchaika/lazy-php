@@ -2,6 +2,7 @@
 
 namespace Lazy\Http;
 
+use RuntimeException;
 use InvalidArgumentException;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
@@ -9,8 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 
 if (! function_exists('to_string')) {
     /**
-     * Get the string
-     * representation of the HTTP message.
+     * Stringify the HTTP message.
      *
      * @param  \Psr\Http\Message\MessageInterface  $message
      * @return string
@@ -18,18 +18,15 @@ if (! function_exists('to_string')) {
     function to_string(MessageInterface $message): string
     {
         if ($message instanceof RequestInterface) {
-            $str = implode(' ', [
-
-                $message->getMethod(),
-                $message->getRequestTarget(),
-                'HTTP/'.$message->getProtocolVersion()
-
-            ])."\r\n";
+            $str = sprintf('%s %s HTTP/%s', $message->getMethod(),
+                                            $message->getRequestTarget(),
+                                            $message->getProtocolVersion());
 
             foreach (array_keys($message->getHeaders()) as $header) {
                 if (0 === strcasecmp($header, 'cookie')) {
-                    $cookie = implode('; ', $message->getHeader('Cookie'));
-                    $str .= "{$header}: {$cookie}\r\n";
+                    $str .= sprintf('%s: %s', $header, implode(
+                        '; ', $message->getHeader('Cookie'))
+                    );
                 } else {
                     $str .= "{$header}: {$message->getHeaderLine($header)}\r\n";
                 }
