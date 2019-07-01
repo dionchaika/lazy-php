@@ -32,13 +32,6 @@ class Stream implements StreamInterface
     protected $size;
 
     /**
-     * The stream underlying resource.
-     *
-     * @var resource
-     */
-    protected $resource;
-
-    /**
      * Is the stream seekable.
      *
      * @var bool
@@ -58,6 +51,13 @@ class Stream implements StreamInterface
      * @var bool
      */
     protected $writable = false;
+
+    /**
+     * The stream underlying resource.
+     *
+     * @var resource
+     */
+    protected $resource;
 
     /**
      * The stream constructor.
