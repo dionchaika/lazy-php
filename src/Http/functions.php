@@ -22,12 +22,12 @@ if (! function_exists('to_string')) {
                                             $message->getRequestTarget(),
                                             $message->getProtocolVersion());
 
-            foreach (array_keys($message->getHeaders()) as $name) {
-                $value = 0 !== strcasecmp($name, 'cookie')
-                    ? $message->getHeaderLine($name)
+            foreach (array_keys($message->getHeaders()) as $headerName) {
+                $headerValue = (0 !== strcasecmp($headerName, 'cookie'))
+                    ? $message->getHeaderLine($headerName)
                     : implode(';', $message->getHeader('Cookie'));
 
-                $str .= sprintf('%s: %s', $name, $value);
+                $str .= sprintf('%s: %s', $headerName, $headerValue);
             }
         } else if ($message instanceof ResponseInterface) {
             $str = sprintf('HTTP/%s %s %s', $message->getProtocolVersion(),
