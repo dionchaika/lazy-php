@@ -59,6 +59,13 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $uploadedFiles = [];
 
     /**
+     * The original request method.
+     *
+     * @var string
+     */
+    protected $originalMethod = Method::GET;
+
+    /**
      * The request constructor.
      *
      * @param  string  $method
@@ -78,6 +85,7 @@ class ServerRequest extends Request implements ServerRequestInterface
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
+        $this->originalMethod = $method;
         $this->serverParams = $serverParams;
 
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
@@ -101,11 +109,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function fromGlobals()
     {
-        if (isset($_POST['_method'])) {
-            $method = $_POST['_method'];
-        } else {
-            $method = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
-        }
+        $method = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
 
         $protocolVersion = '1.1';
 
@@ -131,17 +135,15 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $headerName = strtolower(str_replace('_', '-', substr($key, 5)));
                 $headerName = implode('-', array_map('ucfirst', explode('-', $headerName)));
 
-                if (0 === strcasecmp($headerName, 'cookie')) {
-                    $headerValue = array_map('trim', explode(';', $value));
-                } else {
-                    $headerValue = array_map('trim', explode(',', $value));
-                }
+                $delimiter = (0 === strcasecmp($headerName, 'cookie')) ? ';' : ',';
 
-                $request = $request->withHeader($headerName, $headerValue);
+                $request = $request->withHeader($headerName, array_map('trim', explode($delimiter, $value)));
             }
         }
 
-        if ($request->hasHeader('X-HTTP-Method')) {
+        if (isset($_POST['_method'])) {
+            $request = $request->withMethod($_POST['_method']);
+        } else if ($request->hasHeader('X-HTTP-Method')) {
             $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method'));
         } else if ($request->hasHeader('X-HTTP-Method-Override')) {
             $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method-Override'));
@@ -328,23 +330,23 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Check is the request method overriden.
-     *
-     * @return bool
-     */
-    public function isMethodOverriden()
-    {
-        return $this->method !== $this->getOriginalMethod();
-    }
-
-    /**
      * Get the request original method.
      *
      * @return string
      */
     public function getOriginalMethod()
     {
-        return ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+        return $this->originalMethod;
+    }
+
+    /**
+     * Check is the request method overriden.
+     *
+     * @return bool
+     */
+    public function isMethodOverriden()
+    {
+        return $this->method !== $this->originalMethod;
     }
 
     /**
