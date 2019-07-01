@@ -208,6 +208,38 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Check is the request an XHR request.
+     *
+     * @return bool
+     */
+    public function isXhr()
+    {
+        return 0 === strcasecmp($this->getHeaderLine('X-Requested-With'), 'XMLHttpRequest');
+    }
+
+    /**
+     * Check is the request an AJAX request.
+     *
+     * An alias method name to isXhr.
+     *
+     * @return bool
+     */
+    public function isAjax()
+    {
+        return $this->isXhr();
+    }
+
+    /**
+     * Check is the request secured.
+     *
+     * @return bool
+     */
+    public function isSecured(): bool
+    {
+        return 'https' === $this->uri->getScheme();
+    }
+
+    /**
      * Check is the request a GET request.
      *
      * @return bool
