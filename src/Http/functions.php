@@ -18,16 +18,16 @@ if (! function_exists('to_string')) {
     function to_string(MessageInterface $message): string
     {
         if ($message instanceof RequestInterface) {
-            $str = sprintf('%s %s HTTP/%s', $message->getMethod(),
-                                            $message->getRequestTarget(),
-                                            $message->getProtocolVersion());
+            $str = sprintf("%s %s HTTP/%s\r\n", $message->getMethod(),
+                                                $message->getRequestTarget(),
+                                                $message->getProtocolVersion());
 
-            foreach (array_keys($message->getHeaders()) as $headerName) {
-                $headerValue = (0 !== strcasecmp($headerName, 'cookie'))
-                    ? $message->getHeaderLine($headerName)
+            foreach (array_keys($message->getHeaders()) as $name) {
+                $value = (0 !== strcasecmp($name, 'cookie'))
+                    ? $message->getHeaderLine($name)
                     : implode(';', $message->getHeader('Cookie'));
 
-                $str .= sprintf('%s: %s', $headerName, $headerValue);
+                $str .= sprintf("%s: %s\r\n", $name, $value);
             }
         } else if ($message instanceof ResponseInterface) {
             $str = sprintf('HTTP/%s %s %s', $message->getProtocolVersion(),
