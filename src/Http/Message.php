@@ -314,6 +314,7 @@ abstract class Message implements MessageInterface
 
             for ($i = 0; $i < strlen($value); $i++) {
                 $ascii = ord($value[$i]);
+
                 if ((32 > $ascii && (9 !== $ascii && 10 !== $ascii && 13 !== $ascii)) || 127 === $ascii || 254 < $ascii) {
                     throw new InvalidArgumentException('Invalid header value! Header value must be compliant with the "RFC 7230" standart.');
                 }
