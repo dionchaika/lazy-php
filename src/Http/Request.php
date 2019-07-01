@@ -95,27 +95,23 @@ class Request extends Message implements RequestInterface
      */
     public function getRequestTarget()
     {
-        if (! empty($this->requestTarget)) {
+        if ($this->requestTarget) {
             return $this->requestTarget;
         }
 
-        if ($this->uri) {
-            $requestTarget = $this->uri->getPath();
-
-            if ('' === $requestTarget) {
-                $requestTarget = '/';
-            }
-
-            $query = $this->uri->getQuery();
-
-            if ('' !== $query) {
-                $requestTarget .= '?'.$query;
-            }
-
-            return $requestTarget;
+        if (! $this->uri) {
+            return '/';
         }
 
-        return '/';
+        $requestTarget = '/'.ltrim($this->uri->getPath(), '/');
+
+        $query = $this->uri->getQuery();
+
+        if ('' !== $query) {
+            $requestTarget = "{$requestTarget}?{$query}";
+        }
+
+        return $requestTarget;
     }
 
     /**
