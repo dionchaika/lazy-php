@@ -317,6 +317,18 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
+     * Check is the request method overriden.
+     *
+     * @return bool
+     */
+    public function isMethodOverriden()
+    {
+        $serverMethod = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+
+        return $this->method !== $serverMethod;
+    }
+
+    /**
      * Filter an array of uploaded files.
      *
      * @param  mixed[]  $uploadedFiles
