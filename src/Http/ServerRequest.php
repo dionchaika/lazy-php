@@ -357,7 +357,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             if (is_array($uploadedFile)) {
                 $this->filterUploadedFiles($uploadedFile);
             } else if (! $uploadedFile instanceof UploadedFileInterface) {
-                throw new InvalidArgumentException('Invalid structure of uploaded files tree!');
+                throw new InvalidArgumentException('Invalid structure of the uploaded files tree!');
             }
         }
 
