@@ -278,7 +278,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a OPTIONS request.
+     * Check is the request an OPTIONS request.
      *
      * @return bool
      */
