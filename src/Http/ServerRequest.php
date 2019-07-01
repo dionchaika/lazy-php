@@ -132,12 +132,12 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         foreach ($_SERVER as $key => $value) {
             if (0 === strpos($key, 'HTTP_')) {
-                $headerName = strtolower(str_replace('_', '-', substr($key, 5)));
-                $headerName = implode('-', array_map('ucfirst', explode('-', $headerName)));
+                $name = strtolower(str_replace('_', '-', substr($key, 5)));
+                $name = implode('-', array_map('ucfirst', explode('-', $name)));
 
-                $delimiter = (0 === strcasecmp($headerName, 'cookie')) ? ';' : ',';
+                $delimiter = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
 
-                $request = $request->withHeader($headerName, array_map('trim', explode($delimiter, $value)));
+                $request = $request->withHeader($name, array_map('trim', explode($delimiter, $value)));
             }
         }
 
