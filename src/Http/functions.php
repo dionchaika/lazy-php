@@ -22,31 +22,25 @@ if (! function_exists('to_string')) {
                                             $message->getRequestTarget(),
                                             $message->getProtocolVersion());
 
-            foreach (array_keys($message->getHeaders()) as $header) {
-                if (0 === strcasecmp($header, 'cookie')) {
-                    $str .= sprintf('%s: %s', $header, implode(
-                        '; ', $message->getHeader('Cookie'))
-                    );
-                } else {
-                    $str .= "{$header}: {$message->getHeaderLine($header)}\r\n";
-                }
+            foreach (array_keys($message->getHeaders()) as $name) {
+                $value = 0 !== strcasecmp($name, 'cookie')
+                    ? $message->getHeaderLine($name)
+                    : implode(';', $message->getHeader('Cookie'));
+
+                $str .= sprintf('%s: %s', $name, $value);
             }
         } else if ($message instanceof ResponseInterface) {
-            $str = implode(' ', [
+            $str = sprintf('HTTP/%s %s %s', $message->getProtocolVersion(),
+                                            $message->getStatusCode(),
+                                            $message->getReasonPhrase());
 
-                'HTTP/'.$message->getProtocolVersion(),
-                $message->getStatusCode(),
-                $message->getReasonPhrase()
-
-            ])."\r\n";
-
-            foreach (array_keys($message->getHeaders()) as $header) {
-                if (0 === strcasecmp($header, 'set-cookie')) {
+            foreach (array_keys($message->getHeaders()) as $name) {
+                if (0 === strcasecmp($name, 'set-cookie')) {
                     foreach ($message->getHeader('Set-Cookie') as $setCookie) {
-                        $str .= "{$header}: {$setCookie}\r\n";
+                        $str .= "{$name}: {$setCookie}\r\n";
                     }
                 } else {
-                    $str .= "{$header}: {$message->getHeaderLine($header)}\r\n";
+                    $str .= "{$name}: {$message->getHeaderLine($name)}\r\n";
                 }
             }
         }
