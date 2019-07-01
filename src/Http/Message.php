@@ -55,6 +55,7 @@ abstract class Message implements MessageInterface
     public function withProtocolVersion($version)
     {
         $new = clone $this;
+
         $new->protocolVersion = $version;
 
         return $new;
@@ -95,6 +96,7 @@ abstract class Message implements MessageInterface
     public function getHeader($name)
     {
         $name = strtolower($name);
+
         return isset($this->headers[$name]) ? $this->headers[$name]['values'] : [];
     }
 
@@ -107,6 +109,7 @@ abstract class Message implements MessageInterface
     public function getHeaderLine($name)
     {
         $name = strtolower($name);
+
         return isset($this->headers[$name]) ? implode(', ', $this->headers[$name]['values']) : '';
     }
 
@@ -123,6 +126,7 @@ abstract class Message implements MessageInterface
     public function withHeader($name, $value)
     {
         $new = clone $this;
+
         $new->setHeader($name, $value);
 
         return $new;
@@ -142,6 +146,7 @@ abstract class Message implements MessageInterface
     public function withAddedHeader($name, $value)
     {
         $new = clone $this;
+
         $new->appendHeader($name, $value);
 
         return $new;
@@ -157,6 +162,7 @@ abstract class Message implements MessageInterface
     public function withoutHeader($name)
     {
         $new = clone $this;
+
         unset($new->headers[strtolower($name)]);
 
         return $new;
@@ -171,7 +177,7 @@ abstract class Message implements MessageInterface
      */
     public function getBody()
     {
-        if (null === $this->body) {
+        if (! $this->body) {
             $this->body = new Stream;
         }
 
@@ -190,6 +196,7 @@ abstract class Message implements MessageInterface
     public function withBody(StreamInterface $body)
     {
         $new = clone $this;
+
         $new->body = $new->filterBody($body);
 
         return $new;
@@ -242,7 +249,7 @@ abstract class Message implements MessageInterface
     {
         $normalizedName = strtolower($name);
 
-        if (!isset($this->headers[$normalizedName])) {
+        if (! isset($this->headers[$normalizedName])) {
             $this->headers[$normalizedName] = [
 
                 'name'   => $this->filterHeaderName($name),
@@ -251,7 +258,9 @@ abstract class Message implements MessageInterface
             ];
         }
 
-        $this->headers[$normalizedName]['values'] = array_merge($this->headers[$normalizedName]['values'], $this->filterHeaderValue($value));
+        $this->headers[$normalizedName]['values'] = array_merge(
+            $this->headers[$normalizedName]['values'], $this->filterHeaderValue($value)
+        );
     }
 
     /**
@@ -303,7 +312,7 @@ abstract class Message implements MessageInterface
                 throw new InvalidArgumentException('Invalid header value! Header value must be compliant with the "RFC 7230" standart.');
             }
 
-            for ($i = 0; $i < strlen($value); ++$i) {
+            for ($i = 0; $i < strlen($value); $i++) {
                 $ascii = ord($value[$i]);
                 if ((32 > $ascii && (9 !== $ascii && 10 !== $ascii && 13 !== $ascii)) || 127 === $ascii || 254 < $ascii) {
                     throw new InvalidArgumentException('Invalid header value! Header value must be compliant with the "RFC 7230" standart.');
