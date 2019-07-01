@@ -224,18 +224,6 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response a redirect response.
-     *
-     * @return bool
-     */
-    public function isRedirect()
-    {
-        return 300 < $this->statusCode
-            && 400 > $this->statusCode
-            && $this->hasHeader('Location');
-    }
-
-    /**
      * Check is the response an HTTPS response.
      *
      * An alias method name to isSecured.
@@ -255,6 +243,62 @@ class Response extends Message implements ResponseInterface
     public function isSecured(): bool
     {
         return 'https' === $this->uri->getScheme();
+    }
+
+    /**
+     * Check is the response an informational response.
+     *
+     * @return bool
+     */
+    public function isInformational()
+    {
+        return 100 <= $this->statusCode
+            && 199 >= $this->statusCode;
+    }
+
+    /**
+     * Check is the response a successful response.
+     *
+     * @return bool
+     */
+    public function isSuccessful()
+    {
+        return 200 <= $this->statusCode
+            && 299 >= $this->statusCode;
+    }
+
+    /**
+     * Check is the response a redirect response.
+     *
+     * @return bool
+     */
+    public function isRedirect()
+    {
+        return 300 <= $this->statusCode
+            && 399 >= $this->statusCode
+            && $this->hasHeader('Location');
+    }
+
+    /**
+     * Check is the response a client error response.
+     *
+     * @return bool
+     */
+    public function isClientError()
+    {
+        return 400 <= $this->statusCode
+            && 499 >= $this->statusCode;
+    }
+
+    /**
+     * Check is the response a server error response.
+     *
+     * @return bool
+     */
+    public function isServerError()
+    {
+        return 500 <= $this->statusCode
+            && 599 >= $this->statusCode;
     }
 
     /**
