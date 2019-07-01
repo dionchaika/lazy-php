@@ -15,34 +15,6 @@ use Psr\Http\Message\ServerRequestInterface;
 class ServerRequest extends Request implements ServerRequestInterface
 {
     /**
-     * The array of server parameters.
-     *
-     * @var mixed[]
-     */
-    protected $serverParams = [];
-
-    /**
-     * The array of request cookie parameters.
-     *
-     * @var mixed[]
-     */
-    protected $cookieParams = [];
-
-    /**
-     * The array of request query parameters.
-     *
-     * @var mixed[]
-     */
-    protected $queryParams = [];
-
-    /**
-     * The array of uploaded files.
-     *
-     * @var mixed[]
-     */
-    protected $uploadedFiles = [];
-
-    /**
      * The request parsed body.
      *
      * @var mixed[]|object|null
@@ -57,6 +29,34 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $attributes = [];
 
     /**
+     * The array of request query parameters.
+     *
+     * @var mixed[]
+     */
+    protected $queryParams = [];
+
+    /**
+     * The array of server parameters.
+     *
+     * @var mixed[]
+     */
+    protected $serverParams = [];
+
+    /**
+     * The array of request cookie parameters.
+     *
+     * @var mixed[]
+     */
+    protected $cookieParams = [];
+
+    /**
+     * The array of uploaded files.
+     *
+     * @var mixed[]
+     */
+    protected $uploadedFiles = [];
+
+    /**
      * The request constructor.
      *
      * @param  string  $method
@@ -68,9 +68,15 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($method = Method::GET, $uri = null, $serverParams = [], $headers = [], $body = null, $protocolVersion = '1.1')
+    public function __construct($method = Method::GET,
+                                $uri = null,
+                                $serverParams = [],
+                                $headers = [],
+                                $body = null,
+                                $protocolVersion = '1.1')
     {
         $this->serverParams = $serverParams;
+
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
     }
 
@@ -90,7 +96,10 @@ class ServerRequest extends Request implements ServerRequestInterface
             $method = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         }
 
-        if (!empty($_SERVER['SERVER_PROTOCOL']) && preg_match('/^HTTP\/(\d\.\d)$/', $_SERVER['SERVER_PROTOCOL'], $matches)) {
+        if (
+            ! empty($_SERVER['SERVER_PROTOCOL'])
+            && preg_match('/^HTTP\/(\d\.\d)$/', $_SERVER['SERVER_PROTOCOL'], $matches)
+        ) {
             $protocolVersion = $matches[1];
         } else {
             $protocolVersion = '1.1';
@@ -100,7 +109,6 @@ class ServerRequest extends Request implements ServerRequestInterface
         $uploadedFiles = UploadedFile::fromGlobals();
 
         $request = (new static($method, $uri, $_SERVER))
-            ->withoutHeader('Host')
             ->withProtocolVersion($protocolVersion)
             ->withQueryParams($_GET)
             ->withParsedBody($_POST)
@@ -115,8 +123,12 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $headerName = implode('-', $headerNameParts);
                 $headerValues = array_map('trim', explode(',', $value));
 
-                $request = $request->withAddedHeader($headerName, $headerValues);
+                $request = $request->withHeader($headerName, $headerValues);
             }
+        }
+
+        if ($request->hasHeader('X-HTTP-Method')) {
+            $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method'));
         }
 
         if ('1.1' === $protocolVersion && ! $request->hasHeader('Host')) {
@@ -156,6 +168,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function withCookieParams(array $cookies)
     {
         $new = clone $this;
+
         $new->cookieParams = $cookies;
 
         return $new;
@@ -181,6 +194,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function withQueryParams(array $query)
     {
         $new = clone $this;
+
         $new->queryParams = $query;
 
         return $new;
@@ -208,6 +222,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function withUploadedFiles(array $uploadedFiles)
     {
         $new = clone $this;
+
         $new->uploadedFiles = $new->filterUploadedFiles($uploadedFiles);
 
         return $new;
@@ -235,6 +250,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function withParsedBody($data)
     {
         $new = clone $this;
+
         $new->parsedBody = $new->filterParsedBody($data);
 
         return $new;
@@ -273,6 +289,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function withAttribute($name, $value)
     {
         $new = clone $this;
+
         $new->attributes[$name] = $value;
 
         return $new;
@@ -288,6 +305,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public function withoutAttribute($name)
     {
         $new = clone $this;
+
         unset($new->attributes[$name]);
 
         return $new;
