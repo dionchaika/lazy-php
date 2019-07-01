@@ -84,6 +84,7 @@ class Request extends Message implements RequestInterface
      * @param  string  $request
      * @return self
      *
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public static function fromString($request)
