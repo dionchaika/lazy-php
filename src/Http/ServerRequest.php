@@ -68,6 +68,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      *
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
