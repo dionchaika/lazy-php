@@ -256,6 +256,19 @@ class Uri implements UriInterface
     }
 
     /**
+     * Get the URI query parameter.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    public function getQueryParam($name)
+    {
+        parse_str($this->query, $queryParams);
+
+        return isset($queryParams[$name]) ? $queryParams[$name] : '';
+    }
+
+    /**
      * Get the URI fragment.
      *
      * @return string
@@ -354,19 +367,6 @@ class Uri implements UriInterface
         $new->path = $new->filterPath($path);
 
         return $new;
-    }
-
-    /**
-     * Get the URI query parameter.
-     *
-     * @param  string  $name
-     * @return string
-     */
-    public function getQueryParam($name)
-    {
-        parse_str($this->query, $queryParams);
-
-        return isset($queryParams[$name]) ? $queryParams[$name] : '';
     }
 
     /**
