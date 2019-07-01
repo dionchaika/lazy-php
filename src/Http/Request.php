@@ -83,7 +83,7 @@ class Request extends Message implements RequestInterface
      *
      * @throws \InvalidArgumentException
      */
-    public static function fromString(string $request): self
+    public static function fromString($request)
     {
         return parse_request($request);
     }
