@@ -236,16 +236,6 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response secured.
-     *
-     * @return bool
-     */
-    public function isSecured(): bool
-    {
-        return 'https' === $this->uri->getScheme();
-    }
-
-    /**
      * Check is the response an HTTPS response.
      *
      * An alias method name to isSecured.
@@ -255,6 +245,16 @@ class Response extends Message implements ResponseInterface
     public function isHttps(): bool
     {
         return $this->isSecured();
+    }
+
+    /**
+     * Check is the response secured.
+     *
+     * @return bool
+     */
+    public function isSecured(): bool
+    {
+        return 'https' === $this->uri->getScheme();
     }
 
     /**
