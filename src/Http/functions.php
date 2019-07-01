@@ -36,8 +36,8 @@ if (! function_exists('to_string')) {
 
             foreach (array_keys($message->getHeaders()) as $name) {
                 if (0 === strcasecmp($name, 'set-cookie')) {
-                    foreach ($message->getHeader('Set-Cookie') as $setCookie) {
-                        $str .= sprintf("%s: %s\r\n", $name, $setCookie);
+                    foreach ($message->getHeader($name) as $cookie) {
+                        $str .= sprintf("%s: %s\r\n", $name, $cookie);
                     }
                 } else {
                     $str .= sprintf("%s: %s\r\n", $name, $message->getHeaderLine($name));
