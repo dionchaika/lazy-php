@@ -240,6 +240,18 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Check is the request an HTTPS request.
+     *
+     * An alias method name to isSecured.
+     *
+     * @return bool
+     */
+    public function isHttps(): bool
+    {
+        return $this->isSecured();
+    }
+
+    /**
      * Check is the request a GET request.
      *
      * @return bool
