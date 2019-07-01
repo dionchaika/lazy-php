@@ -96,13 +96,13 @@ class ServerRequest extends Request implements ServerRequestInterface
             $method = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         }
 
+        $protocolVersion = '1.1';
+
         if (
             ! empty($_SERVER['SERVER_PROTOCOL'])
             && preg_match('/^HTTP\/(\d\.\d)$/', $_SERVER['SERVER_PROTOCOL'], $matches)
         ) {
             $protocolVersion = $matches[1];
-        } else {
-            $protocolVersion = '1.1';
         }
 
         $uri = Uri::fromGlobals();
@@ -121,7 +121,12 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $headerNameParts = array_map('ucfirst', explode('-', $headerName));
 
                 $headerName = implode('-', $headerNameParts);
-                $headerValues = array_map('trim', explode(',', $value));
+
+                if (0 === strcasecmp($headerName, 'cookie')) {
+                    $headerValues = array_map('trim', explode(';', $value));
+                } else {
+                    $headerValues = array_map('trim', explode(',', $value));
+                }
 
                 $request = $request->withHeader($headerName, $headerValues);
             }
