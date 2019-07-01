@@ -128,7 +128,11 @@ class Response extends Message implements ResponseInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($code = StatusCode::OK, $reasonPhrase = '', $headers = [], $body = null, $protocolVersion = '1.1')
+    public function __construct($code = StatusCode::OK,
+                                $reasonPhrase = '',
+                                $headers = [],
+                                $body = null,
+                                $protocolVersion = '1.1')
     {
         $this->statusCode = $this->filterStatusCode($code);
 

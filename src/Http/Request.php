@@ -46,7 +46,11 @@ class Request extends Message implements RequestInterface
      * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
      * @param  string  $protocolVersion
      */
-    public function __construct($method = Method::GET, $uri = null, $headers = [], $body = null, $protocolVersion = '1.1')
+    public function __construct($method = Method::GET,
+                                $uri = null,
+                                $headers = [],
+                                $body = null,
+                                $protocolVersion = '1.1')
     {
         $this->method = $this->filterMethod($method);
 
