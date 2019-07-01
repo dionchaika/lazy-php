@@ -82,13 +82,15 @@ class Stream implements StreamInterface
                 $mode = $this->filterMode($mode);
 
                 $resource = fopen($body, $mode);
+
                 if (false === $resource) {
-                    throw new RuntimeException('Unable to create a stream from file: '.$body.'!');
+                    throw new RuntimeException("Unable to create a stream from file: {$body}!");
                 }
 
                 $this->resource = $resource;
             } else {
                 $resource = fopen('php://temp', 'r+');
+
                 if (false === $resource || false === fwrite($resource, $body)) {
                     throw new RuntimeException('Unable to create a stream from string!');
                 }
@@ -105,6 +107,7 @@ class Stream implements StreamInterface
             $this->size = $opts['size'];
         } else {
             $fstat = fstat($this->resource);
+
             if (false === $fstat) {
                 $this->size = null;
             } else {
@@ -186,6 +189,7 @@ class Stream implements StreamInterface
         }
 
         $position = ftell($this->resource);
+
         if (false === $position) {
             throw new RuntimeException('Unable to tell the current position of the stream read/write pointer!');
         }
@@ -278,11 +282,13 @@ class Stream implements StreamInterface
         }
 
         $bytes = fwrite($this->resource, $string);
+
         if (false === $bytes) {
             throw new RuntimeException('Unable to write data to the stream!');
         }
 
         $fstat = fstat($this->resource);
+
         if (false === $fstat) {
             $this->size = null;
         } else {
@@ -321,6 +327,7 @@ class Stream implements StreamInterface
         }
 
         $data = fread($this->resource, $length);
+
         if (false === $data) {
             throw new RuntimeException('Unable to read data from the stream!');
         }
@@ -346,6 +353,7 @@ class Stream implements StreamInterface
         }
 
         $contents = stream_get_contents($this->resource);
+
         if (false === $contents) {
             throw new RuntimeException('Unable to get the contents of the stream!');
         }

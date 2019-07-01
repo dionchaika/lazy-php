@@ -84,6 +84,7 @@ class Uri implements UriInterface
     {
         if ('' !== $uri) {
             $uriParts = parse_url($uri);
+
             if (false === $uriParts) {
                 throw new InvalidArgumentException('Unable to parse the URI: '.$uri.'!');
             }
@@ -98,6 +99,7 @@ class Uri implements UriInterface
             $fragment = ! empty($uriParts['fragment']) ? $uriParts['fragment'] : '';
 
             $userInfo = $user;
+
             if ('' !== $userInfo && null !== $password) {
                 $userInfo .= ':'.$password;
             }
@@ -256,18 +258,39 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI query parameter.
+     * Get the URI query parameters.
      *
-     * @param  string|null  $name
-     * @return string
+     * @return mixed[]
      */
-    public function getQueryParam($name = null)
+    public function getQueryParams()
     {
         parse_str($this->query, $queryParams);
 
-        if (null === $name) {
-            return $queryParams;
-        }
+        return $queryParams;
+    }
+
+    /**
+     * Check is the URI query parameter exists.
+     *
+     * @param  string  $name
+     * @return bool
+     */
+    public function hasQueryParam($name)
+    {
+        parse_str($this->query, $queryParams);
+
+        return isset($queryParams[$name]);
+    }
+
+    /**
+     * Get the URI query parameter.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    public function getQueryParam($name)
+    {
+        $queryParams = $this->getQueryParams();
 
         return isset($queryParams[$name]) ? $queryParams[$name] : '';
     }
@@ -312,11 +335,13 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null)
     {
         $userInfo = $user;
-        if ('' !== $userInfo && null !== $password && '' !== $password) {
+
+        if ('' !== $userInfo && ! empty($password)) {
             $userInfo .= ':'.$password;
         }
 
         $new = clone $this;
+
         $new->userInfo = $userInfo;
 
         return $new;
@@ -334,6 +359,7 @@ class Uri implements UriInterface
     public function withHost($host)
     {
         $new = clone $this;
+
         $new->host = $new->filterHost($host);
 
         return $new;
@@ -351,6 +377,7 @@ class Uri implements UriInterface
     public function withPort($port)
     {
         $new = clone $this;
+
         $new->port = $new->filterPort($port);
 
         return $new;
@@ -368,6 +395,7 @@ class Uri implements UriInterface
     public function withPath($path)
     {
         $new = clone $this;
+
         $new->path = $new->filterPath($path);
 
         return $new;
@@ -385,6 +413,7 @@ class Uri implements UriInterface
     public function withQuery($query)
     {
         $new = clone $this;
+
         $new->query = $new->filterQuery($query);
 
         return $new;
@@ -407,6 +436,7 @@ class Uri implements UriInterface
         $queryParams = explode('&', $new->query);
 
         $queryParams[] = $name.'='.$value;
+
         $new->query = $new->filterQuery(implode('&', $queryParams));
 
         return $new;
@@ -425,13 +455,9 @@ class Uri implements UriInterface
     {
         $new = clone $this;
 
-        $queryParams = explode('&', $new->query);
-
         foreach ($params as $name => $value) {
-            $queryParams[] = $name.'='.$value;
+            $new = $new->withQueryParam($name, $value);
         }
-
-        $new->query = $new->filterQuery(implode('&', $queryParams));
 
         return $new;
     }
@@ -446,6 +472,7 @@ class Uri implements UriInterface
     public function withFragment($fragment)
     {
         $new = clone $this;
+
         $new->fragment = $new->filterFragment($fragment);
 
         return $new;
