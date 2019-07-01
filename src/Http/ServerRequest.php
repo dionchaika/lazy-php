@@ -66,6 +66,13 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $originalMethod = Method::GET;
 
     /**
+     * Is the request method overridden.
+     *
+     * @var bool
+     */
+    protected $methodOverridden = false;
+
+    /**
      * The request constructor.
      *
      * @param  string  $method
@@ -142,10 +149,13 @@ class ServerRequest extends Request implements ServerRequestInterface
         }
 
         if (isset($_POST['_method'])) {
+            $request->methodOverridden = true;
             $request = $request->withMethod($_POST['_method']);
         } else if ($request->hasHeader('X-HTTP-Method')) {
+            $request->methodOverridden = true;
             $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method'));
         } else if ($request->hasHeader('X-HTTP-Method-Override')) {
+            $request->methodOverridden = true;
             $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method-Override'));
         }
 
@@ -340,13 +350,13 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Check is the request method overriden.
+     * Check is the request method overridden.
      *
      * @return bool
      */
-    public function isMethodOverriden()
+    public function isMethodOverridden()
     {
-        return $this->method !== $this->originalMethod;
+        return $this->methodOverridden;
     }
 
     /**
