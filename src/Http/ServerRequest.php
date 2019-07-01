@@ -8,7 +8,8 @@ use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * The PSR-7 HTTP server request message implementation class.
+ * The PSR-7 HTTP request message
+ * implementation class for server handling.
  *
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
