@@ -69,38 +69,25 @@ class Stream implements StreamInterface
      *      4. writable (bool) - is the stream writable.
      *
      * @param  string|resource  $body
-     * @param  string  $mode
      * @param  mixed[]  $opts
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function __construct($body = '', $mode = 'r', $opts = [])
+    public function __construct($body = '', $opts = [])
     {
         if (is_string($body)) {
-            if (@is_file($body) || 0 === strpos($body, 'php://')) {
-                $mode = $this->filterMode($mode);
+            $resource = fopen('php://temp', 'r+');
 
-                $resource = fopen($body, $mode);
-
-                if (false === $resource) {
-                    throw new RuntimeException("Unable to create a stream from file: {$body}!");
-                }
-
-                $this->resource = $resource;
-            } else {
-                $resource = fopen('php://temp', 'r+');
-
-                if (false === $resource || false === fwrite($resource, $body)) {
-                    throw new RuntimeException('Unable to create a stream from string!');
-                }
-
-                $this->resource = $resource;
+            if (false === $resource || false === fwrite($resource, $body)) {
+                throw new RuntimeException('Unable to create a stream from string!');
             }
+
+            $this->resource = $resource;
         } else if (is_resource($body)) {
             $this->resource = $body;
         } else {
-            throw new InvalidArgumentException('Body must be a string, a filename or the PHP resource!');
+            throw new InvalidArgumentException('Body must be a string or the PHP resource!');
         }
 
         if (isset($opts['size'])) {
