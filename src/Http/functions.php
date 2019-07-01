@@ -56,6 +56,7 @@ if (! function_exists('parse_request')) {
      * @param  string  $request
      * @return \Lazy\Http\Request
      *
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     function parse_request(string $request): Request
@@ -70,7 +71,11 @@ if (! function_exists('parse_request')) {
         $body = $requestParts[1];
 
         $requestLineParts = array_filter(explode(' ', array_shift($headers), 3));
-        if (3 !== count($requestLineParts) || !preg_match('/^HTTP\/\d\.\d$/', $requestLineParts[2])) {
+
+        if (
+            3 !== count($requestLineParts)
+            || !preg_match('/^HTTP\/\d\.\d$/', $requestLineParts[2])
+        ) {
             throw new InvalidArgumentException('Invalid request! Request must be compliant with the "RFC 7230" standart.');
         }
 
@@ -89,6 +94,7 @@ if (! function_exists('parse_request')) {
             $headerParts = explode(':', $header, 2);
 
             $headerName = $headerParts[0];
+
             if (0 === strcasecmp($headerName, 'cookie')) {
                 $headerValues = array_map('trim', explode(';', $headerParts[1]));
             } else {
@@ -113,6 +119,7 @@ if (! function_exists('parse_response')) {
      * @param  string  $response
      * @return \Lazy\Http\Response
      *
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     function parse_response(string $response): Response
@@ -127,7 +134,11 @@ if (! function_exists('parse_response')) {
         $body = $responseParts[1];
 
         $statusLineParts = array_filter(explode(' ', array_shift($headers), 3));
-        if (2 > count($statusLineParts) || !preg_match('/^HTTP\/\d\.\d$/', $statusLineParts[0])) {
+
+        if (
+            2 > count($statusLineParts)
+            || !preg_match('/^HTTP\/\d\.\d$/', $statusLineParts[0])
+        ) {
             throw new InvalidArgumentException('Invalid response! Response must be compliant with the "RFC 7230" standart.');
         }
 
@@ -145,6 +156,7 @@ if (! function_exists('parse_response')) {
             $headerParts = explode(':', $header, 2);
 
             $headerName = $headerParts[0];
+
             if (0 === strcasecmp($headerName, 'set-cookie')) {
                 $headerValues = $headerParts[1];
             } else {
