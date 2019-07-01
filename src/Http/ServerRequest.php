@@ -101,11 +101,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function fromGlobals()
     {
-        if (isset($_POST['_method'])) {
-            $method = $_POST['_method'];
-        } else {
-            $method = $this->getOriginalMethod();
-        }
+        $method = isset($_POST['_method']) ? $_POST['_method'] : $this->getOriginalMethod();
 
         $protocolVersion = '1.1';
 
