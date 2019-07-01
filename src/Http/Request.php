@@ -61,6 +61,8 @@ class Request extends Message implements RequestInterface
             $this->uri = new Uri;
         } else if (is_string($uri)) {
             $this->uri = new Uri($uri);
+        } else {
+            $this->uri = $uri;
         }
 
         $this->setHeaders($headers);
@@ -73,6 +75,8 @@ class Request extends Message implements RequestInterface
             $this->body = new Stream;
         } else if (is_string($body) || is_resource($body)) {
             $this->body = new Stream($body);
+        } else {
+            $this->body = $body;
         }
 
         $this->protocolVersion = $protocolVersion;

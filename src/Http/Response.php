@@ -149,6 +149,8 @@ class Response extends Message implements ResponseInterface
             $this->body = new Stream;
         } else if (is_string($body) || is_resource($body)) {
             $this->body = new Stream($body);
+        } else {
+            $this->body = $body;
         }
 
         $this->protocolVersion = $protocolVersion;
