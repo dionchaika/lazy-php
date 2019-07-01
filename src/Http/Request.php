@@ -107,7 +107,7 @@ class Request extends Message implements RequestInterface
 
         $query = $this->uri->getQuery();
 
-        if ('' !== $query) {
+        if ($query) {
             $requestTarget = "{$requestTarget}?{$query}";
         }
 
@@ -208,8 +208,97 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Get the string
-     * representation of the request.
+     * Check is the request a GET request.
+     *
+     * @return bool
+     */
+    public function isGet()
+    {
+        return $this->method === Method::GET;
+    }
+
+    /**
+     * Check is the request a PUT request.
+     *
+     * @return bool
+     */
+    public function isPut()
+    {
+        return $this->method === Method::PUT;
+    }
+
+    /**
+     * Check is the request a HEAD request.
+     *
+     * @return bool
+     */
+    public function isHead()
+    {
+        return $this->method === Method::HEAD;
+    }
+
+    /**
+     * Check is the request a POST request.
+     *
+     * @return bool
+     */
+    public function isPost()
+    {
+        return $this->method === Method::POST;
+    }
+
+    /**
+     * Check is the request a PATCH request.
+     *
+     * @return bool
+     */
+    public function isPatch()
+    {
+        return $this->method === Method::PATCH;
+    }
+
+    /**
+     * Check is the request a TRACE request.
+     *
+     * @return bool
+     */
+    public function isTrace()
+    {
+        return $this->method === Method::TRACE;
+    }
+
+    /**
+     * Check is the request a DELETE request.
+     *
+     * @return bool
+     */
+    public function isDelete()
+    {
+        return $this->method === Method::DELETE;
+    }
+
+    /**
+     * Check is the request a OPTIONS request.
+     *
+     * @return bool
+     */
+    public function isOptions()
+    {
+        return $this->method === Method::OPTIONS;
+    }
+
+    /**
+     * Check is the request a CONNECT request.
+     *
+     * @return bool
+     */
+    public function isConnect()
+    {
+        return $this->method === Method::CONNECT;
+    }
+
+    /**
+     * Stringify the request.
      *
      * @return string
      */
@@ -232,10 +321,10 @@ class Request extends Message implements RequestInterface
     {
         $host = $uri->getHost();
 
-        if ('' !== $host) {
+        if ($host) {
             $port = $this->uri->getPort();
 
-            if (! $port) {
+            if ($port) {
                 $host = "{$host}:{$port}";
             }
 
