@@ -104,7 +104,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         if (isset($_POST['_method'])) {
             $method = $_POST['_method'];
         } else {
-            $method = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+            $method = $this->getOriginalMethod();
         }
 
         $protocolVersion = '1.1';
@@ -132,12 +132,12 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $headerName = implode('-', array_map('ucfirst', explode('-', $headerName)));
 
                 if (0 === strcasecmp($headerName, 'cookie')) {
-                    $headerValues = array_map('trim', explode(';', $value));
+                    $headerValue = array_map('trim', explode(';', $value));
                 } else {
-                    $headerValues = array_map('trim', explode(',', $value));
+                    $headerValue = array_map('trim', explode(',', $value));
                 }
 
-                $request = $request->withHeader($headerName, $headerValues);
+                $request = $request->withHeader($headerName, $headerValue);
             }
         }
 
@@ -334,9 +334,17 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function isMethodOverriden()
     {
-        $serverMethod = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+        return $this->method !== $this->getOriginalMethod();
+    }
 
-        return $this->method !== $serverMethod;
+    /**
+     * Get the request original method.
+     *
+     * @return string
+     */
+    public function getOriginalMethod()
+    {
+        return ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
     }
 
     /**
