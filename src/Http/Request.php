@@ -63,7 +63,7 @@ class Request extends Message implements RequestInterface
         $this->setHeaders($headers);
 
         if ('1.1' === $this->protocolVersion && ! $this->hasHeader('Host')) {
-            $this->setHostHeaderFromUri();
+            $this->setHostHeaderFromUri($this->uri);
         }
 
         if (! $body) {
@@ -190,7 +190,7 @@ class Request extends Message implements RequestInterface
             return $new;
         }
 
-        $new->setHostHeaderFromUri();
+        $new->setHostHeaderFromUri($new->uri);
 
         return $new;
     }
@@ -225,17 +225,18 @@ class Request extends Message implements RequestInterface
     /**
      * Set the request Host header from the URI.
      *
+     * @param  \Psr\Http\Message\UriInterface  $uri
      * @return void
      */
-    protected function setHostHeaderFromUri()
+    protected function setHostHeaderFromUri(UriInterface $uri)
     {
-        $host = $this->uri->getHost();
+        $host = $uri->getHost();
 
         if ('' !== $host) {
             $port = $this->uri->getPort();
 
-            if (null !== $port) {
-                $host .= ':'.$port;
+            if (! $port) {
+                $host = "{$host}:{$port}";
             }
 
             $host = [
