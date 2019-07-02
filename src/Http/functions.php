@@ -93,15 +93,11 @@ if (! function_exists('parse_request')) {
         foreach ($headers as $header) {
             $headerParts = explode(':', $header, 2);
 
-            $headerName = $headerParts[0];
+            $name = $headerParts[0];
 
-            if (0 === strcasecmp($headerName, 'cookie')) {
-                $headerValues = array_map('trim', explode(';', $headerParts[1]));
-            } else {
-                $headerValues = array_map('trim', explode(',', $headerParts[1]));
-            }
+            $delimiter = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
 
-            $request = $request->withHeader($headerName, $headerValues);
+            $request = $request->withHeader($name, array_map('trim', explode($delimiter, $headerParts[1])));
         }
 
         if ('1.1' === $protocolVersion && ! $request->hasHeader('Host')) {
