@@ -32,6 +32,13 @@ class Stream implements StreamInterface
     protected $size;
 
     /**
+     * The stream underlying resource.
+     *
+     * @var resource
+     */
+    protected $resource;
+
+    /**
      * Is the stream seekable.
      *
      * @var bool
@@ -53,13 +60,6 @@ class Stream implements StreamInterface
     protected $writable = false;
 
     /**
-     * The stream underlying resource.
-     *
-     * @var resource
-     */
-    protected $resource;
-
-    /**
      * The stream constructor.
      *
      * Allowed stream options:
@@ -68,29 +68,20 @@ class Stream implements StreamInterface
      *      3. readable (bool) - is the stream readable.
      *      4. writable (bool) - is the stream writable.
      *
-     * @param  string|resource  $body
+     * @param  resource  $resource
      * @param  mixed[]  $opts
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function __construct($body = '', $opts = [])
+    public function __construct($resource, $opts = [])
     {
-        if (is_string($body)) {
-            $resource = fopen('php://temp', 'r+');
-
-            if (false === $resource || false === fwrite($resource, $body)) {
-                throw new RuntimeException('Unable to create a stream from string!');
-            }
-
-            $this->resource = $resource;
-        } else if (is_resource($body)) {
-            $this->resource = $body;
-        } else {
-            throw new InvalidArgumentException('Body must be a string or the PHP resource!');
+        if (! is_resource($resource)) {
+            throw new InvalidArgumentException('Resource must be the PHP resource!');
         }
 
-        if (isset($opts['size'])) {
+        $this->resource = $resource;
+
+        if (isset($opts['size']) && is_int($opts['size'])) {
             $this->size = $opts['size'];
         } else {
             $fstat = fstat($this->resource);
@@ -104,19 +95,19 @@ class Stream implements StreamInterface
 
         $meta = stream_get_meta_data($this->resource);
 
-        if (isset($opts['seekable'])) {
+        if (isset($opts['seekable']) && is_bool($opts['seekable'])) {
             $this->seekable = $opts['seekable'];
         } else {
             $this->seekable = ! empty($meta['seekable']) ? $meta['seekable'] : false;
         }
 
-        if (isset($opts['readable'])) {
+        if (isset($opts['readable']) && is_bool($opts['readable'])) {
             $this->readable = $opts['readable'];
         } else {
             $this->readable = preg_match(static::READABLE_STREAM_MODE_PATTERN, $meta['mode']);
         }
 
-        if (isset($opts['writable'])) {
+        if (isset($opts['writable']) && is_bool($opts['writable'])) {
             $this->writable = $opts['writable'];
         } else {
             $this->writable = preg_match(static::WRITABLE_STREAM_MODE_PATTERN, $meta['mode']);
@@ -130,7 +121,7 @@ class Stream implements StreamInterface
      */
     public function close()
     {
-        if (null !== $this->resource && fclose($this->resource)) {
+        if ($this->resource && fclose($this->resource)) {
             $this->detach();
         }
     }
@@ -144,7 +135,7 @@ class Stream implements StreamInterface
     {
         $resource = $this->resource;
 
-        if (null !== $resource) {
+        if ($resource) {
             $this->size = $this->resource = null;
             $this->seekable = $this->readable = $this->writable = false;
         }
@@ -171,7 +162,7 @@ class Stream implements StreamInterface
      */
     public function tell()
     {
-        if (null === $this->resource) {
+        if (! $this->resource) {
             throw new RuntimeException('Stream resource is detached!');
         }
 
@@ -191,7 +182,7 @@ class Stream implements StreamInterface
      */
     public function eof()
     {
-        return null === $this->resource || feof($this->resource);
+        return ! $this->resource || feof($this->resource);
     }
 
     /**
@@ -215,7 +206,7 @@ class Stream implements StreamInterface
      */
     public function seek($offset, $whence = \SEEK_SET)
     {
-        if (null === $this->resource) {
+        if (! $this->resource) {
             throw new RuntimeException('Stream resource is detached!');
         }
 
@@ -260,7 +251,7 @@ class Stream implements StreamInterface
      */
     public function write($string)
     {
-        if (null === $this->resource) {
+        if (! $this->resource) {
             throw new RuntimeException('Stream resource is detached!');
         }
 
@@ -305,7 +296,7 @@ class Stream implements StreamInterface
      */
     public function read($length)
     {
-        if (null === $this->resource) {
+        if (! $this->resource) {
             throw new RuntimeException('Stream resource is detached!');
         }
 
@@ -331,7 +322,7 @@ class Stream implements StreamInterface
      */
     public function getContents()
     {
-        if (null === $this->resource) {
+        if (! $this->resource) {
             throw new RuntimeException('Stream resource is detached!');
         }
 
@@ -359,7 +350,7 @@ class Stream implements StreamInterface
     {
         $meta = stream_get_meta_data($this->resource);
 
-        if (null === $key) {
+        if (! $key) {
             return $meta;
         }
 
@@ -382,9 +373,7 @@ class Stream implements StreamInterface
             }
 
             return $this->getContents();
-        } catch (Throwable $e) {
-            return '';
-        }
+        } catch (Throwable $e) { return ''; }
     }
 
     /**
@@ -397,8 +386,8 @@ class Stream implements StreamInterface
      */
     protected function filterMode($mode) {
         if (
-            ! preg_match(static::READABLE_STREAM_MODE_PATTERN, $mode) &&
-            ! preg_match(static::WRITABLE_STREAM_MODE_PATTERN, $mode)
+            ! preg_match(static::READABLE_STREAM_MODE_PATTERN, $mode)
+            && ! preg_match(static::WRITABLE_STREAM_MODE_PATTERN, $mode)
         ) {
             throw new InvalidArgumentException('Invalid stream mode!');
         }

@@ -123,10 +123,9 @@ class Response extends Message implements ResponseInterface
      * @param  int  $code
      * @param  string  $reasonPhrase
      * @param  mixed[]  $headers
-     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
+     * @param  \Psr\Http\Message\StreamInterface|resource|mixed|null  $body
      * @param  string  $protocolVersion
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public function __construct($code = StatusCode::OK,
@@ -145,14 +144,7 @@ class Response extends Message implements ResponseInterface
 
         $this->setHeaders($headers);
 
-        if (! $body) {
-            $this->body = new Stream;
-        } else if (is_string($body) || is_resource($body)) {
-            $this->body = new Stream($body);
-        } else {
-            $this->body = $body;
-        }
-
+        $this->body = get_stream($body);
         $this->protocolVersion = $protocolVersion;
     }
 
@@ -162,7 +154,6 @@ class Response extends Message implements ResponseInterface
      * @param  string  $response
      * @return self
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public static function fromString($response)

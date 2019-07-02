@@ -195,7 +195,7 @@ class UploadedFile implements UploadedFileInterface
         }
 
         if (! $this->stream) {
-            $this->stream = new Stream($this->filename);
+            $this->stream = new Stream(fopen($this->filename, 'r+'));
         }
 
         return $this->stream;

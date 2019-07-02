@@ -2,8 +2,6 @@
 
 namespace Lazy\Http;
 
-use Throwable;
-use RuntimeException;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
@@ -166,18 +164,23 @@ if (! function_exists('parse_response')) {
     }
 }
 
-if (! function_exists('to_stream')) {
+if (! function_exists('get_stream')) {
     /**
-     * Create a stream for resource.
+     * Get stream for the resource.
      *
-     * @param  \Psr\Http\Message\StreamInterface|mixed  $resource
+     * Allowed stream options:
+     *      1. size (int) - the stream size.
+     *      2. seekable (bool) - is the stream seekable.
+     *      3. readable (bool) - is the stream readable.
+     *      4. writable (bool) - is the stream writable.
+     *
+     * @param  \Psr\Http\Message\StreamInterface|resource|mixed  $resource
      * @param  mixed[]  $opts
      * @return \Lazy\Http\Stream
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    function to_stream($resource = '', array $opts = []): Stream
+    function get_stream($resource = '', array $opts = []): Stream
     {
         if (is_scalar($resource)) {
             $str = is_string($resource)
@@ -191,8 +194,12 @@ if (! function_exists('to_stream')) {
             return new Stream($resource, $opts);
         }
 
+        if (is_array($resource)) {
+            return get_stream(print_r($resource, true), $opts);
+        }
+
         if (is_callable($resource)) {
-            return to_stream(call_user_func($resource), $opts);
+            return get_stream(call_user_func($resource), $opts);
         }
 
         $type = gettype($resource);
@@ -206,7 +213,7 @@ if (! function_exists('to_stream')) {
                 }
 
                 if (method_exists($resource, '__toString')) {
-                    return to_stream((string) $resource, $opts);
+                    return get_stream((string) $resource, $opts);
                 }
 
                 break;

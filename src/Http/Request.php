@@ -43,10 +43,9 @@ class Request extends Message implements RequestInterface
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
      * @param  mixed[]  $headers
-     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
+     * @param  \Psr\Http\Message\StreamInterface|resource|mixed|null  $body
      * @param  string  $protocolVersion
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
@@ -71,14 +70,7 @@ class Request extends Message implements RequestInterface
             $this->setHostHeaderFromUri($this->uri);
         }
 
-        if (! $body) {
-            $this->body = new Stream;
-        } else if (is_string($body) || is_resource($body)) {
-            $this->body = new Stream($body);
-        } else {
-            $this->body = $body;
-        }
-
+        $this->body = get_stream($body);
         $this->protocolVersion = $protocolVersion;
     }
 
@@ -88,7 +80,6 @@ class Request extends Message implements RequestInterface
      * @param  string  $request
      * @return self
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public static function fromString($request)

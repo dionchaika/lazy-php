@@ -83,10 +83,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
      * @param  mixed[]  $serverParams
      * @param  mixed[]  $headers
-     * @param  \Psr\Http\Message\StreamInterface|string|resource|null  $body
+     * @param  \Psr\Http\Message\StreamInterface|resource|mixed|null  $body
      * @param  string  $protocolVersion
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
@@ -115,7 +114,6 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @return self
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public static function fromGlobals()
