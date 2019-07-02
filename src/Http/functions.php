@@ -74,14 +74,14 @@ if (! function_exists('parse_request')) {
 
         if (
             3 !== count($requestLineParts)
-            || ! preg_match('/^HTTP\/\d\.\d$/', $requestLineParts[2])
+            || ! preg_match('/^HTTP\/(\d\.\d)$/', $requestLineParts[2], $matches)
         ) {
             throw new InvalidArgumentException('Invalid request! Request must be compliant with the "RFC 7230" standart.');
         }
 
         $method = $requestLineParts[0];
         $requestTarget = $requestLineParts[1];
-        $protocolVersion = explode('/', $requestLineParts[2], 2)[1];
+        $protocolVersion = $matches[1];
 
         $request = (new Request)
             ->withMethod($method)
@@ -137,7 +137,7 @@ if (! function_exists('parse_response')) {
 
         if (
             2 > count($statusLineParts)
-            || ! preg_match('/^HTTP\/\d\.\d$/', $statusLineParts[0])
+            || ! preg_match('/^HTTP\/(\d\.\d)$/', $statusLineParts[0], $matches)
         ) {
             throw new InvalidArgumentException('Invalid response! Response must be compliant with the "RFC 7230" standart.');
         }
