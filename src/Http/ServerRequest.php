@@ -167,7 +167,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             throw new InvalidArgumentException('Invalid request! "HTTP/1.1" request must contain a "Host" header.');
         }
 
-        return $request->withBody(new Stream('php://input'));
+        return $request->withBody(new Stream(fopen('php://input', 'r')));
     }
 
     /**
