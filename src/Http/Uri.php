@@ -94,6 +94,33 @@ class Uri implements UriInterface
     }
 
     /**
+     * Create a new URI from parts.
+     *
+     * Allowed URI parts:
+     *      1. scheme (string) - the URI scheme.
+     *      2. host (string) - the URI host.
+     *      3. port (int) - the URI port.
+     *      4. user (string) - the URI user.
+     *      5. pass (string) - the URI password.
+     *      6. path (string) - the URI path.
+     *      7. query (string) - the URI query.
+     *      8. fragment (string) - the URI fragment.
+     *
+     * @param  mixed[]  $parts
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromParts(array $parts)
+    {
+        $uri = new static;
+
+        $uri->applyParts($parts);
+
+        return $uri;
+    }
+
+    /**
      * Create a new URI from globals.
      *
      * @return self
@@ -127,23 +154,6 @@ class Uri implements UriInterface
             ->withPort($port)
             ->withPath($path)
             ->withQuery($query);
-    }
-
-    /**
-     * Create a new URI from parse_str parts.
-     *
-     * @param  mixed[]  $parts
-     * @return self
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function fromParts(array $parts)
-    {
-        $uri = new static;
-
-        $uri->applyParts($parts);
-
-        return $uri;
     }
 
     /**
@@ -501,7 +511,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Apply parse_url parts to the URI.
+     * Apply parts to the URI.
      *
      * @param  mixed[]  $parts
      * @return void
