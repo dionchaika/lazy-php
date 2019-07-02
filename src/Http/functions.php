@@ -2,7 +2,9 @@
 
 namespace Lazy\Http;
 
+use RuntimeException;
 use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -160,5 +162,21 @@ if (! function_exists('parse_response')) {
         }
 
         return $response;
+    }
+}
+
+if (! function_exists('to_stream')) {
+    /**
+     * Create a stream for resource.
+     *
+     * @param  \Psr\Http\Message\StreamInterface|resource|object|callable|null|bool|int|float|string  $resource
+     * @param  mixed[]  $opts
+     *
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     */
+    function to_stream($resource = '', array $opts = [])
+    {
+        
     }
 }
