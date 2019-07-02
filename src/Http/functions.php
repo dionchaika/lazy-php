@@ -25,7 +25,7 @@ if (! function_exists('to_string')) {
             foreach (array_keys($message->getHeaders()) as $name) {
                 $value = (0 !== strcasecmp($name, 'cookie'))
                     ? $message->getHeaderLine($name)
-                    : implode(';', $message->getHeader($name));
+                    : implode('; ', $message->getHeader($name));
 
                 $str .= sprintf("%s: %s\r\n", $name, $value);
             }

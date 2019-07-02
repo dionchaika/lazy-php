@@ -194,7 +194,7 @@ class Request extends Message implements RequestInterface
 
         $new->uri = $uri;
 
-        if ($preserveHost && $new->hasHeader('Host')) {
+        if ($preserveHost && $new->getHeaderLine('Host')) {
             return $new;
         }
 
