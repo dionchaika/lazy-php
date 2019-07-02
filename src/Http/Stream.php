@@ -84,13 +84,7 @@ class Stream implements StreamInterface
         if (isset($opts['size']) && is_int($opts['size'])) {
             $this->size = $opts['size'];
         } else {
-            $fstat = fstat($this->resource);
-
-            if (false === $fstat) {
-                $this->size = null;
-            } else {
-                $this->size = ! empty($fstat['size']) ? $fstat['size'] : null;
-            }
+            $this->updateSize();
         }
 
         $meta = stream_get_meta_data($this->resource);
@@ -265,13 +259,7 @@ class Stream implements StreamInterface
             throw new RuntimeException('Unable to write data to the stream!');
         }
 
-        $fstat = fstat($this->resource);
-
-        if (false === $fstat) {
-            $this->size = null;
-        } else {
-            $this->size = ! empty($fstat['size']) ? $fstat['size'] : null;
-        }
+        $this->updateSize();
 
         return $bytes;
     }
@@ -374,6 +362,22 @@ class Stream implements StreamInterface
 
             return $this->getContents();
         } catch (Throwable $e) { return ''; }
+    }
+
+    /**
+     * Update the stream size.
+     *
+     * @return void
+     */
+    protected function updateSize()
+    {
+        $fstat = fstat($this->resource);
+
+        if (false === $fstat) {
+            $this->size = null;
+        } else {
+            $this->size = ! empty($fstat['size']) ? $fstat['size'] : null;
+        }
     }
 
     /**
