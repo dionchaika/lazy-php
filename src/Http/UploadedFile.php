@@ -102,7 +102,7 @@ class UploadedFile implements UploadedFileInterface
             }
 
             $this->stream = $file;
-            $this->size = $size ?? $file->getSize();
+            $this->size = $size ?? $this->stream->getSize();
         } else {
             $this->filename = $file;
             $this->size = $size;
