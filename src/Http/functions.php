@@ -58,6 +58,7 @@ if (! function_exists('parse_request')) {
      * @param  string  $request
      * @return \Lazy\Http\Request
      *
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     function parse_request(string $request): Request
@@ -116,6 +117,7 @@ if (! function_exists('parse_response')) {
      * @param  string  $response
      * @return \Lazy\Http\Response
      *
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     function parse_response(string $response): Response

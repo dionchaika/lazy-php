@@ -154,6 +154,7 @@ class Response extends Message implements ResponseInterface
      * @param  string  $response
      * @return self
      *
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public static function fromString($response)

@@ -186,6 +186,7 @@ class UploadedFile implements UploadedFileInterface
      * @return \Psr\Http\Message\StreamInterface
      *
      * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function getStream()
     {
@@ -194,7 +195,13 @@ class UploadedFile implements UploadedFileInterface
         }
 
         if (! $this->stream) {
-            $this->stream = new Stream(fopen($this->filename, 'r+'));
+            $resource = fopen($this->filename, 'r+');
+
+            if (false === $resource) {
+                throw new RuntimeException('Unable to get the uploaded file stream!');
+            }
+
+            $this->stream = new Stream($resource);
         }
 
         return $this->stream;
@@ -232,7 +239,14 @@ class UploadedFile implements UploadedFileInterface
             }
         } else {
             $oldStream = $this->getStream();
-            $newStream = create_stream(fopen($targetPath, 'r+'));
+
+            $resource = fopen($targetPath, 'r+');
+
+            if (false === $resource) {
+                throw new RuntimeException('Unable to move the uploaded file!');
+            }
+
+            $newStream = new Stream($resource);
 
             if (false === stream_copy_to_stream($oldStream, $newStream)) {
                 throw new RuntimeException('Unable to copy the uploaded file stream!');
