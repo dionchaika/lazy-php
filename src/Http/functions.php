@@ -74,7 +74,7 @@ if (! function_exists('parse_request')) {
 
         if (
             3 !== count($requestLineParts)
-            || !preg_match('/^HTTP\/\d\.\d$/', $requestLineParts[2])
+            || ! preg_match('/^HTTP\/\d\.\d$/', $requestLineParts[2])
         ) {
             throw new InvalidArgumentException('Invalid request! Request must be compliant with the "RFC 7230" standart.');
         }
@@ -137,7 +137,7 @@ if (! function_exists('parse_response')) {
 
         if (
             2 > count($statusLineParts)
-            || !preg_match('/^HTTP\/\d\.\d$/', $statusLineParts[0])
+            || ! preg_match('/^HTTP\/\d\.\d$/', $statusLineParts[0])
         ) {
             throw new InvalidArgumentException('Invalid response! Response must be compliant with the "RFC 7230" standart.');
         }
