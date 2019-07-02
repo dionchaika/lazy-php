@@ -116,7 +116,7 @@ class Request extends Message implements RequestInterface
         $query = $this->uri->getQuery();
 
         if ($query) {
-            $requestTarget = "{$requestTarget}?{$query}";
+            $requestTarget .= '?'.$query;
         }
 
         return $requestTarget;
@@ -377,7 +377,7 @@ class Request extends Message implements RequestInterface
             $port = $this->uri->getPort();
 
             if ($port) {
-                $host = "{$host}:{$port}";
+                $host .= ':'.$port;
             }
 
             $host = [

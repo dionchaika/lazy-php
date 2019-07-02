@@ -228,14 +228,23 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
+     * Check is the response an HTTP OK response.
+     *
+     * @return bool
+     */
+    public function isOk()
+    {
+        return 200 === $this->statusCode;
+    }
+
+    /**
      * Check is the response an informational response.
      *
      * @return bool
      */
     public function isInformational()
     {
-        return 100 <= $this->statusCode
-            && 199 >= $this->statusCode;
+        return 100 <= $this->statusCode && 199 >= $this->statusCode;
     }
 
     /**
@@ -245,8 +254,7 @@ class Response extends Message implements ResponseInterface
      */
     public function isSuccessful()
     {
-        return 200 <= $this->statusCode
-            && 299 >= $this->statusCode;
+        return 200 <= $this->statusCode && 299 >= $this->statusCode;
     }
 
     /**
@@ -256,9 +264,7 @@ class Response extends Message implements ResponseInterface
      */
     public function isRedirect()
     {
-        return 300 <= $this->statusCode
-            && 399 >= $this->statusCode
-            && $this->hasHeader('Location');
+        return 300 <= $this->statusCode && 399 >= $this->statusCode;
     }
 
     /**
@@ -268,8 +274,7 @@ class Response extends Message implements ResponseInterface
      */
     public function isClientError()
     {
-        return 400 <= $this->statusCode
-            && 499 >= $this->statusCode;
+        return 400 <= $this->statusCode && 499 >= $this->statusCode;
     }
 
     /**
@@ -279,8 +284,7 @@ class Response extends Message implements ResponseInterface
      */
     public function isServerError()
     {
-        return 500 <= $this->statusCode
-            && 599 >= $this->statusCode;
+        return 500 <= $this->statusCode && 599 >= $this->statusCode;
     }
 
     /**

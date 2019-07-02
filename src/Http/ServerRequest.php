@@ -92,8 +92,8 @@ class ServerRequest extends Request implements ServerRequestInterface
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
-        $this->originalMethod = $method;
         $this->serverParams = $serverParams;
+        $this->originalMethod = $method;
 
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
     }
