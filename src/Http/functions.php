@@ -8,6 +8,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Throwable;
 
 if (! function_exists('to_string')) {
     /**
@@ -178,34 +179,41 @@ if (! function_exists('to_stream')) {
      */
     function to_stream($resource = '', array $opts = []): Stream
     {
-        if ($resource instanceof StreamInterface) {
-            return $resource;
-        }
-
         if (is_callable($resource)) {
             return to_stream(call_user_func($resource), $opts);
         }
 
+        if ($resource instanceof StreamInterface) {
+            return $resource;
+        }
+
         $type = gettype($resource);
 
-        if ('resource' === $type || 'resource (closed)' === $type) {
-            return new Stream($resource, $opts);
-        }
+        try {
+            if ('resource' === $type || 'resource (closed)' === $type) {
+                return new Stream($resource, $opts);
+            }
 
-        if ('NULL' === $type) {
-            return new Stream(fopen('php://temp', 'r+'), $opts);
-        }
+            if ('NULL' === $type) {
+                return new Stream(fopen('php://temp', 'r+'), $opts);
+            }
 
-        if ('boolean' || 'integer' || 'float' || 'string') {
-            return new Stream(fwrite(fopen('php://temp', 'r+'), (string) $resource), $opts);
-        }
+            if ('string' === $type) {
+                return new Stream(fwrite(fopen('php://temp', 'r+'), $resource), $opts);
+            }
 
-        if ('array' === $type) {
-            return new Stream(fwrite(fopen('php://temp', 'r+'), print_r($resource, true)), $opts);
-        }
+            if (
+                'boolean' || 'integer' || 'float'
+                || ('object' === $type && method_exists($resource, '__toString'))
+            ) {
+                return new Stream(fwrite(fopen('php://temp', 'r+'), (string) $resource), $opts);
+            }
 
-        if ('object' === $type && method_exists($resource, '__toString')) {
-            return new Stream(fwrite(fopen('php://temp', 'r+'), (string) $resource), $opts);
+            if ('array' === $type) {
+                return new Stream(fwrite(fopen('php://temp', 'r+'), print_r($resource, true)), $opts);
+            }
+        } catch (Throwable $e) {
+            throw new RuntimeException("Unable to create a stream from resource: {$e->getMessage()}!");
         }
 
         throw new InvalidArgumentException("Invalid type of the resource: {$type}!");
