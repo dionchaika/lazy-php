@@ -171,12 +171,12 @@ if (! function_exists('to_stream')) {
      *
      * @param  \Psr\Http\Message\StreamInterface|mixed  $resource
      * @param  mixed[]  $opts
-     * @return \Psr\Http\Message\StreamInterface
+     * @return \Lazy\Http\Stream
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    function to_stream($resource = '', array $opts = []): StreamInterface
+    function to_stream($resource = '', array $opts = []): Stream
     {
         if ($resource instanceof StreamInterface) {
             return $resource;
