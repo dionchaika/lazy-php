@@ -169,7 +169,7 @@ if (! function_exists('to_stream')) {
     /**
      * Create a stream for resource.
      *
-     * @param  \Psr\Http\Message\StreamInterface|resource|object|callable|null|bool|int|float|string  $resource
+     * @param  \Psr\Http\Message\StreamInterface|resource|object|callable|null|bool|int|float|string|array  $resource
      * @param  mixed[]  $opts
      *
      * @throws \RuntimeException
