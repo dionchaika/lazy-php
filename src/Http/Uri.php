@@ -89,28 +89,7 @@ class Uri implements UriInterface
                 throw new InvalidArgumentException("Unable to parse the URI: {$uri}!");
             }
 
-            $scheme = ! empty($uriParts['scheme']) ? $uriParts['scheme'] : '';
-            $user = ! empty($uriParts['user']) ? $uriParts['user'] : '';
-            $password = ! empty($uriParts['pass']) ? $uriParts['pass'] : null;
-            $host = ! empty($uriParts['host']) ? $uriParts['host'] : '';
-            $port = ! empty($uriParts['port']) ? $uriParts['port'] : null;
-            $path = ! empty($uriParts['path']) ? $uriParts['path'] : '';
-            $query = ! empty($uriParts['query']) ? $uriParts['query'] : '';
-            $fragment = ! empty($uriParts['fragment']) ? $uriParts['fragment'] : '';
-
-            $userInfo = $user;
-
-            if ($userInfo && $password) {
-                $userInfo .= ':'.$password;
-            }
-
-            $this->scheme = $this->filterScheme($scheme);
-            $this->userInfo = $userInfo;
-            $this->host = $this->filterHost($host);
-            $this->port = $this->filterPort($port);
-            $this->path = $this->filterPath($path);
-            $this->query = $this->filterQuery($query);
-            $this->fragment = $this->filterFragment($fragment);
+            $this->applyParts($uriParts);
         }
     }
 
@@ -148,6 +127,23 @@ class Uri implements UriInterface
             ->withPort($port)
             ->withPath($path)
             ->withQuery($query);
+    }
+
+    /**
+     * Create a new URI from parse_str parts.
+     *
+     * @param  mixed[]  $parts
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromParts(array $parts)
+    {
+        $uri = new static;
+
+        $uri->applyParts($parts);
+
+        return $uri;
     }
 
     /**
@@ -453,6 +449,16 @@ class Uri implements UriInterface
     }
 
     /**
+     * Check is the URI absolute.
+     *
+     * @return bool
+     */
+    public function isAbsolute()
+    {
+        return (bool) $this->scheme;
+    }
+
+    /**
      * Stringify the URI.
      *
      * @return string
@@ -492,6 +498,40 @@ class Uri implements UriInterface
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
+    }
+
+    /**
+     * Apply parse_url parts to the URI.
+     *
+     * @param  mixed[]  $parts
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function applyParts(array $parts)
+    {
+        $scheme = ! empty($parts['scheme']) ? $parts['scheme'] : '';
+        $user = ! empty($parts['user']) ? $parts['user'] : '';
+        $password = ! empty($parts['pass']) ? $parts['pass'] : null;
+        $host = ! empty($parts['host']) ? $parts['host'] : '';
+        $port = ! empty($parts['port']) ? $parts['port'] : null;
+        $path = ! empty($parts['path']) ? $parts['path'] : '';
+        $query = ! empty($parts['query']) ? $parts['query'] : '';
+        $fragment = ! empty($parts['fragment']) ? $parts['fragment'] : '';
+
+        $userInfo = $user;
+
+        if ($userInfo && $password) {
+            $userInfo .= ':'.$password;
+        }
+
+        $this->scheme = $this->filterScheme($scheme);
+        $this->userInfo = $userInfo;
+        $this->host = $this->filterHost($host);
+        $this->port = $this->filterPort($port);
+        $this->path = $this->filterPath($path);
+        $this->query = $this->filterQuery($query);
+        $this->fragment = $this->filterFragment($fragment);
     }
 
     /**
