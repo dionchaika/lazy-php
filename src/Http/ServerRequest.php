@@ -61,12 +61,16 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * The original request method.
      *
+     * Note: affecting after fromGlobals method call.
+     *
      * @var string
      */
     protected $originalMethod = Method::GET;
 
     /**
      * Is the request method overridden.
+     *
+     * Note: affecting after fromGlobals method call.
      *
      * @var bool
      */
@@ -342,6 +346,8 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the request original method.
      *
+     * Note: affecting after fromGlobals method call.
+     *
      * @return string
      */
     public function getOriginalMethod()
@@ -351,6 +357,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Check is the request method overridden.
+     *
+     * Note: affecting after fromGlobals method call.
      *
      * @return bool
      */
