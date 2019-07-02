@@ -179,6 +179,20 @@ if (! function_exists('to_stream')) {
      */
     function to_stream($resource = '', array $opts = []): Stream
     {
+        if (is_scalar($resource)) {
+            $str = (string) $resource;
+
+            $resource = fopen('php://temp', 'r+');
+
+            fwrite($resource, $str);
+
+            return new Stream($resource, $opts);
+        }
+
+        if (is_callable($resource)) {
+            return to_stream(call_user_func($resource), $opts);
+        }
+
         switch (gettype($resource)) {
             case 'resource':
                 return new Stream($resource, $opts);
@@ -195,5 +209,7 @@ if (! function_exists('to_stream')) {
             case 'NULL':
                 return new Stream(fopen('php://temp', 'r+'), $opts);
         }
+
+        throw new InvalidArgumentException("Invalid type of the resource: {$resource}!");
     }
 }
