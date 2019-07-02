@@ -243,7 +243,7 @@ class UploadedFile implements UploadedFileInterface
             $resource = fopen($targetPath, 'r+');
 
             if (false === $resource) {
-                throw new RuntimeException('Unable to move the uploaded file!');
+                throw new RuntimeException('Unable to create a stream for a new uploaded file location!');
             }
 
             $newStream = new Stream($resource);
