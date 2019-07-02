@@ -284,7 +284,7 @@ class Response extends Message implements ResponseInterface
      */
     public function isServerError()
     {
-        $this->statusCode >= StatusCode::INTERNAL_SERVER_ERROR && $this->statusCode < 599;
+        $this->statusCode >= StatusCode::INTERNAL_SERVER_ERROR && $this->statusCode < 600;
     }
 
     /**
