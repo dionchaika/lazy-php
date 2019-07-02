@@ -263,6 +263,17 @@ class Uri implements UriInterface
     }
 
     /**
+     * Check is the URI query parameter exists.
+     *
+     * @param  string  $name
+     * @return bool
+     */
+    public function hasQueryParam($name)
+    {
+        return isset($this->getQueryParams()[$name]);
+    }
+
+    /**
      * Get the URI query parameter.
      *
      * @param  string  $name
