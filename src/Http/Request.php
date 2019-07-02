@@ -379,20 +379,20 @@ class Request extends Message implements RequestInterface
             if ($port) {
                 $host .= ':'.$port;
             }
-
-            $host = [
-
-                'host' => [
-
-                    'name'   => 'Host',
-                    'values' => [$host]
-
-                ]
-
-            ];
-
-            $this->headers = array_merge($host, $this->headers);
         }
+
+        $host = [
+
+            'host' => [
+
+                'name'   => 'Host',
+                'values' => [$host]
+
+            ]
+
+        ];
+
+        $this->headers = array_merge($host, $this->headers);
     }
 
     /**
