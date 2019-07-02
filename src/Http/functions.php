@@ -187,8 +187,20 @@ if (! function_exists('to_stream')) {
             return to_stream(call_user_func($resource), $opts);
         }
 
-        $type = gettype($resource);
+        if (is_resource($resource)) {
+            return new Stream($resource, $opts);
+        }
 
-        
+        if (! is_array($resource)) {
+            $str = (string) $resource;
+        } else {
+            $str = print_r($resource, true);
+        }
+
+        $resource = fopen('php://temp', 'r+');
+
+        fwrite($resource, $str);
+
+        return new Stream($resource, $opts);
     }
 }
