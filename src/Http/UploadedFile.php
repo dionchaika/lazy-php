@@ -82,7 +82,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * The uploaded file constructor.
      *
-     * @param  \Psr\Http\Message\StreamInterface|string  $filenameOrStream
+     * @param  \Psr\Http\Message\StreamInterface|string  $file
      * @param  int|null  $size
      * @param  int  $error
      * @param  string|null  $clientFilename
@@ -90,21 +90,21 @@ class UploadedFile implements UploadedFileInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($filenameOrStream,
+    public function __construct($file,
                                 $size = null,
                                 $error = \UPLOAD_ERR_OK,
                                 $clientFilename = null,
                                 $clientMediaType = null)
     {
-        if ($filenameOrStream instanceof StreamInterface) {
-            if (! $filenameOrStream->isReadable()) {
+        if ($file instanceof StreamInterface) {
+            if (! $file->isReadable()) {
                 throw new InvalidArgumentException('Invalid stream! Stream is not readable.');
             }
 
-            $this->stream = $filenameOrStream;
-            $this->size = $size ?? $filenameOrStream->getSize();
+            $this->stream = $file;
+            $this->size = $size ?? $file->getSize();
         } else {
-            $this->filename = $filenameOrStream;
+            $this->filename = $file;
             $this->size = $size;
         }
 
