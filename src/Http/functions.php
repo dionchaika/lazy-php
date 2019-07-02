@@ -2,7 +2,6 @@
 
 namespace Lazy\Http;
 
-use RuntimeException;
 use InvalidArgumentException;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
