@@ -23,83 +23,83 @@ class Response extends Message implements ResponseInterface
         //
         // Informational
         //
-        100 => 'Continue',
-        101 => 'Switching Protocols',
-        102 => 'Processing',
-        103 => 'Early Hints',
+        StatusCode::CONTINUE                        => 'Continue',
+        StatusCode::SWITCHING_PROTOCOLS             => 'Switching Protocols',
+        StatusCode::PROCESSING                      => 'Processing',
+        StatusCode::EARLY_HINTS                     => 'Early Hints',
 
         //
         // Successful
         //
-        200 => 'OK',
-        201 => 'Created',
-        202 => 'Accepted',
-        203 => 'Non-Authoritative Information',
-        204 => 'No Content',
-        205 => 'Reset Content',
-        206 => 'Partial Content',
-        207 => 'Multi-Status',
-        208 => 'Already Reported',
-        226 => 'IM Used',
+        StatusCode::OK                              => 'OK',
+        StatusCode::CREATED                         => 'Created',
+        StatusCode::ACCEPTED                        => 'Accepted',
+        StatusCode::NON_AUTHORITATIVE_INFORMATION   => 'Non-Authoritative Information',
+        StatusCode::NO_CONTENT                      => 'No Content',
+        StatusCode::RESET_CONTENT                   => 'Reset Content',
+        StatusCode::PARTIAL_CONTENT                 => 'Partial Content',
+        StatusCode::MULTI_STATUS                    => 'Multi-Status',
+        StatusCode::ALREADY_REPORTED                => 'Already Reported',
+        StatusCode::IM_USED                         => 'IM Used',
 
         //
         // Redirection
         //
-        300 => 'Multiple Choices',
-        301 => 'Moved Permanently',
-        302 => 'Found',
-        303 => 'See Other',
-        304 => 'Not Modified',
-        305 => 'Use Proxy',
-        307 => 'Temporary Redirect',
-        308 => 'Permanent Redirect',
+        StatusCode::MULTIPLE_CHOICES                => 'Multiple Choices',
+        StatusCode::MOVED_PERMANENTLY               => 'Moved Permanently',
+        StatusCode::FOUND                           => 'Found',
+        StatusCode::SEE_OTHER                       => 'See Other',
+        StatusCode::NOT_MODIFIED                    => 'Not Modified',
+        StatusCode::USE_PROXY                       => 'Use Proxy',
+        StatusCode::TEMPORARY_REDIRECT              => 'Temporary Redirect',
+        StatusCode::PERMANENT_REDIRECT              => 'Permanent Redirect',
 
         //
         // Client Error
         //
-        400 => 'Bad Request',
-        401 => 'Unauthorized',
-        402 => 'Payment Required',
-        403 => 'Forbidden',
-        404 => 'Not Found',
-        405 => 'Method Not Allowed',
-        406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required',
-        408 => 'Request Timeout',
-        409 => 'Conflict',
-        410 => 'Gone',
-        411 => 'Length Required',
-        412 => 'Precondition Failed',
-        413 => 'Payload Too Large',
-        414 => 'URI Too Long',
-        415 => 'Unsupported Media Type',
-        416 => 'Range Not Satisfiable',
-        417 => 'Expectation Failed',
-        421 => 'Misdirected Request',
-        422 => 'Unprocessable Entity',
-        423 => 'Locked',
-        424 => 'Failed Dependency',
-        425 => 'Too Early',
-        426 => 'Upgrade Required',
-        428 => 'Precondition Required',
-        429 => 'Too Many Requests',
-        431 => 'Request Header Fields Too Large',
-        451 => 'Unavailable For Legal Reasons',
+        StatusCode::BAD_REQUEST                     => 'Bad Request',
+        StatusCode::UNAUTHORIZED                    => 'Unauthorized',
+        StatusCode::PAYMENT_REQUIRED                => 'Payment Required',
+        StatusCode::FORBIDDEN                       => 'Forbidden',
+        StatusCode::NOT_FOUND                       => 'Not Found',
+        StatusCode::METHOD_NOT_ALLOWED              => 'Method Not Allowed',
+        StatusCode::NOT_ACCEPTABLE                  => 'Not Acceptable',
+        StatusCode::PROXY_AUTHENTICATION_REQUIRED   => 'Proxy Authentication Required',
+        StatusCode::REQUEST_TIMEOUT                 => 'Request Timeout',
+        StatusCode::CONFLICT                        => 'Conflict',
+        StatusCode::GONE                            => 'Gone',
+        StatusCode::LENGTH_REQUIRED                 => 'Length Required',
+        StatusCode::PRECONDITION_FAILED             => 'Precondition Failed',
+        StatusCode::PAYLOAD_TOO_LARGE               => 'Payload Too Large',
+        StatusCode::URI_TOO_LONG                    => 'URI Too Long',
+        StatusCode::UNSUPPORTED_MEDIA_TYPE          => 'Unsupported Media Type',
+        StatusCode::RANGE_NOT_SATISFIABLE           => 'Range Not Satisfiable',
+        StatusCode::EXPECTATION_FAILED              => 'Expectation Failed',
+        StatusCode::MISDIRECTED_REQUEST             => 'Misdirected Request',
+        StatusCode::UNPROCESSABLE_ENTITY            => 'Unprocessable Entity',
+        StatusCode::LOCKED                          => 'Locked',
+        StatusCode::FAILED_DEPENDENCY               => 'Failed Dependency',
+        StatusCode::TOO_EARLY                       => 'Too Early',
+        StatusCode::UPGRADE_REQUIRED                => 'Upgrade Required',
+        StatusCode::PRECONDITION_REQUIRED           => 'Precondition Required',
+        StatusCode::TOO_MANY_REQUESTS               => 'Too Many Requests',
+        StatusCode::REQUEST_HEADER_FIELDS_TOO_LARGE => 'Request Header Fields Too Large',
+        StatusCode::UNAVAILABLE_FOR_LEGAL_REASONS   => 'Unavailable For Legal Reasons',
 
         //
         // Server Error
         //
-        500 => 'Internal Server Error',
-        501 => 'Not Implemented',
-        502 => 'Bad Gateway',
-        503 => 'Service Unavailable',
-        504 => 'Gateway Timeout',
-        505 => 'HTTP Version Not Supported',
-        506 => 'Variant Also Negotiates',
-        507 => 'Insufficient Storage',
-        508 => 'Loop Detected',
-        510 => 'Not Extended',
-        511 => 'Network Authentication Required'
+        StatusCode::INTERNAL_SERVER_ERROR           => 'Internal Server Error',
+        StatusCode::NOT_IMPLEMENTED                 => 'Not Implemented',
+        StatusCode::BAD_GATEWAY                     => 'Bad Gateway',
+        StatusCode::SERVICE_UNAVAILABLE             => 'Service Unavailable',
+        StatusCode::GATEWAY_TIMEOUT                 => 'Gateway Timeout',
+        StatusCode::HTTP_VERSION_NOT_SUPPORTED      => 'HTTP Version Not Supported',
+        StatusCode::VARIANT_ALSO_NEGOTIATES         => 'Variant Also Negotiates',
+        StatusCode::INSUFFICIENT_STORAGE            => 'Insufficient Storage',
+        StatusCode::LOOP_DETECTED                   => 'Loop Detected',
+        StatusCode::NOT_EXTENDED                    => 'Not Extended',
+        StatusCode::NETWORK_AUTHENTICATION_REQUIRED => 'Network Authentication Required'
 
     ];
 
@@ -234,7 +234,17 @@ class Response extends Message implements ResponseInterface
      */
     public function isOk()
     {
-        return 200 === $this->statusCode;
+        return $this->statusCode === StatusCode::OK;
+    }
+
+    /**
+     * Check is the response not found.
+     *
+     * @return bool
+     */
+    public function isNotFound()
+    {
+        return $this->statusCode === StatusCode::NOT_FOUND;
     }
 
     /**
