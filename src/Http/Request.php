@@ -51,7 +51,7 @@ class Request extends Message implements RequestInterface
      */
     public function __construct($method = Method::GET,
                                 $uri = null,
-                                $headers = [],
+                                array $headers = [],
                                 $body = null,
                                 $protocolVersion = '1.1')
     {

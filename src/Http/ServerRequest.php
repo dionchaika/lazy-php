@@ -87,8 +87,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function __construct($method = Method::GET,
                                 $uri = null,
-                                $serverParams = [],
-                                $headers = [],
+                                array $serverParams = [],
+                                array $headers = [],
                                 $body = null,
                                 $protocolVersion = '1.1')
     {

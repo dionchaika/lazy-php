@@ -230,7 +230,7 @@ abstract class Message implements MessageInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function setHeaders($headers)
+    public function setHeaders(array $headers)
     {
         foreach ($headers as $name => $value) {
             $this->setHeader($name, $value);
@@ -272,7 +272,7 @@ abstract class Message implements MessageInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function addHeaders($headers)
+    public function addHeaders(array $headers)
     {
         foreach ($headers as $name => $value) {
             $this->addHeader($name, $value);
