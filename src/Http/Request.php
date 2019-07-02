@@ -194,11 +194,9 @@ class Request extends Message implements RequestInterface
 
         $new->uri = $uri;
 
-        if ($preserveHost && $new->getHeaderLine('Host')) {
+        if ($preserveHost && $new->hasHeader('Host')) {
             return $new;
         }
-
-        $new = $new->withoutHeader('Host');
 
         $new->setHostHeaderFromUri($new->uri);
 
@@ -381,20 +379,20 @@ class Request extends Message implements RequestInterface
             if ($port) {
                 $host .= ':'.$port;
             }
+
+            $host = [
+
+                'host' => [
+
+                    'name'   => 'Host',
+                    'values' => [$host]
+
+                ]
+
+            ];
+
+            $this->headers = array_merge($host, $this->headers);
         }
-
-        $host = [
-
-            'host' => [
-
-                'name'   => 'Host',
-                'values' => [$host]
-
-            ]
-
-        ];
-
-        $this->headers = array_merge($host, $this->headers);
     }
 
     /**
