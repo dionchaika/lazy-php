@@ -30,9 +30,9 @@ if (! function_exists('to_string')) {
                 $str .= sprintf("%s: %s\r\n", $name, $value);
             }
         } else if ($message instanceof ResponseInterface) {
-            $str = sprintf('HTTP/%s %s %s', $message->getProtocolVersion(),
-                                            $message->getStatusCode(),
-                                            $message->getReasonPhrase());
+            $str = sprintf("HTTP/%s %s %s\r\n", $message->getProtocolVersion(),
+                                                $message->getStatusCode(),
+                                                $message->getReasonPhrase());
 
             foreach (array_keys($message->getHeaders()) as $name) {
                 if (0 === strcasecmp($name, 'set-cookie')) {
