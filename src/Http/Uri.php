@@ -82,11 +82,11 @@ class Uri implements UriInterface
      */
     public function __construct($uri = '')
     {
-        if ('' !== $uri) {
+        if ($uri) {
             $uriParts = parse_url($uri);
 
             if (false === $uriParts) {
-                throw new InvalidArgumentException('Unable to parse the URI: '.$uri.'!');
+                throw new InvalidArgumentException("Unable to parse the URI: {$uri}!");
             }
 
             $scheme = ! empty($uriParts['scheme']) ? $uriParts['scheme'] : '';
@@ -100,7 +100,7 @@ class Uri implements UriInterface
 
             $userInfo = $user;
 
-            if ('' !== $userInfo && null !== $password) {
+            if ($userInfo && $password) {
                 $userInfo .= ':'.$password;
             }
 
@@ -112,19 +112,6 @@ class Uri implements UriInterface
             $this->query = $this->filterQuery($query);
             $this->fragment = $this->filterFragment($fragment);
         }
-    }
-
-    /**
-     * Create a new URI from string.
-     *
-     * @param  string  $uri
-     * @return self
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function fromString($uri)
-    {
-        return new static($uri);
     }
 
     /**
@@ -194,12 +181,12 @@ class Uri implements UriInterface
     {
         $authority = $this->host;
 
-        if ('' !== $authority) {
-            if ('' !== $this->userInfo) {
+        if ($authority) {
+            if ($this->userInfo) {
                 $authority = $this->userInfo.'@'.$authority;
             }
 
-            if (null !== $this->port) {
+            if ($this->port) {
                 $authority .= ':'.$this->port;
             }
         }
@@ -258,7 +245,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI query parameters.
+     * Get the array of URI query parameters.
      *
      * @return mixed[]
      */
@@ -267,19 +254,6 @@ class Uri implements UriInterface
         parse_str($this->query, $queryParams);
 
         return $queryParams;
-    }
-
-    /**
-     * Check is the URI query parameter exists.
-     *
-     * @param  string  $name
-     * @return bool
-     */
-    public function hasQueryParam($name)
-    {
-        parse_str($this->query, $queryParams);
-
-        return isset($queryParams[$name]);
     }
 
     /**
@@ -336,7 +310,7 @@ class Uri implements UriInterface
     {
         $userInfo = $user;
 
-        if ('' !== $userInfo && ! empty($password)) {
+        if ($userInfo && $password) {
             $userInfo .= ':'.$password;
         }
 
@@ -479,8 +453,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return the string
-     * representation of the URI.
+     * Stringify the URI.
      *
      * @return string
      */
@@ -489,29 +462,29 @@ class Uri implements UriInterface
         try {
             $uri = '';
 
-            if ('' !== $this->scheme) {
+            if ($this->scheme) {
                 $uri .= $this->scheme.':';
             }
 
             $authority = $this->getAuthority();
 
-            if ('' !== $authority) {
+            if ($authority) {
                 $uri .= '//'.$authority;
             }
 
-            if ('' !== $authority && 0 !== strncmp($this->path, '/', 1)) {
+            if ($authority && 0 !== strpos($this->path, '/')) {
                 $uri .= '/'.$this->path;
-            } else if ('' === $authority && 0 === strncmp($this->path, '//', 2)) {
+            } else if (! $authority && 0 === strpos($this->path, '//')) {
                 $uri .= '/'.ltrim($this->path, '/');
             } else {
                 $uri .= $this->path;
             }
 
-            if ('' !== $this->query) {
+            if ($this->query) {
                 $uri .= '?'.$this->query;
             }
 
-            if ('' !== $this->fragment) {
+            if ($this->fragment) {
                 $uri .= '#'.$this->fragment;
             }
 
@@ -531,7 +504,7 @@ class Uri implements UriInterface
      */
     protected function filterScheme($scheme)
     {
-        if ('' !== $scheme) {
+        if ($scheme) {
             if (! preg_match('/^[a-zA-Z][a-zA-Z0-9+\-.]*$/', $scheme)) {
                 throw new InvalidArgumentException('Invalid scheme! Scheme must be compliant with the "RFC 3986" standart.');
             }
@@ -552,7 +525,7 @@ class Uri implements UriInterface
      */
     protected function filterHost($host)
     {
-        if ('' !== $host) {
+        if ($host) {
             //
             // Matching an IPvFuture or an IPv6address.
             //
@@ -627,21 +600,21 @@ class Uri implements UriInterface
      */
     protected function filterPath($path)
     {
-        if ('' === $this->scheme && 0 === strncmp($path, ':', 1)) {
+        if (! $this->scheme && 0 === strpos($path, ':')) {
             throw new InvalidArgumentException('Invalid path! Path of a URI without a scheme cannot begin with a colon.');
         }
 
         $authority = $this->getAuthority();
 
-        if ('' === $authority && 0 === strncmp($path, '//', 2)) {
+        if (! $authority && 0 === strpos($path, '//')) {
             throw new InvalidArgumentException('Invalid path! Path of a URI without an authority cannot begin with two slashes.');
         }
 
-        if ('' !== $authority && '' !== $path && 0 !== strncmp($path, '/', 1)) {
+        if ($authority && $path && 0 !== strpos($path, '/')) {
             throw new InvalidArgumentException('Invalid path! Path of a URI with an authority must be empty or begin with a slash.');
         }
 
-        if ('' !== $path && '/' !== $path) {
+        if ($path && '/' !== $path) {
             if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\%)*$/', $path)) {
                 throw new InvalidArgumentException('Invalid path! Path must be compliant with the "RFC 3986" standart.');
             }
@@ -664,7 +637,7 @@ class Uri implements UriInterface
      */
     protected function filterQuery($query)
     {
-        if ('' !== $query) {
+        if ($query) {
             if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\?|\%)*$/', $query)) {
                 throw new InvalidArgumentException('Invalid query! Query must be compliant with the "RFC 3986" standart.');
             }
@@ -685,7 +658,7 @@ class Uri implements UriInterface
      */
     protected function filterFragment($fragment)
     {
-        if ('' !== $fragment) {
+        if ($fragment) {
             return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/?%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
                 return rawurlencode($matches[0]);
             }, $fragment);
