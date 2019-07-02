@@ -8,14 +8,16 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-if (! function_exists('to_string')) {
+if (! function_exists('stringify')) {
     /**
      * Stringify the HTTP message.
      *
      * @param  \Psr\Http\Message\MessageInterface  $message
      * @return string
+     *
+     * @throws \InvalidArgumentException
      */
-    function to_string(MessageInterface $message): string
+    function stringify(MessageInterface $message): string
     {
         if ($message instanceof RequestInterface) {
             $str = sprintf("%s %s HTTP/%s\r\n", $message->getMethod(),
@@ -56,7 +58,6 @@ if (! function_exists('parse_request')) {
      * @param  string  $request
      * @return \Lazy\Http\Request
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     function parse_request(string $request): Request
@@ -115,7 +116,6 @@ if (! function_exists('parse_response')) {
      * @param  string  $response
      * @return \Lazy\Http\Response
      *
-     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     function parse_response(string $response): Response
@@ -164,9 +164,9 @@ if (! function_exists('parse_response')) {
     }
 }
 
-if (! function_exists('get_stream')) {
+if (! function_exists('create_stream')) {
     /**
-     * Get stream for the resource.
+     * Create a stream for the resource.
      *
      * Allowed stream options:
      *      1. size (int) - the stream size.
@@ -174,13 +174,13 @@ if (! function_exists('get_stream')) {
      *      3. readable (bool) - is the stream readable.
      *      4. writable (bool) - is the stream writable.
      *
-     * @param  \Psr\Http\Message\StreamInterface|resource|mixed  $resource
+     * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $resource
      * @param  mixed[]  $opts
      * @return \Lazy\Http\Stream
      *
      * @throws \InvalidArgumentException
      */
-    function get_stream($resource = '', array $opts = []): Stream
+    function create_stream($resource = '', array $opts = []): Stream
     {
         if (is_scalar($resource)) {
             $str = is_string($resource)
@@ -195,11 +195,11 @@ if (! function_exists('get_stream')) {
         }
 
         if (is_array($resource)) {
-            return get_stream(print_r($resource, true), $opts);
+            return create_stream(print_r($resource, true), $opts);
         }
 
         if (is_callable($resource)) {
-            return get_stream(call_user_func($resource), $opts);
+            return create_stream(call_user_func($resource), $opts);
         }
 
         $type = gettype($resource);
@@ -213,7 +213,7 @@ if (! function_exists('get_stream')) {
                 }
 
                 if (method_exists($resource, '__toString')) {
-                    return get_stream((string) $resource, $opts);
+                    return create_stream((string) $resource, $opts);
                 }
 
                 break;

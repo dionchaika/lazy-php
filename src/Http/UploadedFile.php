@@ -101,11 +101,11 @@ class UploadedFile implements UploadedFileInterface
                 throw new InvalidArgumentException('Invalid stream! Stream is not readable.');
             }
 
-            $this->stream = $file;
             $this->size = $size ?? $this->stream->getSize();
+            $this->stream = $file;
         } else {
-            $this->filename = $file;
             $this->size = $size;
+            $this->filename = $file;
         }
 
         $this->error = $this->filterError($error);
@@ -186,7 +186,6 @@ class UploadedFile implements UploadedFileInterface
      * @return \Psr\Http\Message\StreamInterface
      *
      * @throws \RuntimeException
-     * @throws \InvalidArgumentException
      */
     public function getStream()
     {
@@ -233,7 +232,7 @@ class UploadedFile implements UploadedFileInterface
             }
         } else {
             $oldStream = $this->getStream();
-            $newStream = new Stream($targetPath);
+            $newStream = create_stream(fopen($targetPath, 'r+'));
 
             if (false === stream_copy_to_stream($oldStream, $newStream)) {
                 throw new RuntimeException('Unable to copy the uploaded file stream!');

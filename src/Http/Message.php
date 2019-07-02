@@ -174,12 +174,12 @@ abstract class Message implements MessageInterface
      *
      * @return \Psr\Http\Message\StreamInterface
      *
-     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function getBody()
     {
         if (! $this->body) {
-            $this->body = get_stream();
+            $this->body = create_stream();
         }
 
         return $this->body;

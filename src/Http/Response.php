@@ -123,7 +123,7 @@ class Response extends Message implements ResponseInterface
      * @param  int  $code
      * @param  string  $reasonPhrase
      * @param  mixed[]  $headers
-     * @param  \Psr\Http\Message\StreamInterface|resource|mixed|null  $body
+     * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
      * @param  string  $protocolVersion
      *
      * @throws \InvalidArgumentException
@@ -144,7 +144,7 @@ class Response extends Message implements ResponseInterface
 
         $this->setHeaders($headers);
 
-        $this->body = get_stream($body);
+        $this->body = create_stream($body);
         $this->protocolVersion = $protocolVersion;
     }
 
@@ -286,7 +286,7 @@ class Response extends Message implements ResponseInterface
     public function __toString()
     {
         try {
-            return to_string($this);
+            return stringify($this);
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
@@ -300,8 +300,7 @@ class Response extends Message implements ResponseInterface
      */
     protected function setReasonPhraseFromStatusCode($statusCode)
     {
-        $this->reasonPhrase = isset(static::REASON_PHRASES[$statusCode])
-            ? static::REASON_PHRASES[$statusCode] : '';
+        $this->reasonPhrase = isset(static::REASON_PHRASES[$statusCode]) ? static::REASON_PHRASES[$statusCode] : '';
     }
 
     /**

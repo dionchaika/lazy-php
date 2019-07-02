@@ -83,7 +83,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
      * @param  mixed[]  $serverParams
      * @param  mixed[]  $headers
-     * @param  \Psr\Http\Message\StreamInterface|resource|mixed|null  $body
+     * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
      * @param  string  $protocolVersion
      *
      * @throws \InvalidArgumentException
