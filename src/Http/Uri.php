@@ -438,7 +438,7 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function withQueryParams($params)
+    public function withQueryParams(array $params)
     {
         $queryParams = explode('&', $this->query);
 
