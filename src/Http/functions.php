@@ -179,28 +179,17 @@ if (! function_exists('to_stream')) {
      */
     function to_stream($resource = '', array $opts = []): Stream
     {
-        if ($resource instanceof StreamInterface) {
-            return $resource;
+        switch (gettype($resource)) {
+            case 'resource':
+                return new Stream($resource, $opts);
+            case 'object':
+                if ($resource instanceof StreamInterface) {
+                    return $resource;
+                } else if (method_exists($resource, '__toString')) {
+                    return to_stream((string) $resource, $opts);
+                }
+            case 'NULL':
+                return new Stream(fopen('php://temp', 'r+'), $opts);
         }
-
-        if (is_callable($resource)) {
-            return to_stream(call_user_func($resource), $opts);
-        }
-
-        if (is_resource($resource)) {
-            return new Stream($resource, $opts);
-        }
-
-        if (! is_array($resource)) {
-            $str = (string) $resource;
-        } else {
-            $str = print_r($resource, true);
-        }
-
-        $resource = fopen('php://temp', 'r+');
-
-        fwrite($resource, $str);
-
-        return new Stream($resource, $opts);
     }
 }
