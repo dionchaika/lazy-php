@@ -15,6 +15,22 @@ use Psr\Http\Message\UploadedFileInterface;
 class UploadedFile implements UploadedFileInterface
 {
     /**
+     * The error messages.
+     */
+    const ERROR_MESSAGES = [
+
+        \UPLOAD_ERR_OK         => 'There is no error, the file uploaded with success.',
+        \UPLOAD_ERR_INI_SIZE   => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
+        \UPLOAD_ERR_FORM_SIZE  => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
+        \UPLOAD_ERR_PARTIAL    => 'The uploaded file was only partially uploaded.',
+        \UPLOAD_ERR_NO_FILE    => 'No file was uploaded.',
+        \UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
+        \UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
+        \UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload. PHP does not provide a way to ascertain which extension caused the file upload to stop; examining the list of loaded extensions with phpinfo() may help.'
+
+    ];
+
+    /**
      * The uploaded file size.
      *
      * @var int|null
@@ -81,7 +97,7 @@ class UploadedFile implements UploadedFileInterface
                                 $clientMediaType = null)
     {
         if ($filenameOrStream instanceof StreamInterface) {
-            if (!$filenameOrStream->isReadable()) {
+            if (! $filenameOrStream->isReadable()) {
                 throw new InvalidArgumentException('Invalid stream! Stream is not readable.');
             }
 
@@ -128,7 +144,7 @@ class UploadedFile implements UploadedFileInterface
                 continue;
             }
 
-            if (!isset($info['error'])) {
+            if (! isset($info['error'])) {
                 if (is_array($info)) {
                     $normalized[$name] = static::normalizeFiles($info);
                 }
@@ -138,13 +154,13 @@ class UploadedFile implements UploadedFileInterface
 
             $normalized[$name] = [];
 
-            if (!is_array($info['error'])) {
+            if (! is_array($info['error'])) {
                 $normalized[$name] = new static(
                     $info['tmp_name'],
-                    !empty($info['size']) ? $info['size'] : null,
+                    ! empty($info['size']) ? $info['size'] : null,
                     $info['error'],
-                    !empty($info['name']) ? $info['name'] : null,
-                    !empty($info['type']) ? $info['type'] : null
+                    ! empty($info['name']) ? $info['name'] : null,
+                    ! empty($info['type']) ? $info['type'] : null
                 );
             } else {
                 $nestedInfo = [];
@@ -178,7 +194,7 @@ class UploadedFile implements UploadedFileInterface
             throw new RuntimeException('Stream is not avaliable! Uploaded file is moved.');
         }
 
-        if (null === $this->stream) {
+        if (! $this->stream) {
             $this->stream = new Stream($this->filename);
         }
 
@@ -202,13 +218,16 @@ class UploadedFile implements UploadedFileInterface
 
         $targetPath = $this->filterTargetPath($targetPath);
 
-        if (null !== $this->filename) {
+        if ($this->filename) {
             if ('cli' === \PHP_SAPI) {
                 if (false === rename($this->filename, $targetPath)) {
                     throw new RuntimeException('Unable to rename the uploaded file!');
                 }
             } else {
-                if (false === is_uploaded_file($this->filename) || false === move_uploaded_file($this->filename, $targetPath)) {
+                if (
+                    false === is_uploaded_file($this->filename)
+                    || false === move_uploaded_file($this->filename, $targetPath)
+                ) {
                     throw new RuntimeException('Unable to move the uploaded file!');
                 }
             }
@@ -245,6 +264,16 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
+     * Get the uploaded file error message.
+     *
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return static::ERROR_MESSAGES[$this->error];
+    }
+
+    /**
      * Get the uploaded file client name.
      *
      * @return string|null
@@ -275,14 +304,14 @@ class UploadedFile implements UploadedFileInterface
     protected function filterError($error)
     {
         if (
-            \UPLOAD_ERR_OK !== $error &&
-            \UPLOAD_ERR_INI_SIZE !== $error &&
-            \UPLOAD_ERR_FORM_SIZE !== $error &&
-            \UPLOAD_ERR_PARTIAL !== $error &&
-            \UPLOAD_ERR_NO_FILE !== $error &&
-            \UPLOAD_ERR_NO_TMP_DIR !== $error &&
-            \UPLOAD_ERR_CANT_WRITE !== $error &&
-            \UPLOAD_ERR_EXTENSION !== $error
+            $error !== \UPLOAD_ERR_OK
+            && $error !== \UPLOAD_ERR_INI_SIZE
+            && $error !== \UPLOAD_ERR_FORM_SIZE
+            && $error !== \UPLOAD_ERR_PARTIAL
+            && $error !== \UPLOAD_ERR_NO_FILE
+            && $error !== \UPLOAD_ERR_NO_TMP_DIR
+            && $error !== \UPLOAD_ERR_CANT_WRITE
+            && $error !== \UPLOAD_ERR_EXTENSION
         ) {
             throw new InvalidArgumentException('Invalid error! Error must be a PHP file upload error.');
         }
@@ -300,7 +329,7 @@ class UploadedFile implements UploadedFileInterface
      */
     protected function filterTargetPath($targetPath)
     {
-        if ('' === $targetPath) {
+        if (! $targetPath) {
             throw new InvalidArgumentException('Invalid target path! Target path can not be empty.');
         }
 
