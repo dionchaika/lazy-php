@@ -238,43 +238,33 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response not found.
-     *
-     * @return bool
-     */
-    public function isNotFound()
-    {
-        return $this->statusCode === StatusCode::NOT_FOUND;
-    }
-
-    /**
-     * Check is the response informational.
+     * Check is the response informational response.
      *
      * @return bool
      */
     public function isInformational()
     {
-        return 100 <= $this->statusCode && 199 >= $this->statusCode;
+        $this->statusCode >= StatusCode::CONTINUE && $this->statusCode < StatusCode::OK;
     }
 
     /**
-     * Check is the response successful.
+     * Check is the response successful response.
      *
      * @return bool
      */
     public function isSuccessful()
     {
-        return 200 <= $this->statusCode && 299 >= $this->statusCode;
+        $this->statusCode >= StatusCode::OK && $this->statusCode < StatusCode::MULTIPLE_CHOICES;
     }
 
     /**
-     * Check is the response a redirect response.
+     * Check is the response a redirection response.
      *
      * @return bool
      */
-    public function isRedirect()
+    public function isRedirection()
     {
-        return 300 <= $this->statusCode && 399 >= $this->statusCode;
+        $this->statusCode >= StatusCode::MULTIPLE_CHOICES && $this->statusCode < StatusCode::BAD_REQUEST;
     }
 
     /**
@@ -284,7 +274,7 @@ class Response extends Message implements ResponseInterface
      */
     public function isClientError()
     {
-        return 400 <= $this->statusCode && 499 >= $this->statusCode;
+        $this->statusCode >= StatusCode::BAD_REQUEST && $this->statusCode < StatusCode::INTERNAL_SERVER_ERROR;
     }
 
     /**
@@ -294,7 +284,7 @@ class Response extends Message implements ResponseInterface
      */
     public function isServerError()
     {
-        return 500 <= $this->statusCode && 599 >= $this->statusCode;
+        $this->statusCode >= StatusCode::INTERNAL_SERVER_ERROR && $this->statusCode < 599;
     }
 
     /**
