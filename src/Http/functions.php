@@ -188,7 +188,7 @@ if (! function_exists('to_stream')) {
 
         $type = gettype($resource);
 
-        if ('resource' === $type) {
+        if ('resource' === $type || 'resource (closed)' === $type) {
             return new Stream($resource, $opts);
         }
 
