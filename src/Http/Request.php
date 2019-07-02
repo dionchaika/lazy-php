@@ -198,6 +198,8 @@ class Request extends Message implements RequestInterface
             return $new;
         }
 
+        $new = $new->withoutHeader('Host');
+
         $new->setHostHeaderFromUri($new->uri);
 
         return $new;
