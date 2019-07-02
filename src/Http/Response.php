@@ -228,7 +228,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response an HTTP OK response.
+     * Check is the response OK.
      *
      * @return bool
      */
@@ -238,7 +238,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response an informational response.
+     * Check is the response informational.
      *
      * @return bool
      */
@@ -248,7 +248,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response a successful response.
+     * Check is the response successful.
      *
      * @return bool
      */
