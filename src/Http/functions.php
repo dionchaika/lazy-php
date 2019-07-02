@@ -185,9 +185,13 @@ if (! function_exists('to_stream')) {
             case 'object':
                 if ($resource instanceof StreamInterface) {
                     return $resource;
-                } else if (method_exists($resource, '__toString')) {
+                }
+
+                if (method_exists($resource, '__toString')) {
                     return to_stream((string) $resource, $opts);
                 }
+
+                break;
             case 'NULL':
                 return new Stream(fopen('php://temp', 'r+'), $opts);
         }
