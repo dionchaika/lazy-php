@@ -169,14 +169,17 @@ if (! function_exists('to_stream')) {
     /**
      * Create a stream for resource.
      *
-     * @param  \Psr\Http\Message\StreamInterface|resource|object|callable|null|bool|int|float|string|array  $resource
+     * @param  \Psr\Http\Message\StreamInterface|mixed  $resource
      * @param  mixed[]  $opts
+     * @return \Psr\Http\Message\StreamInterface
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    function to_stream($resource = '', array $opts = [])
+    function to_stream($resource = '', array $opts = []): StreamInterface
     {
-        
+        switch (gettype($resource)) {
+            
+        }
     }
 }
