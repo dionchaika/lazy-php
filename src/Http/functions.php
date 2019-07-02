@@ -178,8 +178,36 @@ if (! function_exists('to_stream')) {
      */
     function to_stream($resource = '', array $opts = []): StreamInterface
     {
-        switch (gettype($resource)) {
-            
+        if ($resource instanceof StreamInterface) {
+            return $resource;
         }
+
+        if (is_callable($resource)) {
+            return to_stream(call_user_func($resource), $opts);
+        }
+
+        $type = gettype($resource);
+
+        if ('resource' === $type) {
+            return new Stream($resource, $opts);
+        }
+
+        if ('NULL' === $type) {
+            return new Stream(fopen('php://temp', 'r+'), $opts);
+        }
+
+        if ('boolean' || 'integer' || 'float' || 'string') {
+            return new Stream(fwrite(fopen('php://temp', 'r+'), (string) $resource), $opts);
+        }
+
+        if ('array' === $type) {
+            return new Stream(fwrite(fopen('php://temp', 'r+'), print_r($resource, true)), $opts);
+        }
+
+        if ('object' === $type && method_exists($resource, '__toString')) {
+            return new Stream(fwrite(fopen('php://temp', 'r+'), (string) $resource), $opts);
+        }
+
+        throw new InvalidArgumentException("Invalid type of the resource: {$type}!");
     }
 }
