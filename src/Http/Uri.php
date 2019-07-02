@@ -422,15 +422,11 @@ class Uri implements UriInterface
      */
     public function withQueryParam($name, $value)
     {
-        $new = clone $this;
-
-        $queryParams = explode('&', $new->query);
+        $queryParams = explode('&', $this->query);
 
         $queryParams[] = $name.'='.$value;
 
-        $new->query = $new->filterQuery(implode('&', $queryParams));
-
-        return $new;
+        return $this->withQuery(implode('&', $queryParams));
     }
 
     /**
@@ -444,13 +440,13 @@ class Uri implements UriInterface
      */
     public function withQueryParams($params)
     {
-        $new = clone $this;
+        $queryParams = explode('&', $this->query);
 
         foreach ($params as $name => $value) {
-            $new = $new->withQueryParam($name, $value);
+            $queryParams[] = $name.'='.$value;
         }
 
-        return $new;
+        return $this->withQuery(implode('&', $queryParams));
     }
 
     /**
