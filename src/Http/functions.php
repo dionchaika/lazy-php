@@ -138,7 +138,7 @@ if (! function_exists('parse_response')) {
             throw new InvalidArgumentException('Invalid response! Response must be compliant with the "RFC 7230" standart.');
         }
 
-        $protocolVersion = explode('/', $statusLineParts[0], 2)[1];
+        $protocolVersion = $matches[1];
         $statusCode = (int) $statusLineParts[1];
         $reasonPhrase = isset($statusLineParts[2]) ? $statusLineParts[2] : '';
 
@@ -151,15 +151,13 @@ if (! function_exists('parse_response')) {
         foreach ($headers as $header) {
             $headerParts = explode(':', $header, 2);
 
-            $headerName = $headerParts[0];
+            $name = $headerParts[0];
 
-            if (0 === strcasecmp($headerName, 'set-cookie')) {
-                $headerValues = $headerParts[1];
-            } else {
-                $headerValues = array_map('trim', explode(',', $headerParts[1]));
-            }
+            $value = (0 === strcasecmp($name, 'set-cookie'))
+                ? $headerParts[1]
+                : array_map('trim', explode(',', $headerParts[1]));
 
-            $response = $response->withAddedHeader($headerName, $headerValues);
+            $response = $response->withAddedHeader($name, $value);
         }
 
         return $response;
