@@ -1,6 +1,6 @@
 <?php
 
-namespace Lazy\Cookie;
+namespace Lazy\Http;
 
 use Throwable;
 use RuntimeException;
