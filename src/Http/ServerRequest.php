@@ -144,9 +144,9 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $name = strtolower(str_replace('_', '-', substr($key, 5)));
                 $name = implode('-', array_map('ucfirst', explode('-', $name)));
 
-                $delimiter = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
+                $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
 
-                $request = $request->withHeader($name, array_map('trim', explode($delimiter, $value)));
+                $request = $request->withHeader($name, array_map('trim', explode($delim, $value)));
             }
         }
 

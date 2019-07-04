@@ -97,9 +97,9 @@ if (! function_exists('parse_request')) {
 
             $name = $headerParts[0];
 
-            $delimiter = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
+            $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
 
-            $request = $request->withHeader($name, array_map('trim', explode($delimiter, $headerParts[1])));
+            $request = $request->withHeader($name, array_map('trim', explode($delim, $headerParts[1])));
         }
 
         if ('1.1' === $protocolVersion && ! $request->hasHeader('Host')) {
