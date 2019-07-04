@@ -185,11 +185,13 @@ class Request extends Message implements RequestInterface
 
         $new->uri = $uri;
 
-        if ($preserveHost && $new->hasHeader('Host')) {
-            return $new;
-        }
+        if ('1.1' === $this->protocolVersion) {
+            if ($preserveHost && $new->hasHeader('Host')) {
+                return $new;
+            }
 
-        $new->setHostHeaderFromUri($new->uri);
+            $new->setHostHeaderFromUri($new->uri);
+        }
 
         return $new;
     }
