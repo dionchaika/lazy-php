@@ -250,7 +250,9 @@ class Cookie
                     continue;
                 }
 
-                if (null === $month && preg_match('/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)$/i', $expiresPart, $matches)) {
+                $monthRegEx = '/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)$/i';
+
+                if (null === $month && preg_match($monthRegEx, $expiresPart, $matches)) {
                     switch (strtolower($matches[1])) {
                         case 'jan': $month = 1;  break;
                         case 'feb': $month = 2;  break;
