@@ -769,7 +769,9 @@ class Cookie
             $day = '(Mon|Tue|Wed|Thu|Fri|Sat|Sun)';
             $month = '(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
 
-            if (! preg_match('/^'.$day.'\, \d{2} '.$month.' \d{4} \d{2}\:\d{2}\:\d{2} GMT$/', $expires)) {
+            $expiresRegEx = "/^{$day}\, \d{2} {$month} \d{4} \d{2}\:\d{2}\:\d{2} GMT$/";
+
+            if (! preg_match($expiresRegEx, $expires)) {
                 throw new InvalidArgumentException('Invalid cookie "Expires" attribute! Cookie "Expires" attribute must be compliant with the "RFC 1123" standart.');
             }
         }
