@@ -231,8 +231,8 @@ class UploadedFile implements UploadedFileInterface
                 }
             } else {
                 if (
-                    false === is_uploaded_file($this->filename)
-                    || false === move_uploaded_file($this->filename, $targetPath)
+                    false === is_uploaded_file($this->filename) ||
+                    false === move_uploaded_file($this->filename, $targetPath)
                 ) {
                     throw new RuntimeException('Unable to move the uploaded file!');
                 }
@@ -317,14 +317,14 @@ class UploadedFile implements UploadedFileInterface
     protected function filterError($error)
     {
         if (
-            $error !== \UPLOAD_ERR_OK
-            && $error !== \UPLOAD_ERR_INI_SIZE
-            && $error !== \UPLOAD_ERR_FORM_SIZE
-            && $error !== \UPLOAD_ERR_PARTIAL
-            && $error !== \UPLOAD_ERR_NO_FILE
-            && $error !== \UPLOAD_ERR_NO_TMP_DIR
-            && $error !== \UPLOAD_ERR_CANT_WRITE
-            && $error !== \UPLOAD_ERR_EXTENSION
+            $error !== \UPLOAD_ERR_OK &&
+            $error !== \UPLOAD_ERR_INI_SIZE &&
+            $error !== \UPLOAD_ERR_FORM_SIZE &&
+            $error !== \UPLOAD_ERR_PARTIAL &&
+            $error !== \UPLOAD_ERR_NO_FILE &&
+            $error !== \UPLOAD_ERR_NO_TMP_DIR &&
+            $error !== \UPLOAD_ERR_CANT_WRITE &&
+            $error !== \UPLOAD_ERR_EXTENSION
         ) {
             throw new InvalidArgumentException('Invalid error! Error must be a PHP file upload error.');
         }

@@ -75,8 +75,8 @@ if (! function_exists('parse_request')) {
         $requestLineParts = array_filter(explode(' ', array_shift($headers), 3));
 
         if (
-            3 !== count($requestLineParts)
-            || ! preg_match('/^HTTP\/(\d\.\d)$/', $requestLineParts[2], $matches)
+            3 !== count($requestLineParts) ||
+            ! preg_match('/^HTTP\/(\d\.\d)$/', $requestLineParts[2], $matches)
         ) {
             throw new InvalidArgumentException('Invalid request! Request must be compliant with the "RFC 7230" standart.');
         }
@@ -134,8 +134,8 @@ if (! function_exists('parse_response')) {
         $statusLineParts = array_filter(explode(' ', array_shift($headers), 3));
 
         if (
-            2 > count($statusLineParts)
-            || ! preg_match('/^HTTP\/(\d\.\d)$/', $statusLineParts[0], $matches)
+            2 > count($statusLineParts) ||
+            ! preg_match('/^HTTP\/(\d\.\d)$/', $statusLineParts[0], $matches)
         ) {
             throw new InvalidArgumentException('Invalid response! Response must be compliant with the "RFC 7230" standart.');
         }

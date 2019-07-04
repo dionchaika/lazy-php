@@ -390,8 +390,8 @@ class Stream implements StreamInterface
      */
     protected function filterMode($mode) {
         if (
-            ! preg_match(static::READABLE_STREAM_MODE_PATTERN, $mode)
-            && ! preg_match(static::WRITABLE_STREAM_MODE_PATTERN, $mode)
+            ! preg_match(static::READABLE_STREAM_MODE_PATTERN, $mode) &&
+            ! preg_match(static::WRITABLE_STREAM_MODE_PATTERN, $mode)
         ) {
             throw new InvalidArgumentException('Invalid stream mode!');
         }

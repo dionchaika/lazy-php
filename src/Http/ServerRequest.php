@@ -123,8 +123,8 @@ class ServerRequest extends Request implements ServerRequestInterface
         $protocolVersion = '1.1';
 
         if (
-            ! empty($_SERVER['SERVER_PROTOCOL'])
-            && preg_match('/^HTTP\/(\d\.\d)$/', $_SERVER['SERVER_PROTOCOL'], $matches)
+            ! empty($_SERVER['SERVER_PROTOCOL']) &&
+            preg_match('/^HTTP\/(\d\.\d)$/', $_SERVER['SERVER_PROTOCOL'], $matches)
         ) {
             $protocolVersion = $matches[1];
         }
