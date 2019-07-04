@@ -292,7 +292,7 @@ abstract class Message implements ArrayAccess, MessageInterface
      * Get the message header line.
      *
      * @param  string  $name
-     * @return string[]
+     * @return string
      */
     public function __get($name)
     {
@@ -328,7 +328,7 @@ abstract class Message implements ArrayAccess, MessageInterface
      * Get the message header.
      *
      * @param  string  $offset
-     * @return string[]
+     * @return string
      */
     public function offsetGet($offset)
     {
