@@ -598,17 +598,13 @@ class Cookie
     {
         if (null !== $this->value && '' !== $this->value) {
             if (32 > mb_strlen($key)) {
-                throw new InvalidArgumentException(
-                    'Invalid key! Key must be at least 32 characters long.'
-                );
+                throw new InvalidArgumentException('Invalid key! Key must be at least 32 characters long.');
             }
 
             $hash = hash_hmac('sha256', $this->name.$this->value, $key);
 
             if (false === $hash) {
-                throw new RuntimeException(
-                    'Unable to sign the cookie! "SHA-256" algorithm is not supported!'
-                );
+                throw new RuntimeException('Unable to sign the cookie! "SHA-256" algorithm is not supported!');
             }
 
             $this->value = $hash.$this->value;
@@ -628,9 +624,7 @@ class Cookie
     {
         if (null !== $this->value && '' !== $this->value) {
             if (32 > mb_strlen($key)) {
-                throw new InvalidArgumentException(
-                    'Invalid key! Key must be at least 32 characters long.'
-                );
+                throw new InvalidArgumentException('Invalid key! Key must be at least 32 characters long.');
             }
 
             $originalHash = mb_substr($this->value, 0, 64);
@@ -639,15 +633,11 @@ class Cookie
             $hash = hash_hmac('sha256', $this->name.$originalValue, $key);
 
             if (false === $hash) {
-                throw new RuntimeException(
-                    'Unable to verify the cookie! "SHA-256" algorithm is not supported!'
-                );
+                throw new RuntimeException('Unable to verify the cookie! "SHA-256" algorithm is not supported!');
             }
 
             if (! hash_equals($hash, $originalHash)) {
-                throw new RuntimeException(
-                    'The cookie is modified!'
-                );
+                throw new RuntimeException('The cookie is modified!');
             }
 
             $this->value = $originalValue;
@@ -736,9 +726,7 @@ class Cookie
     protected function filterName(string $name): string
     {
         if (! preg_match('/^[^\x00-\x1f\x7f\x20()<>@,;:\\"\/\[\]?={}]+$/', $name)) {
-            throw new InvalidArgumentException(
-                'Invalid cookie name! Cookie name must be compliant with the "RFC 6265" standart.'
-            );
+            throw new InvalidArgumentException('Invalid cookie name! Cookie name must be compliant with the "RFC 6265" standart.');
         }
 
         return $name;
@@ -758,9 +746,7 @@ class Cookie
             $unquotedValue = preg_match('/^\".*\"$/', $value) ? trim($value, '"') : $value;
 
             if (! preg_match('/^[^\x00-\x1f\x7f\x20,;\\"]*$/', $unquotedValue)) {
-                throw new InvalidArgumentException(
-                    'Invalid cookie value! Cookie value must be compliant with the "RFC 6265" standart.'
-                );
+                throw new InvalidArgumentException('Invalid cookie value! Cookie value must be compliant with the "RFC 6265" standart.');
             }
         }
 
@@ -782,9 +768,7 @@ class Cookie
             $month = '(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)';
 
             if (! preg_match('/^'.$day.'\, \d{2} '.$month.' \d{4} \d{2}\:\d{2}\:\d{2} GMT$/', $expires)) {
-                throw new InvalidArgumentException(
-                    'Invalid cookie "Expires" attribute! Cookie "Expires" attribute must be compliant with the "RFC 1123" standart.'
-                );
+                throw new InvalidArgumentException('Invalid cookie "Expires" attribute! Cookie "Expires" attribute must be compliant with the "RFC 1123" standart.');
             }
         }
 
@@ -807,9 +791,7 @@ class Cookie
             }
 
             if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])+$/', $domain)) {
-                throw new InvalidArgumentException(
-                    'Invalid cookie "Domain" attribute! Cookie "Domain" attribute must be compliant with the "RFC 3986" standart.'
-                );
+                throw new InvalidArgumentException('Invalid cookie "Domain" attribute! Cookie "Domain" attribute must be compliant with the "RFC 3986" standart.');
             }
 
             return strtolower(ltrim($domain, '.'));
@@ -834,9 +816,7 @@ class Cookie
             }
 
             if (! preg_match('/^[^\x00-\x1f\x7f;]+$/', $path)) {
-                throw new InvalidArgumentException(
-                    'Invalid cookie "Path" attribute! Cookie "Path" attribute must be compliant with the "RFC 6265" standart.'
-                );
+                throw new InvalidArgumentException('Invalid cookie "Path" attribute! Cookie "Path" attribute must be compliant with the "RFC 6265" standart.');
             }
         }
 
@@ -855,9 +835,7 @@ class Cookie
     {
         if (null !== $sameSite) {
             if ($sameSite !== SameSite::LAX && $sameSite !== SameSite::STRICT) {
-                throw new InvalidArgumentException(
-                    "Invalid cookie \"SameSite\" attribute! The cookie \"SameSite\" attribute must be \"{SameSite::LAX}\" or \"{SameSite::STRICT}\"."
-                );
+                throw new InvalidArgumentException("Invalid cookie \"SameSite\" attribute! The cookie \"SameSite\" attribute must be \"{SameSite::LAX}\" or \"{SameSite::STRICT}\".");
             }
         }
 
