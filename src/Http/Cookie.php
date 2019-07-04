@@ -115,10 +115,10 @@ class Cookie
                                 bool $httpOnly = false,
                                 ?string $sameSite = null)
     {
-        if (0 === strpos('__Host-', $name)) {
+        if (0 === strpos($name, '__Host-')) {
             $name = substr($name, 7);
             $this->hasHostPrefix = true;
-        } else if (0 === strpos('__Secure-', $name)) {
+        } else if (0 === strpos($name, '__Secure-')) {
             $name = substr($name, 9);
             $this->hasSecurePrefix = true;
         }
