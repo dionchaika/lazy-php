@@ -3,7 +3,6 @@
 namespace Lazy\Http;
 
 use Throwable;
-use Lazy\Cookie\Cookie;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -211,7 +210,7 @@ class Response extends Message implements ResponseInterface
      * Return an instance
      * with the specified response cookie.
      *
-     * @param  \Lazy\Cookie\Cookie  $cookie
+     * @param  \Lazy\Http\Cookie  $cookie
      * @return static
      */
     public function withCookie(Cookie $cookie)
