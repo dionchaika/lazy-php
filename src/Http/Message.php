@@ -178,7 +178,7 @@ abstract class Message implements MessageInterface
      */
     public function getBody()
     {
-        if (! $this->body) {
+        if (is_null($this->body)) {
             $this->body = create_stream();
         }
 
@@ -208,7 +208,7 @@ abstract class Message implements MessageInterface
      *
      * @param  string  $name
      * @param  string|string[]  $value
-     * @return void
+     * @return self
      *
      * @throws \InvalidArgumentException
      */
@@ -220,13 +220,15 @@ abstract class Message implements MessageInterface
             'values' => $this->filterHeaderValue($value)
 
         ];
+
+        return $this;
     }
 
     /**
      * Set the message headers.
      *
      * @param  mixed[]  $headers
-     * @return void
+     * @return self
      *
      * @throws \InvalidArgumentException
      */
@@ -235,6 +237,8 @@ abstract class Message implements MessageInterface
         foreach ($headers as $name => $value) {
             $this->setHeader($name, $value);
         }
+
+        return $this;
     }
 
     /**
@@ -242,7 +246,7 @@ abstract class Message implements MessageInterface
      *
      * @param  string  $name
      * @param  string|string[]  $value
-     * @return void
+     * @return self
      *
      * @throws \InvalidArgumentException
      */
@@ -262,13 +266,15 @@ abstract class Message implements MessageInterface
         $this->headers[$normalizedName]['values'] = array_merge(
             $this->headers[$normalizedName]['values'], $this->filterHeaderValue($value)
         );
+
+        return $this;
     }
 
     /**
      * Add the message headers.
      *
      * @param  mixed[]  $headers
-     * @return void
+     * @return self
      *
      * @throws \InvalidArgumentException
      */
@@ -277,6 +283,8 @@ abstract class Message implements MessageInterface
         foreach ($headers as $name => $value) {
             $this->addHeader($name, $value);
         }
+
+        return $this;
     }
 
     /**
@@ -306,7 +314,7 @@ abstract class Message implements MessageInterface
      */
     protected function filterHeaderValue($value)
     {
-        $values = is_array($value) ? $value : [$value];
+        $values = (array) $value;
 
         foreach ($values as $value) {
             if (preg_match('/(?:(?:(?<!\r)\n)|(?:\r(?!\n))|(?:\r\n(?![ \t])))/', $value)) {
