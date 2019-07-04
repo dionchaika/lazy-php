@@ -14,18 +14,6 @@ use InvalidArgumentException;
 class Cookie
 {
     /**
-     * The Lax value
-     * of the cookie SameSite attribute.
-     */
-    const SAME_SITE_LAX = 'Lax';
-
-    /**
-     * The Strict value
-     * of the cookie SameSite attribute.
-     */
-    const SAME_SITE_STRICT = 'Strict';
-
-    /**
      * The cookie name.
      *
      * @var string
@@ -868,7 +856,7 @@ class Cookie
         if (null !== $sameSite) {
             if ($sameSite !== static::SAME_SITE_LAX && $sameSite !== static::SAME_SITE_STRICT) {
                 throw new InvalidArgumentException(
-                    'Invalid cookie "SameSite" attribute! The cookie "SameSite" attribute must be "'.static::SAME_SITE_LAX.'" or "'.static::SAME_SITE_STRICT.'".'
+                    "Invalid cookie \"SameSite\" attribute! The cookie \"SameSite\" attribute must be \"{SameSite::LAX}\" or \"{SameSite::STRICT}\"."
                 );
             }
         }
