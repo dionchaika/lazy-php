@@ -2,6 +2,7 @@
 
 namespace Lazy\Http;
 
+use ArrayAccess;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
@@ -12,7 +13,7 @@ use Psr\Http\Message\MessageInterface;
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
  */
-abstract class Message implements MessageInterface
+abstract class Message implements ArrayAccess, MessageInterface
 {
     /**
      * The message body.
@@ -164,7 +165,7 @@ abstract class Message implements MessageInterface
     {
         $new = clone $this;
 
-        unset($new->headers[strtolower($name)]);
+        $new->deleteHeader($name);
 
         return $new;
     }
@@ -285,6 +286,89 @@ abstract class Message implements MessageInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Get the message header line.
+     *
+     * @param  string  $name
+     * @return string[]
+     */
+    public function __get($name)
+    {
+        return $this->getHeaderLine($name);
+    }
+
+    /**
+     * Add the message header.
+     *
+     * @param  string  $name
+     * @param  string|string[]  $value
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __set($name, $value)
+    {
+        $this->addHeader($name, $value);
+    }
+
+    /**
+     * Check is the message header exists.
+     *
+     * @param  string  $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return $this->hasHeader($offset);
+    }
+
+    /**
+     * Get the message header.
+     *
+     * @param  string  $offset
+     * @return string[]
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getHeaderLine($offset);
+    }
+
+    /**
+     * Add the message header.
+     *
+     * @param  string  $offset
+     * @param  string|string[]  $value
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->addHeader($offset, $value);
+    }
+
+    /**
+     * Delete the message header.
+     *
+     * @param  string  $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        $this->deleteHeader($offset);
+    }
+
+    /**
+     * Delete the message header.
+     *
+     * @param  string  $name
+     * @return void
+     */
+    protected function deleteHeader($name)
+    {
+        unset($this->headers[strtolower($name)]);
     }
 
     /**
