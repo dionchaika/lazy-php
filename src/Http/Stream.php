@@ -346,6 +346,22 @@ class Stream implements StreamInterface
     }
 
     /**
+     * Append another stream to this stream.
+     *
+     * @param  \Psr\Http\Message\StreamInterface  $stream
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    public function append(StreamInterface $stream)
+    {
+        $stream->rewind();
+
+        $this->seek($this->size);
+        $this->write($stream->getContents());
+    }
+
+    /**
      * Read all data from the stream
      * into a string, from the beginning to end.
      *
