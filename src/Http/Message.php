@@ -325,7 +325,7 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * Get the message header.
+     * Get the message header line.
      *
      * @param  string  $offset
      * @return string
