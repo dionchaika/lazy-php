@@ -585,6 +585,19 @@ class Cookie
     }
 
     /**
+     * Expire the cookie.
+     *
+     * @return self
+     */
+    public function expire(): self
+    {
+        $this->expires = gmdate('D, d M Y H:i:s T', -2147483648);
+        $this->maxAge = -2147483648;
+
+        return $this;
+    }
+
+    /**
      * Sign the cookie.
      *
      * @param  string  $key
