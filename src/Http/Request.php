@@ -203,7 +203,7 @@ class Request extends Message implements RequestInterface
      */
     public function withCookie(Cookie $cookie)
     {
-        return $this->withAddedHeader('Cookie', $cookie->getNameValuePair());
+        return $this->withAddedHeader('Cookie', $cookie->getPair());
     }
 
     /**
@@ -367,7 +367,7 @@ class Request extends Message implements RequestInterface
         if ($host) {
             $port = $this->uri->getPort();
 
-            if ($port) {
+            if (null !== $port) {
                 $host .= ':'.$port;
             }
 
