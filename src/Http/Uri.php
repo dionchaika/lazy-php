@@ -82,10 +82,10 @@ class Uri implements UriInterface
      */
     public function __construct($uri = '')
     {
-        if ($uri) {
+        if ($uri != '') {
             $uriParts = parse_url($uri);
 
-            if (false === $uriParts) {
+            if ($uriParts === false) {
                 throw new InvalidArgumentException("Unable to parse the URI: {$uri}!");
             }
 
@@ -129,7 +129,7 @@ class Uri implements UriInterface
      */
     public static function fromGlobals()
     {
-        $secured = ! empty($_SERVER['HTTPS']) && 0 !== strcasecmp($_SERVER['HTTPS'], 'off');
+        $secured = ! empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'off') != 0;
 
         $scheme = $secured ? 'https' : 'http';
 
@@ -165,7 +165,7 @@ class Uri implements UriInterface
      */
     public static function isNonStandartPort($scheme, $port)
     {
-        return ! isset(static::DEFAULT_PORTS[$scheme]) || $port !== static::DEFAULT_PORTS[$scheme];
+        return ! isset(static::DEFAULT_PORTS[$scheme]) || $port != static::DEFAULT_PORTS[$scheme];
     }
 
      /**
@@ -187,12 +187,12 @@ class Uri implements UriInterface
     {
         $authority = $this->host;
 
-        if ($authority) {
-            if ($this->userInfo) {
+        if ($authority != '') {
+            if ($this->userInfo != '') {
                 $authority = $this->userInfo.'@'.$authority;
             }
 
-            if ($this->port) {
+            if ($this->port != null) {
                 $authority .= ':'.$this->port;
             }
         }
@@ -327,7 +327,7 @@ class Uri implements UriInterface
     {
         $userInfo = $user;
 
-        if ($userInfo && $password) {
+        if ($userInfo != '' && $password != null && $password != '') {
             $userInfo .= ':'.$password;
         }
 
