@@ -854,7 +854,7 @@ class Cookie
     protected function filterSameSite(?string $sameSite): ?string
     {
         if (null !== $sameSite) {
-            if ($sameSite !== static::SAME_SITE_LAX && $sameSite !== static::SAME_SITE_STRICT) {
+            if ($sameSite !== SameSite::LAX && $sameSite !== SameSite::STRICT) {
                 throw new InvalidArgumentException(
                     "Invalid cookie \"SameSite\" attribute! The cookie \"SameSite\" attribute must be \"{SameSite::LAX}\" or \"{SameSite::STRICT}\"."
                 );
