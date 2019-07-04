@@ -178,7 +178,7 @@ abstract class Message implements MessageInterface
      */
     public function getBody()
     {
-        if (is_null($this->body)) {
+        if (! $this->body) {
             $this->body = create_stream();
         }
 
