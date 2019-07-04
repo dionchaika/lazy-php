@@ -5,7 +5,6 @@ namespace Lazy\Http;
 /**
  * @method bool hasHeader($name)
  * @method self setHeader($name, $value)
- * @method \Psr\Http\Message\StreamInterface getBody()
  */
 trait InjectHeaderTrait
 {
