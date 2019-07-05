@@ -5,8 +5,6 @@ namespace Lazy\Http;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
-use function GuzzleHttp\Psr7\stream_for;
-
 /**
  * The multipart/form-data body model.
  *
@@ -151,7 +149,7 @@ class FormData
      */
     public function getStream(): StreamInterface
     {
-        return stream_for((string) $this);
+        return create_stream((string) $this);
     }
 
     /**
