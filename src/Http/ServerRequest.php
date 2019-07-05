@@ -93,21 +93,33 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  mixed[]  $serverParams
      * @param  mixed[]  $headers
      * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
+     * @param  mixed[]  $serverParams
+     * @param  mixed[]  $queryParams
+     * @param  mixed[]  $parsedBody
+     * @param  mixed[]  $cookieParams
+     * @param  mixed[]  $uploadedFiles
      * @param  string  $protocolVersion
      *
      * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
                                 $uri = null,
-                                array $serverParams = [],
                                 array $headers = [],
                                 $body = null,
+                                array $serverParams = [],
+                                array $queryParams = [],
+                                array $parsedBody = [],
+                                array $cookieParams = [],
+                                array $uploadedFiles = [],
                                 $protocolVersion = '1.1')
     {
         $this->serverParams = $serverParams;
+        $this->queryParams = $queryParams;
+        $this->parsedBody = $this->filterParsedBody($parsedBody);
+        $this->cookieParams = $cookieParams;
+        $this->uploadedFiles = $this->filterUploadedFiles($uploadedFiles);
 
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
 
@@ -146,16 +158,18 @@ class ServerRequest extends Request implements ServerRequestInterface
             $protocolVersion = $matches[1];
         }
 
-        $uri = Uri::fromGlobals();
-        $headers = Message::fromGlobals();
-        $uploadedFiles = UploadedFile::fromGlobals();
-
-        return (new static($method, $uri, $_SERVER, $headers, create_stream(fopen('php://input', 'r')), $protocolVersion))
-            ->withParams(array_merge($_GET, $_POST))
-            ->withQueryParams($_GET)
-            ->withParsedBody($_POST)
-            ->withCookieParams($_COOKIE)
-            ->withUploadedFiles($uploadedFiles);
+        return new static(
+            $method,
+            Uri::fromGlobals(),
+            Message::fromGlobals(),
+            fopen('php://input', 'r'),
+            $_SERVER,
+            $_GET,
+            $_POST,
+            $_COOKIE,
+            UploadedFile::fromGlobals(),
+            $protocolVersion
+        );
     }
 
     /**
