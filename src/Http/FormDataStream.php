@@ -2,7 +2,7 @@
 
 namespace Lazy\Http;
 
-use Slim\Http\Stream;
+use Lazy\Http\Stream;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -25,7 +25,7 @@ class FormDataStream extends Stream implements StreamInterface
      * @param  string  $prefix
      * @return string
      */
-    protected function generateBoundary($length = 16, $prefix = '----TheLazyPHPFormBoundary')
+    public function generateBoundary($length = 16, $prefix = '----TheLazyPHPFormBoundary')
     {
         $randMin = 0;
         $randMax = strlen(static::BOUNDARY_CHARSET) - 1;
