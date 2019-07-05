@@ -166,7 +166,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             throw new InvalidArgumentException('Invalid request! "HTTP/1.1" request must contain a "Host" header.');
         }
 
-        if ('POST' !== $request->getMethod()) {
+        if (0 !== $request->getBody()->getSize()) {
             if (0 === strcasecmp($request->getHeaderLine('Content-Type'), 'application/x-www-form-urlencoded')) {
                 return static::parseUrlencoded($request);
             }
