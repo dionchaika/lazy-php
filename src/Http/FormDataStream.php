@@ -36,22 +36,24 @@ class FormDataStream extends Stream implements StreamInterface
     {
         parent::__construct(fopen('php://temp', 'r+'));
 
+        $this->boundary = $boundary ?? $this->generateBoundary();
+
         foreach ($parts as $part) {
-            foreach (['name', 'value'] as $key) {
+            foreach (['name', 'contents'] as $key) {
                 if (! array_key_exists($key, $part)) {
                     throw new InvalidArgumentException("Part key is not set: {$key}!");
                 }
 
-                $this->appendPart(
+                $this->add(
                     $part['name'],
-                    $part['value'],
+                    $part['contents'],
                     isset($part['headers']) ? $part['headers'] : [],
                     isset($part['filename']) ? $part['filename'] : null
                 );
             }
         }
 
-        $this->boundary = $boundary ?? $this->generateBoundary();
+        $this->write("\r\n{$this->boundary}\r\n");
     }
 
     /**
@@ -62,41 +64,6 @@ class FormDataStream extends Stream implements StreamInterface
     public function getBoundary()
     {
         return $this->boundary;
-    }
-
-    /**
-     * Append a new multipart/form-data part to this stream.
-     *
-     * @param  string  $name
-     * @param  mixed  $value
-     * @param  mixed[]  $headers
-     * @param  string|null  $filename
-     * @return void
-     */
-    public function appendPart($name, $value, array $headers = [], $filename = null)
-    {
-        if (! $this->hasHeader('Content-Disposition', $headers)) {
-            $headers['Content-Disposition'] = (! $filename && '0' !== $filename)
-                ? sprintf("form-data; name=\"%s\"", $name)
-                : sprintf("form-data; name=\"%s\"; filename=\"%s\"", $name, basename($filename));
-        }
-
-        if (! $this->hasHeader('Content-Type', $headers) && ($filename || '0' === $filename)) {
-            $headers['Content-Type'] = mime_content_type($filename);
-        }
-
-        $value = create_stream($value);
-
-        $length = $value->getSize();
-
-        if (! $this->hasHeader('Content-Length', $headers) && $length) {
-            $headers['Content-Length'] = $length;
-        }
-
-        $this->write($this->stringifyHeaders($headers));
-        $this->append($value);
-        $this->write("\r\n");
-        $this->write($this->boundary);
     }
 
     /**
