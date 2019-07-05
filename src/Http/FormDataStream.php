@@ -42,7 +42,7 @@ class FormDataStream extends Stream implements StreamInterface
                     throw new InvalidArgumentException("Part key is not set: {$key}!");
                 }
 
-                $this->add(
+                $this->addPart(
                     $part['name'],
                     $part['contents'],
                     isset($part['headers']) ? $part['headers'] : [],
