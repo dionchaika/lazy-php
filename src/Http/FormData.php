@@ -160,7 +160,7 @@ class FormData
                 $str .= $this->stringifyHeaders($part['headers']).$part['contents']."\r\n";
             }
 
-            return $str.$this->boundary;
+            return $str.'--'.$this->boundary;
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
@@ -194,6 +194,6 @@ class FormData
             $str .= sprintf("%s: %s\r\n", $name, implode(', ', (array) $value));
         }
 
-        return sprintf("%s\r\n%s\r\n", $this->boundary, $str);
+        return sprintf("--%s\r\n%s\r\n", $this->boundary, $str);
     }
 }
