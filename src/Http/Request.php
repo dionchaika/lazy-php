@@ -220,10 +220,9 @@ class Request extends Message implements RequestInterface
      */
     public function withPlainText($plainText)
     {
-        $new = clone $this;
+        $new = (clone $this)->withBody(create_stream($plainText));
 
         return $new
-            ->withBody(create_stream($plainText))
             ->withHeader('Content-Type', 'text/plain')
             ->withHeader('Content-Length', (string) $new->getBody()->getSize());
     }
@@ -239,10 +238,11 @@ class Request extends Message implements RequestInterface
      */
     public function withJson($data, $opts = 0, $depth = 512)
     {
-        $new = clone $this;
+        $new = (clone $this)->withBody(
+            create_stream(json_encode($data, $opts, $depth))
+        );
 
         return $new
-            ->withBody(create_stream(json_encode($data, $opts, $depth)))
             ->withHeader('Content-Type', 'application/json')
             ->withHeader('Content-Length', (string) $new->getBody()->getSize());
     }
@@ -258,10 +258,11 @@ class Request extends Message implements RequestInterface
      */
     public function withXml(SimpleXMLElement $xml)
     {
-        $new = clone $this;
+        $new = (clone $this)->withBody(
+            create_stream($xml->asXML())
+        );
 
         return $new
-            ->withBody(create_stream($xml->asXML()))
             ->withHeader('Content-Type', 'text/xml')
             ->withHeader('Content-Length', (string) $new->getBody()->getSize());
     }
@@ -277,12 +278,34 @@ class Request extends Message implements RequestInterface
      */
     public function withUrlencoded($data)
     {
-        $new = clone $this;
+        $new = (clone $this)->withBody(
+            create_stream(http_build_query($data))
+        );
 
         return $new
-            ->withBody(create_stream(http_build_query($data)))
             ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
             ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+    }
+
+    /**
+     * Return an instance
+     * with the multipart/form-data request body.
+     *
+     * @param  \Lazy\Http\FormData|mixed[]  $data
+     * @param  string|null  $boundary
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withFormData($data, $boundary = null)
+    {
+        $data = ($data instanceof FormData)
+            ? $data
+            : new FormData($data, $boundary);
+
+        $new = (clone $this)->withBody($data->getStream());
+
+        return $new->withHeader('Content-Type', sprintf("multipart/form-data; boundary=%s", $data->getBoundary()));
     }
 
     /**
