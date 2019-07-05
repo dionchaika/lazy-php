@@ -75,7 +75,7 @@ class FormDataStream extends Stream implements StreamInterface
      */
     public function append($name, $value, array $headers = [], $filename = null)
     {
-        
+
     }
 
     /**
@@ -97,5 +97,22 @@ class FormDataStream extends Stream implements StreamInterface
         }
 
         return $prefix.$boundary;
+    }
+
+    /**
+     * Stringify headers for the multipart/form-data stream.
+     *
+     * @param  mixed[]  $headers
+     * @return string
+     */
+    protected function stringifyHeaders(array $headers)
+    {
+        $str = '';
+
+        foreach ($headers as $name => $value) {
+            $str .= sprintf("%s: %s\r\n", $name, implode(', ', (array) $value));
+        }
+
+        return sprintf("%s\r\n%s\r\n", $this->boundary, $str);
     }
 }
