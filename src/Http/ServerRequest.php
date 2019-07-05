@@ -137,7 +137,8 @@ class ServerRequest extends Request implements ServerRequestInterface
             ->withQueryParams($_GET)
             ->withParsedBody($_POST)
             ->withCookieParams($_COOKIE)
-            ->withUploadedFiles($uploadedFiles);
+            ->withUploadedFiles($uploadedFiles)
+            ->withBody(create_stream(fopen('php://input', 'r')));
 
         foreach ($_SERVER as $key => $value) {
             if (0 === strpos($key, 'HTTP_')) {
@@ -165,7 +166,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             throw new InvalidArgumentException('Invalid request! "HTTP/1.1" request must contain a "Host" header.');
         }
 
-        return $request->withBody(new Stream(fopen('php://input', 'r')));
+        return $request;
     }
 
     /**
