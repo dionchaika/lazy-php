@@ -149,13 +149,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $uri = Uri::fromGlobals();
         $uploadedFiles = UploadedFile::fromGlobals();
 
-        $request = (new static($method, $uri, $_SERVER))
-            ->withProtocolVersion($protocolVersion)
-            ->withQueryParams($_GET)
-            ->withParsedBody($_POST)
-            ->withCookieParams($_COOKIE)
-            ->withUploadedFiles($uploadedFiles)
-            ->withBody(create_stream(fopen('php://input', 'r')));
+        $headers = [];
 
         foreach ($_SERVER as $key => $value) {
             if (0 === strpos($key, 'HTTP_')) {
@@ -164,26 +158,15 @@ class ServerRequest extends Request implements ServerRequestInterface
 
                 $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
 
-                $request = $request->withHeader($name, array_map('trim', explode($delim, $value)));
+                $headers[$name] = array_map('trim', explode($delim, $value));
             }
         }
 
-        if (isset($_POST['_method'])) {
-            $request->methodOverridden = true;
-            $request = $request->withMethod($_POST['_method']);
-        } else if ($request->hasHeader('X-HTTP-Method')) {
-            $request->methodOverridden = true;
-            $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method'));
-        } else if ($request->hasHeader('X-HTTP-Method-Override')) {
-            $request->methodOverridden = true;
-            $request = $request->withMethod($request->getHeaderLine('X-HTTP-Method-Override'));
-        }
-
-        if ('1.1' === $protocolVersion && ! $request->hasHeader('Host')) {
-            throw new InvalidArgumentException('Invalid request! "HTTP/1.1" request must contain a "Host" header.');
-        }
-
-        return $request;
+        return (new static($method, $uri, $_SERVER, $headers, $protocolVersion))
+            ->withQueryParams($_GET)
+            ->withParsedBody($_POST)
+            ->withCookieParams($_COOKIE)
+            ->withUploadedFiles($uploadedFiles);
     }
 
     /**
