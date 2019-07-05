@@ -31,27 +31,18 @@ class FormDataStream extends Stream implements StreamInterface
      *
      * @param  mixed[]  $parts
      * @param  string|null  $boundary
+     *
+     * @throws \InvalidArgumentException
      */
     public function __construct(array $parts = [], $boundary = null)
     {
         parent::__construct(fopen('php://temp', 'r+'));
 
-        foreach ($parts as $part) {
-            foreach (['name', 'contents'] as $key) {
-                if (! array_key_exists($key, $part)) {
-                    throw new InvalidArgumentException("Part key is not set: {$key}!");
-                }
-
-                $this->addPart(
-                    $part['name'],
-                    $part['contents'],
-                    isset($part['headers']) ? $part['headers'] : [],
-                    isset($part['filename']) ? $part['filename'] : null
-                );
-            }
-        }
-
         $this->boundary = $boundary ?? $this->generateBoundary();
+
+        foreach ($parts as $part) {
+            $this->writePart($part);
+        }
     }
 
     /**
@@ -62,6 +53,61 @@ class FormDataStream extends Stream implements StreamInterface
     public function getBoundary()
     {
         return $this->boundary;
+    }
+
+    /**
+     * Write a new multipart/form-data part to the stream.
+     *
+     * @param  mixed[]  $part
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function writePart(array $part)
+    {
+        foreach (['name', 'contents'] as $key) {
+            if (! array_key_exists($key, $part)) {
+                throw new InvalidArgumentException("Part key is not set: {$key}!");
+            }
+        }
+
+        if (! isset($part['headers'])) {
+            $part['headers'] = [];
+        }
+
+        if (! isset($part['filename'])) {
+            $part['filename'] = null;
+        }
+
+        $contents = create_stream($part['contents']);
+
+        if (! $this->hasHeader('Content-Disposition', $part['headers'])) {
+            $disposition = $part['filename']
+                ? sprintf("form-data; name=\"%s\"; filename=\"%s\"",
+                    $part['name'],
+                    basename($part['filename']))
+                : sprintf("form-data; name=\"%s\"", $part['name']);
+
+            $part['headers']['Content-Disposition'] = $disposition;
+        }
+
+        if (! $this->hasHeader('Content-Type', $part['headers']) && $part['filename']) {
+            $part['headers']['Content-Type'] = mime_content_type($part['filename']);
+        }
+
+        $length = $contents->getSize();
+
+        if (! $this->hasHeader('Content-Length', $part['headers']) && $part['filename'] && $length) {
+            $part['headers']['Content-Length'] = $length;
+        }
+
+        $contents->write("\r\n");
+
+        $this->write(
+            $this->stringifyHeaders($part['headers'])
+        );
+
+        $this->append($contents);
     }
 
     /**
