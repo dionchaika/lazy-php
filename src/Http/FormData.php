@@ -2,7 +2,9 @@
 
 namespace Lazy\Http;
 
+use Throwable;
 use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * The multipart/form-data body model.
@@ -121,14 +123,50 @@ class FormData
                 $part['headers']['Content-Type'] = mime_content_type($part['filename']);
             }
 
-            $length = $contents->getSize();
+            $contentLength = $contents->getSize();
 
-            if (! $this->hasHeader('Content-Length', $part['headers']) && $length) {
-                $part['headers']['Content-Type'] = $length;
+            if (! $this->hasHeader('Content-Length', $part['headers']) && $contentLength) {
+                $part['headers']['Content-Length'] = $contentLength;
             }
         }
 
+        $part['contents'] = $contents;
+
+        $this->parts[] = $part;
+
         return $this;
+    }
+
+    /**
+     * Get the multipart/form-data body stream.
+     *
+     * @return \Psr\Http\Message\StreamInterface
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function getStream(): StreamInterface
+    {
+        return create_stream((string) $this);
+    }
+
+    /**
+     * Stringify the multipart/form-data body.
+     *
+     * @return string
+     */
+    public function __toString(): string
+    {
+        try {
+            $str = '';
+
+            foreach ($this->parts as $part) {
+                $str .= $this->stringifyHeaders($part['headers']).$part['contents']."\r\n";
+            }
+
+            return $str.$this->boundary;
+        } catch (Throwable $e) {
+            trigger_error($e->getMessage(), \E_USER_ERROR);
+        }
     }
 
     /**
@@ -143,5 +181,22 @@ class FormData
         return array_key_exists(
             strtolower($name), array_change_key_case($headers)
         );
+    }
+
+    /**
+     * Stringify headers for the multipart/form-data body.
+     *
+     * @param  mixed[]  $headers
+     * @return string
+     */
+    protected function stringifyHeaders(array $headers): string
+    {
+        $str = '';
+
+        foreach ($headers as $name => $value) {
+            $str .= sprintf("%s: %s\r\n", $name, implode(', ', (array) $value));
+        }
+
+        return sprintf("%s\r\n%s\r\n", $this->boundary, $str);
     }
 }
