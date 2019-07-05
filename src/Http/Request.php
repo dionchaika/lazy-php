@@ -345,25 +345,6 @@ class Request extends Message implements RequestInterface
 
     /**
      * Return an instance
-     * with an HTML request body.
-     *
-     * @param  mixed  $html
-     * @return static
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function withHtml($html)
-    {
-        $new = clone $this;
-
-        return $new
-            ->withBody(create_stream($html))
-            ->withHeader('Content-Type', 'text/html')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
-    }
-
-    /**
-     * Return an instance
      * with a plain text request body.
      *
      * @param  mixed  $plainText
