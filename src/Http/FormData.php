@@ -19,8 +19,7 @@ class FormData
     const BOUNDARY_CHARSET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     /**
-     * The array of
-     * multipart/form-data body parts.
+     * The array of multipart/form-data body parts.
      *
      * @var mixed[]
      */
