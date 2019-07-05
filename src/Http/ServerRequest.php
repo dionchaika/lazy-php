@@ -19,6 +19,16 @@ class ServerRequest extends Request implements ServerRequestInterface
     use BodyParserTrait;
 
     /**
+     * The array of request parameters.
+     *
+     * Note: contains both
+     * queryParams and parsedBody parameters.
+     *
+     * @var mixed[]
+     */
+    protected $params = [];
+
+    /**
      * The request parsed body.
      *
      * @var mixed[]|object|null
@@ -345,6 +355,38 @@ class ServerRequest extends Request implements ServerRequestInterface
         $new = clone $this;
 
         unset($new->attributes[$name]);
+
+        return $new;
+    }
+
+    /**
+     * Get the array of request parameters.
+     *
+     * Note: returns both
+     * queryParams and parsedBody parameters.
+     *
+     * @return mixed[]
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * Return an instance with
+     * the specified request parameters.
+     *
+     * Note: should contain both
+     * queryParams and parsedBody parameters.
+     *
+     * @param  mixed[]  $params
+     * @return static
+     */
+    public function withParams(array $params)
+    {
+        $new = clone $this;
+
+        $this->params = $params;
 
         return $new;
     }
