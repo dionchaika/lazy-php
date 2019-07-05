@@ -16,6 +16,8 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ServerRequest extends Request implements ServerRequestInterface
 {
+    use BodyParserTrait;
+
     /**
      * The request parsed body.
      *
@@ -96,9 +98,14 @@ class ServerRequest extends Request implements ServerRequestInterface
                                 $protocolVersion = '1.1')
     {
         $this->serverParams = $serverParams;
-        $this->originalMethod = $method;
 
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
+
+        $this->registerParser('text/xml', $this->getDefaultXmlParser());
+        $this->registerParser('application/xml', $this->getDefaultXmlParser());
+        $this->registerParser('application/json', $this->getDefaultJsonParser());
+        $this->registerParser('multipart/form-data', $this->getDefaultFormDataParser());
+        $this->registerParser('application/x-www-form-urlencoded', $this->getDefaultUrlencodedParser());
     }
 
     /**
