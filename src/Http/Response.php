@@ -234,7 +234,7 @@ class Response extends Message implements ResponseInterface
 
         return $new
             ->withBody(create_stream($html))
-            ->withHeader('Content-Type', 'text/plain')
+            ->withHeader('Content-Type', 'text/html')
             ->withHeader('Content-Length', (string) $new->getBody()->getSize());
     }
 
