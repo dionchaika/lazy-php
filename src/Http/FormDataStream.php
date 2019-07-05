@@ -42,7 +42,7 @@ class FormDataStream extends Stream implements StreamInterface
                     throw new InvalidArgumentException("Part key is not set: {$key}!");
                 }
 
-                $this->append(
+                $this->appendPart(
                     $part['name'],
                     $part['value'],
                     isset($part['headers']) ? $part['headers'] : [],
@@ -73,7 +73,7 @@ class FormDataStream extends Stream implements StreamInterface
      * @param  string|null  $filename
      * @return void
      */
-    public function append($name, $value, array $headers = [], $filename = null)
+    public function appendPart($name, $value, array $headers = [], $filename = null)
     {
         if (! $this->hasHeader('Content-Disposition', $headers)) {
             $headers['Content-Disposition'] = (! $filename && '0' !== $filename)
@@ -81,14 +81,20 @@ class FormDataStream extends Stream implements StreamInterface
                 : sprintf("form-data; name=\"%s\"; filename=\"%s\"", $name, basename($filename));
         }
 
-        $length = strlen($value);
+        if (! $this->hasHeader('Content-Type', $headers) && ($filename || '0' === $filename)) {
+            $headers['Content-Type'] = mime_content_type($filename);
+        }
+
+        $value = create_stream($value);
+
+        $length = $value->getSize();
 
         if (! $this->hasHeader('Content-Length', $headers) && $length) {
-            $headers['Content-Length'] = (string) $length;
+            $headers['Content-Length'] = $length;
         }
 
         $this->write($this->stringifyHeaders($headers));
-        $this->write($value);
+        $this->append($value);
         $this->write("\r\n");
         $this->write($this->boundary);
     }
