@@ -3,6 +3,7 @@
 namespace Lazy\Http;
 
 use Lazy\Http\Stream;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -35,6 +36,21 @@ class FormDataStream extends Stream implements StreamInterface
     {
         parent::__construct(fopen('php://temp', 'r+'));
 
+        foreach ($parts as $part) {
+            foreach (['name', 'value'] as $key) {
+                if (! array_key_exists($key, $part)) {
+                    throw new InvalidArgumentException("Part key is not set: {$key}!");
+                }
+
+                $this->append(
+                    $part['name'],
+                    $part['value'],
+                    isset($part['headers']) ? $part['headers'] : [],
+                    isset($part['filename']) ? $part['filename'] : null
+                );
+            }
+        }
+
         $this->boundary = $boundary ?? $this->generateBoundary();
     }
 
@@ -46,6 +62,20 @@ class FormDataStream extends Stream implements StreamInterface
     public function getBoundary()
     {
         return $this->boundary;
+    }
+
+    /**
+     * Append a new multipart/form-data part to this stream.
+     *
+     * @param  string  $name
+     * @param  mixed  $value
+     * @param  mixed[]  $headers
+     * @param  string|null  $filename
+     * @return void
+     */
+    public function append($name, $value, array $headers = [], $filename = null)
+    {
+        
     }
 
     /**
