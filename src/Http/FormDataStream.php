@@ -80,6 +80,17 @@ class FormDataStream extends Stream implements StreamInterface
                 ? sprintf("form-data; name=\"%s\"", $name)
                 : sprintf("form-data; name=\"%s\"; filename=\"%s\"", $name, basename($filename));
         }
+
+        $length = strlen($value);
+
+        if (! $this->hasHeader('Content-Length', $headers) && $length) {
+            $headers['Content-Length'] = (string) $length;
+        }
+
+        $this->write($this->stringifyHeaders($headers));
+        $this->write($value);
+        $this->write("\r\n");
+        $this->write($this->boundary);
     }
 
     /**
