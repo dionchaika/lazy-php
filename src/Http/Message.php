@@ -372,12 +372,12 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * Add the Content-Type header to message.
+     * Set the Content-Type header to message.
      *
      * @param  string  $type
      * @return void
      */
-    protected function addContentTypeHeader($type)
+    protected function setContentTypeHeader($type)
     {
         if (! $this->hasHeader('Content-Type')) {
             $this->addHeader('Content-Type', $type);
@@ -385,12 +385,12 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * Add the Content-Length header to message.
+     * Set the Content-Length header to message.
      *
      * @param  string  $length
      * @return void
      */
-    protected function addContentLengthHeader($length)
+    protected function setContentLengthHeader($length)
     {
         if (! $this->hasHeader('Content-Length')) {
             $this->addHeader('Content-Length', $length);
