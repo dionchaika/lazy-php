@@ -3,6 +3,7 @@
 namespace Lazy\Http;
 
 use Throwable;
+use SimpleXMLElement;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -216,6 +217,140 @@ class Response extends Message implements ResponseInterface
     public function withCookie(Cookie $cookie)
     {
         return $this->withAddedHeader('Set-Cookie', (string) $cookie);
+    }
+
+    /**
+     * Return an instance
+     * with the HTML response body.
+     *
+     * @param  mixed  $html
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withHtml($html)
+    {
+        $new = clone $this;
+
+        return $new
+            ->withBody(create_stream($html))
+            ->withHeader('Content-Type', 'text/plain')
+            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+    }
+
+    /**
+     * Return an instance
+     * with the plain text response body.
+     *
+     * @param  mixed  $plainText
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withPlainText($plainText)
+    {
+        $new = clone $this;
+
+        return $new
+            ->withBody(create_stream($plainText))
+            ->withHeader('Content-Type', 'text/plain')
+            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+    }
+
+    /**
+     * Return an instance
+     * with the JSON response body.
+     *
+     * @param  mixed  $data
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withJson($data, $opts = 0, $depth = 512)
+    {
+        $new = clone $this;
+
+        return $new
+            ->withBody(create_stream(json_encode($data, $opts, $depth)))
+            ->withHeader('Content-Type', 'application/json')
+            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+    }
+
+    /**
+     * Return an instance
+     * with the XML response body.
+     *
+     * @param  \SimpleXMLElement  $xml
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withXml(SimpleXMLElement $xml)
+    {
+        $new = clone $this;
+
+        return $new
+            ->withBody(create_stream($xml->asXML()))
+            ->withHeader('Content-Type', 'text/xml')
+            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+    }
+
+    /**
+     * Return an instance
+     * with the file response body.
+     *
+     * @param  string  $filename
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withFile($filename)
+    {
+        $new = clone $this;
+
+        return $new
+            ->withBody(create_stream(fopen($filename, 'r+')))
+            ->withHeader('Content-Type', mime_content_type($filename))
+            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+    }
+
+    /**
+     * Return an instance
+     * with the download response body.
+     *
+     * @param  string  $filename
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withDownload($filename)
+    {
+        $new = clone $this;
+
+        return $new
+            ->withBody(create_stream(fopen($filename, 'r+')))
+            ->withHeader('Content-Type', 'application/octet-stream')
+            ->withHeader('Content-Description', 'File Transfer')
+            ->withHeader('Content-Disposition', sprintf("attachment; filename=\"%s\"", basename($filename)));
+    }
+
+    /**
+     * Return a redirect response instance.
+     *
+     * @param  \Psr\Http\Message\UriInterface|string  $location
+     * @param  int  $code
+     * @param  string  $reasonPhrase
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withRedirect($location, $code = 302, $reasonPhrase = '')
+    {
+        $new = clone $this;
+
+        return $new
+            ->withStatus($code, $reasonPhrase)
+            ->withHeader('Location', (string) $location);
     }
 
     /**
