@@ -62,7 +62,7 @@ trait BodyParserTrait
     public function getDefaultFormDataParser(): callable
     {
         return function (ServerRequestInterface $request): ServerRequestInterface {
-            preg_match('/boundary=([^\s]+)/', $request->getHeaderLine('Content-Type'), $matches);
+            preg_match('/boundary\=([^\s]+)/', $request->getHeaderLine('Content-Type'), $matches);
 
             $boundary = trim($matches[1], '"');
 
