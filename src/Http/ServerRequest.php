@@ -145,17 +145,31 @@ class ServerRequest extends Request implements ServerRequestInterface
             $protocolVersion = $matches[1];
         }
 
-        return new static(
-            $method,
-            Uri::fromGlobals(),
-            Message::fromGlobals(),
-            fopen('php://input', 'r'),
-            $_SERVER,
-            $_GET,
-            $_COOKIE,
-            UploadedFile::fromGlobals(),
-            $protocolVersion
-        );
+        $uri = Uri::fromGlobals();
+        $uploadedFiles = UploadedFile::fromGlobals();
+
+        $body = fopen('php://input', 'r');
+
+        $headers = [];
+
+        foreach ($_SERVER as $key => $value) {
+            if (0 === strpos($key, 'HTTP_')) {
+                $name = strtolower(str_replace('_', '-', substr($key, 5)));
+                $name = implode('-', array_map('ucfirst', explode('-', $name)));
+
+                $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
+
+                $headers[$name] = array_map('trim', explode($delim, $value));
+            }
+        }
+
+        $request = new static($method, $uri, $headers, $body, $_SERVER, $_GET, $_COOKIE, $uploadedFiles, $protocolVersion);
+
+        if ('POST' === $method) {
+            $request = $request->withParsedBody($_POST);
+        }
+
+        return $request;
     }
 
     /**
