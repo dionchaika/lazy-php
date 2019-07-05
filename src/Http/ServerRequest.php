@@ -163,10 +163,26 @@ class ServerRequest extends Request implements ServerRequestInterface
             }
         }
 
-        $request = new static($method, $uri, $headers, $body, $_SERVER, $_GET, $_COOKIE, $uploadedFiles, $protocolVersion);
+        $request = new static(
+            $method,
+            $uri,
+            $headers,
+            $body,
+            $_SERVER,
+            $_GET,
+            $_COOKIE,
+            $uploadedFiles,
+            $protocolVersion
+        );
 
         if ('POST' === $method) {
             $request = $request->withParsedBody($_POST);
+        } else {
+            foreach ($this->parsers as $type => $callable) {
+                if (false !== stripos($request->getHeaderLine('Content-Type'), $type)) {
+                    return $callable($request);
+                }
+            }
         }
 
         return $request;
