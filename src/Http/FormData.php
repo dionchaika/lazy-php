@@ -106,6 +106,42 @@ class FormData
 
         $contents = create_stream($part['contents']);
 
+        if (! $this->hasHeader('Content-Disposition', $part['headers'])) {
+            $contentDisposition = $part['filename']
+                ? sprintf("form-data; name=\"%s\"; filename=\"%s\"",
+                    $part['name'],
+                    basename($part['filename']))
+                : sprintf("form-data; name=\"%s\"", $part['name']);
+
+            $part['headers']['Content-Disposition'] = $contentDisposition;
+        }
+
+        if ($part['filename']) {
+            if (! $this->hasHeader('Content-Type', $part['headers'])) {
+                $part['headers']['Content-Type'] = mime_content_type($part['filename']);
+            }
+
+            $length = $contents->getSize();
+
+            if (! $this->hasHeader('Content-Length', $part['headers']) && $length) {
+                $part['headers']['Content-Type'] = $length;
+            }
+        }
+
         return $this;
+    }
+
+    /**
+     * Check is the header exists in the array.
+     *
+     * @param  string  $name
+     * @param  mixed[]  $headers
+     * @return bool
+     */
+    protected function hasHeader(string $name, array $headers): bool
+    {
+        return array_key_exists(
+            strtolower($name), array_change_key_case($headers)
+        );
     }
 }
