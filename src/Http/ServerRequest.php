@@ -147,22 +147,11 @@ class ServerRequest extends Request implements ServerRequestInterface
         }
 
         $uri = Uri::fromGlobals();
+        $headers = Message::fromGlobals();
         $uploadedFiles = UploadedFile::fromGlobals();
 
-        $headers = [];
-
-        foreach ($_SERVER as $key => $value) {
-            if (0 === strpos($key, 'HTTP_')) {
-                $name = strtolower(str_replace('_', '-', substr($key, 5)));
-                $name = implode('-', array_map('ucfirst', explode('-', $name)));
-
-                $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
-
-                $headers[$name] = array_map('trim', explode($delim, $value));
-            }
-        }
-
-        return (new static($method, $uri, $_SERVER, $headers, $protocolVersion))
+        return (new static($method, $uri, $_SERVER, $headers, create_stream(fopen('php://input', 'r')), $protocolVersion))
+            ->withParams(array_merge($_GET, $_POST))
             ->withQueryParams($_GET)
             ->withParsedBody($_POST)
             ->withCookieParams($_COOKIE)

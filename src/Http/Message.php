@@ -37,6 +37,29 @@ abstract class Message implements ArrayAccess, MessageInterface
     protected $protocolVersion = '1.1';
 
     /**
+     * Create a new array of headers from globals.
+     *
+     * @return mixed[]
+     */
+    public static function fromGlobals()
+    {
+        $headers = [];
+
+        foreach ($_SERVER as $key => $value) {
+            if (0 === strpos($key, 'HTTP_')) {
+                $name = strtolower(str_replace('_', '-', substr($key, 5)));
+                $name = implode('-', array_map('ucfirst', explode('-', $name)));
+
+                $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
+
+                $headers[$name] = array_map('trim', explode($delim, $value));
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
      * Get the message protocol version.
      *
      * @return string
