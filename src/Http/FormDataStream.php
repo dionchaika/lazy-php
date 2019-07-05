@@ -86,7 +86,7 @@ class FormDataStream extends Stream implements StreamInterface
     }
 
     /**
-     * Check is the header exists in the array of headers.
+     * Check is the header exists in the array.
      *
      * @param  string  $name
      * @param  mixed[]  $headers
