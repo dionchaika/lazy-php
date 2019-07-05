@@ -106,16 +106,16 @@ class FormData
             $part['filename'] = null;
         }
 
-        $contents = create_stream($part['contents']);
+        $part['contents'] = create_stream($part['contents']);
 
         if (! $this->hasHeader('Content-Disposition', $part['headers'])) {
-            $contentDisposition = $part['filename']
+            $disposition = $part['filename']
                 ? sprintf("form-data; name=\"%s\"; filename=\"%s\"",
                     $part['name'],
                     basename($part['filename']))
                 : sprintf("form-data; name=\"%s\"", $part['name']);
 
-            $part['headers']['Content-Disposition'] = $contentDisposition;
+            $part['headers']['Content-Disposition'] = $disposition;
         }
 
         if ($part['filename']) {
@@ -123,14 +123,12 @@ class FormData
                 $part['headers']['Content-Type'] = mime_content_type($part['filename']);
             }
 
-            $contentLength = $contents->getSize();
+            $length = $part['contents']->getSize();
 
-            if (! $this->hasHeader('Content-Length', $part['headers']) && $contentLength) {
-                $part['headers']['Content-Length'] = $contentLength;
+            if (! $this->hasHeader('Content-Length', $part['headers']) && $length) {
+                $part['headers']['Content-Length'] = $length;
             }
         }
-
-        $part['contents'] = $contents;
 
         $this->parts[] = $part;
 
