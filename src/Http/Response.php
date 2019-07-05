@@ -431,7 +431,7 @@ class Response extends Message implements ResponseInterface
 
         header(sprintf("HTTP/%s %s %s", $this->protocolVersion,
                                         $this->statusCode,
-                                        $this->reasonPhrase), true);
+                                        $this->reasonPhrase));
 
         foreach (array_keys($this->getHeaders()) as $name) {
             if (0 === strcasecmp($name, 'set-cookie')) {
@@ -439,7 +439,7 @@ class Response extends Message implements ResponseInterface
                     header(sprintf("%s: %s", $cookie), false);
                 }
             } else {
-                header(sprintf("%s: %s", $this->getHeaderLine($name)), true);
+                header(sprintf("%s: %s", $this->getHeaderLine($name)));
             }
         }
 
