@@ -3,6 +3,7 @@
 namespace Lazy\Http;
 
 use Throwable;
+use RuntimeException;
 use SimpleXMLElement;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
@@ -413,6 +414,38 @@ class Response extends Message implements ResponseInterface
     public function isServerError()
     {
         $this->statusCode >= StatusCode::INTERNAL_SERVER_ERROR && $this->statusCode < 600;
+    }
+
+    /**
+     * Send the response to browser.
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    public function send()
+    {
+        if (headers_sent()) {
+            throw new RuntimeException('Unable to send the response! Headers are already sent.');
+        }
+
+        header(sprintf("HTTP/%s %s %s", $this->protocolVersion,
+                                        $this->statusCode,
+                                        $this->reasonPhrase), true);
+
+        foreach (array_keys($this->getHeaders()) as $name) {
+            if (0 === strcasecmp($name, 'set-cookie')) {
+                foreach ($this->getHeader($name) as $cookie) {
+                    header(sprintf("%s: %s", $cookie), false);
+                }
+            } else {
+                header(sprintf("%s: %s", $this->getHeaderLine($name)), true);
+            }
+        }
+
+        fwrite(fopen('php://output', 'w'), $this->body);
+
+        exit;
     }
 
     /**
