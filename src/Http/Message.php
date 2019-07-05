@@ -372,32 +372,6 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * Set the Content-Type header to message.
-     *
-     * @param  string  $type
-     * @return void
-     */
-    protected function setContentTypeHeader($type)
-    {
-        if (! $this->hasHeader('Content-Type')) {
-            $this->addHeader('Content-Type', $type);
-        }
-    }
-
-    /**
-     * Set the Content-Length header to message.
-     *
-     * @param  string  $length
-     * @return void
-     */
-    protected function setContentLengthHeader($length)
-    {
-        if (! $this->hasHeader('Content-Length')) {
-            $this->addHeader('Content-Length', $length);
-        }
-    }
-
-    /**
      * Filter a message header name.
      *
      * @param  string  $name
