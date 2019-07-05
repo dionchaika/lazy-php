@@ -436,10 +436,10 @@ class Response extends Message implements ResponseInterface
         foreach (array_keys($this->getHeaders()) as $name) {
             if (0 === strcasecmp($name, 'set-cookie')) {
                 foreach ($this->getHeader($name) as $cookie) {
-                    header(sprintf("%s: %s", $cookie), false);
+                    header(sprintf("%s: %s", $name, $cookie), false);
                 }
             } else {
-                header(sprintf("%s: %s", $this->getHeaderLine($name)));
+                header(sprintf("%s: %s", $name, $this->getHeaderLine($name)));
             }
         }
 
