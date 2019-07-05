@@ -36,8 +36,6 @@ class FormDataStream extends Stream implements StreamInterface
     {
         parent::__construct(fopen('php://temp', 'r+'));
 
-        $this->boundary = $boundary ?? $this->generateBoundary();
-
         foreach ($parts as $part) {
             foreach (['name', 'contents'] as $key) {
                 if (! array_key_exists($key, $part)) {
@@ -53,7 +51,7 @@ class FormDataStream extends Stream implements StreamInterface
             }
         }
 
-        $this->write("\r\n{$this->boundary}\r\n");
+        $this->boundary = $boundary ?? $this->generateBoundary();
     }
 
     /**
