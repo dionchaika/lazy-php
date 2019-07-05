@@ -75,7 +75,11 @@ class FormDataStream extends Stream implements StreamInterface
      */
     public function append($name, $value, array $headers = [], $filename = null)
     {
-
+        if (! $this->hasHeader('Content-Disposition', $headers)) {
+            $headers['Content-Disposition'] = (! $filename && '0' !== $filename)
+                ? sprintf("form-data; name=\"%s\"", $name)
+                : sprintf("form-data; name=\"%s\"; filename=\"%s\"", $name, basename($filename));
+        }
     }
 
     /**
@@ -97,6 +101,20 @@ class FormDataStream extends Stream implements StreamInterface
         }
 
         return $prefix.$boundary;
+    }
+
+    /**
+     * Check is the header exists in the array of headers.
+     *
+     * @param  string  $name
+     * @param  mixed[]  $headers
+     * @return bool
+     */
+    protected function hasHeader($name, array $headers)
+    {
+        return array_key_exists(
+            strtolower($name), array_change_key_case($headers)
+        );
     }
 
     /**
