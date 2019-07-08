@@ -101,7 +101,10 @@ class Headers implements ArrayAccess
 
         foreach ($lines as $line) {
             if (false === strpos($line, ':')) {
-                throw new InvalidArgumentException('Invalid header! Header must be compliant with the "RFC 7230" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid header: {$line}! "
+                    ."Header must be compliant with the \"RFC 7230\" standart."
+                );
             }
 
             $parts = explode(':', $line, 2);
@@ -445,7 +448,10 @@ class Headers implements ArrayAccess
     protected function filterName($name)
     {
         if (! preg_match('/^[!#$%&\'*+\-.^_`|~0-9a-zA-Z]+$/', $name)) {
-            throw new InvalidArgumentException('Invalid header name! Header name must be compliant with the "RFC 7230" standart.');
+            throw new InvalidArgumentException(
+                "Invalid header name: {$name}! "
+                ."Header name must be compliant with the \"RFC 7230\" standart."
+            );
         }
 
         return $name;
@@ -463,14 +469,20 @@ class Headers implements ArrayAccess
     {
         foreach ($value as $val) {
             if (preg_match('/(?:(?:(?<!\r)\n)|(?:\r(?!\n))|(?:\r\n(?![ \t])))/', $val)) {
-                throw new InvalidArgumentException('Invalid header value! Header value must be compliant with the "RFC 7230" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid header value: {$val}! "
+                    ."Header value must be compliant with the \"RFC 7230\" standart."
+                );
             }
 
             for ($i = 0; $i < strlen($val); $i++) {
                 $ascii = ord($val[$i]);
 
                 if ((32 > $ascii && (9 !== $ascii && 10 !== $ascii && 13 !== $ascii)) || 127 === $ascii || 254 < $ascii) {
-                    throw new InvalidArgumentException('Invalid header value! Header value must be compliant with the "RFC 7230" standart.');
+                    throw new InvalidArgumentException(
+                        "Invalid header value: {$val}! "
+                        ."Header value must be compliant with the \"RFC 7230\" standart."
+                    );
                 }
             }
         }
