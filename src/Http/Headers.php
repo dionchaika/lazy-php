@@ -285,6 +285,16 @@ class Headers implements ArrayAccess
     }
 
     /**
+     * Get a MIME-type from the Content-Type header.
+     *
+     * @return string
+     */
+    public function getMediaType()
+    {
+        return strtolower(preg_split('/\s*[,;]\s*/', $this->getLine('Content-Type'))[0]);
+    }
+
+    /**
      * Send all of the headers in the collection to browser.
      *
      * @return void
