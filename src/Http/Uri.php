@@ -121,32 +121,45 @@ class Uri implements UriInterface
     }
 
     /**
-     * Create a new URI from globals.
+     * Create a new URI from PHP globals.
      *
      * @return self
      *
      * @throws \InvalidArgumentException
      */
-    public static function fromGlobals()
+    public function fromGlobals()
     {
-        $secured = ! empty($_SERVER['HTTPS']) && 0 !== strcasecmp($_SERVER['HTTPS'], 'off');
+        return static::fromEnvironment($_SERVER);
+    }
+
+    /**
+     * Create a new URI from environment.
+     *
+     * @param  mixed[]  $environment
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromEnvironment(array $environment)
+    {
+        $secured = ! empty($environment['HTTPS']) && 'off' !== $environment['HTTPS'];
 
         $scheme = $secured ? 'https' : 'http';
 
-        if (! empty($_SERVER['SERVER_NAME'])) {
-            $host = $_SERVER['SERVER_NAME'];
+        if (! empty($environment['SERVER_NAME'])) {
+            $host = $environment['SERVER_NAME'];
         } else {
-            $host = ! empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1';
+            $host = ! empty($environment['SERVER_ADDR']) ? $environment['SERVER_ADDR'] : '127.0.0.1';
         }
 
-        if (! empty($_SERVER['SERVER_PORT'])) {
-            $port = (int) $_SERVER['SERVER_PORT'];
+        if (! empty($environment['SERVER_PORT'])) {
+            $port = (int) $environment['SERVER_PORT'];
         } else {
             $port = $secured ? 443 : 80;
         }
 
-        $path = ! empty($_SERVER['REQUEST_URI']) ? explode('?', $_SERVER['REQUEST_URI'], 2)[0] : '/';
-        $query = ! empty($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : '';
+        $path = ! empty($environment['REQUEST_URI']) ? explode('?', $environment['REQUEST_URI'], 2)[0] : '/';
+        $query = ! empty($environment['QUERY_STRING']) ? $environment['QUERY_STRING'] : '';
 
         return (new static)
             ->withScheme($scheme)
