@@ -231,9 +231,9 @@ class Headers implements ArrayAccess
 
         if (! isset($this->headers[$normalizedName])) {
             $this->headers[$normalizedName] = compact('name', 'value');
+        } else {
+            $this->headers[$normalizedName]['value'] = array_merge($this->headers[$normalizedName]['value'], $value);
         }
-
-        $this->headers[$normalizedName] = array_merge($this->headers[$normalizedName], $value);
 
         return $this;
     }
