@@ -294,7 +294,7 @@ class Headers implements ArrayAccess
      */
     public function getMediaType()
     {
-        return strtolower(preg_split('/\s*[,;]\s*/', $this->getLine('Content-Type'))[0]);
+        return strtolower(trim(explode(':', $this->getLine('Content-Type'))[0]));
     }
 
     /**
