@@ -2,19 +2,116 @@
 
 namespace Lazy\Http;
 
-class Headers
+use Throwable;
+use ArrayAccess;
+use InvalidArgumentException;
+
+/**
+ * The PSR-7 HTTP message headers collection class.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ * @see https://tools.ietf.org/html/rfc7230
+ */
+class Headers implements ArrayAccess
 {
     /**
      * The array of all of the headers.
      *
-     * Note: The array keys
-     * are the lowercase header names while
-     * the array values contains the original
-     * header name and the array of header values.
+     * Note: The array keys are the normalized
+     * header names while the array values contains
+     * the original header name and the array of header values.
      *
      * @var mixed[]
      */
     protected $headers = [];
+
+    /**
+     * The headers collection constructor.
+     *
+     * @param  mixed[]  $headers
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(array $headers = [])
+    {
+        $this->setHeaders($headers);
+    }
+
+    /**
+     * Create a new headers collection from PHP globals.
+     *
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromGlobals()
+    {
+        return static::fromEnvironment($_SERVER);
+    }
+
+    /**
+     * Create a new headers collection from environment.
+     *
+     * @param  mixed[]  $environment
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromEnvironment(array $environment)
+    {
+        $headers = new static;
+
+        foreach ($environment as $key => $value) {
+            if ('CONTENT_TYPE' === $key) {
+                $headers->set('Content-Type', $value);
+            } else if ('CONTENT_LENGTH' === $key) {
+                $headers->set('Content-Length', $value);
+            } else if (0 === strpos($key, 'HTTP_')) {
+                $name = str_replace('_', '-', substr($key, 5));
+
+                $delim = (0 === strcmp($name, 'COOKIE'))
+                    ? ';'
+                    : ',';
+
+                $method = (0 === strcasecmp($name, 'SET-COOKIE'))
+                    ? 'add'
+                    : 'set';
+
+                $headers->{$method}($name, ('add' === $method) ? $value : explode($delim, $value));
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Create a new headers collection from string.
+     *
+     * @param  string  $headers
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromString($headers)
+    {
+        $lines = explode("\r\n", $headers);
+
+        $headers = new static;
+
+        foreach ($lines as $line) {
+            [$name, $value] = explode(':', $line);
+
+            $delim = (0 === strcasecmp($name, 'cookie'))
+                ? ';'
+                : ',';
+
+            $method = (0 === strcasecmp($name, 'set-cookie'))
+                ? 'add'
+                : 'set';
+
+            $headers->{$method}($name, ('add' === $method) ? $value : explode($delim, $value));
+        }
+    }
 
     /**
      * Get the raw array
@@ -50,7 +147,7 @@ class Headers
      */
     public function has($name)
     {
-        return isset($this->headers[strtolower($name)]);
+        return isset($this->headers[$this->normalizeName($name)]);
     }
 
     /**
@@ -61,7 +158,7 @@ class Headers
      */
     public function get($name)
     {
-        $name = strtolower($name);
+        $name = $this->normalizeName($name);
 
         return isset($this->headers[$name]) ? $this->headers[$name] : [];
     }
@@ -78,47 +175,253 @@ class Headers
     }
 
     /**
-     * Set header in the collection.
+     * Set a header to the collection.
      *
      * @param  string  $name
      * @param  string|string[]  $value
      * @return self
+     *
+     * @throws \InvalidArgumentException
      */
     public function set($name, $value)
     {
-        $value = (array) $value;
+        $name = $this->filterName($name);
+        $value = $this->filterValue((array) $value);
 
-        $this->headers[strtolower($name)] = compact('name', 'value');
+        $this->headers[$this->normalizeName($name)] = compact('name', 'value');
 
         return $this;
     }
 
     /**
-     * Add header to the collection.
+     * Set the headers to the collection.
+     *
+     * @param  mixed[]  $headers
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function setHeaders(array $headers)
+    {
+        foreach ($headers as $name => $value) {
+            $this->set($name, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add a header to the collection.
      *
      * @param  string  $name
      * @param  string|string[]  $value
      * @return self
+     *
+     * @throws \InvalidArgumentException
      */
     public function add($name, $value)
     {
-        $normalizedName = strtolower($name);
+        $name = $this->filterName($name);
+        $value = $this->filterValue((array) $value);
+
+        $normalizedName = $this->normalizeName($name);
 
         if (! isset($this->headers[$normalizedName])) {
             $this->headers[$normalizedName] = compact('name', 'value');
         }
 
-        $this->headers[$normalizedName] = array_merge($this->headers[$normalizedName], (array) $value);
+        $this->headers[$normalizedName] = array_merge($this->headers[$normalizedName], $value);
+
+        return $this;
     }
 
     /**
-     * Remove header from the collection.
+     * Add the headers to the collection.
+     *
+     * @param  mixed[]  $headers
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function addHeaders(array $headers)
+    {
+        foreach ($headers as $name => $value) {
+            $this->add($name, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove the header from the collection.
      *
      * @param  string  $name
-     * @return void
+     * @return self
      */
     public function remove($name)
     {
-        unset($this->headers[strtolower($name)]);
+        unset($this->headers[$this->normalizeName($name)]);
+
+        return $this;
+    }
+
+    /**
+     * Get the header line from the collection.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    public function __get($name)
+    {
+        return $this->getLine($name);
+    }
+
+    /**
+     * Add a header to the collection.
+     *
+     * @param  string  $name
+     * @param  string|string[]  $value
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __set($name, $value)
+    {
+        $this->add($name, $value);
+    }
+
+    /**
+     * Check is the header exists in the collection.
+     *
+     * @param  string  $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return $this->has($offset);
+    }
+
+    /**
+     * Get the header line from the collection.
+     *
+     * @param  string  $offset
+     * @return string
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getLine($offset);
+    }
+
+    /**
+     * Add a header to the collection.
+     *
+     * @param  string  $offset
+     * @param  string|string[]  $value
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->add($offset, $value);
+    }
+
+    /**
+     * Remove the header from the collection.
+     *
+     * @param  string  $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        $this->remove($offset);
+    }
+
+    /**
+     * Stringify the headers collection.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        try {
+            $str = '';
+
+            foreach ($this->all() as $name => $value) {
+                if (0 === strcasecmp($name, 'set-cookie')) {
+                    foreach ($value as $cookie) {
+                        $str .= sprintf("%s: %s\r\n", $name, $cookie);
+                    }
+                } else {
+                    $value = (0 === strcasecmp($name, 'cookie'))
+                        ? implode('; ', $value)
+                        : $this->getLine($name);
+
+                    $str .= sprintf("%s: %s\r\n", $name, $value);
+                }
+            }
+
+            return $str;
+        } catch (Throwable $e) {
+            trigger_error($e->getMessage(), \E_USER_ERROR);
+        }
+    }
+
+    /**
+     * Normalize a header name.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    protected function normalizeName($name)
+    {
+        return implode('-',
+                       array_map('ucfirst',
+                                 explode('-',
+                                         strtolower($name))));
+    }
+
+    /**
+     * Filter a header name.
+     *
+     * @param  string  $name
+     * @return string
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function filterName($name)
+    {
+        if (! preg_match('/^[!#$%&\'*+\-.^_`|~0-9a-zA-Z]+$/', $name)) {
+            throw new InvalidArgumentException('Invalid header name! Header name must be compliant with the "RFC 7230" standart.');
+        }
+
+        return $name;
+    }
+
+    /**
+     * Filter a header value.
+     *
+     * @param  string[]  $value
+     * @return string[]
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function filterValue(array $value)
+    {
+        foreach ($value as $val) {
+            if (preg_match('/(?:(?:(?<!\r)\n)|(?:\r(?!\n))|(?:\r\n(?![ \t])))/', $val)) {
+                throw new InvalidArgumentException('Invalid header value! Header value must be compliant with the "RFC 7230" standart.');
+            }
+
+            for ($i = 0; $i < strlen($val); $i++) {
+                $ascii = ord($val[$i]);
+
+                if ((32 > $ascii && (9 !== $ascii && 10 !== $ascii && 13 !== $ascii)) || 127 === $ascii || 254 < $ascii) {
+                    throw new InvalidArgumentException('Invalid header value! Header value must be compliant with the "RFC 7230" standart.');
+                }
+            }
+        }
+
+        return $value;
     }
 }
