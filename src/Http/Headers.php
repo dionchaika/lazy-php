@@ -4,6 +4,7 @@ namespace Lazy\Http;
 
 use Throwable;
 use ArrayAccess;
+use RuntimeException;
 use InvalidArgumentException;
 
 /**
@@ -265,6 +266,30 @@ class Headers implements ArrayAccess
         unset($this->headers[$this->normalizeName($name)]);
 
         return $this;
+    }
+
+    /**
+     * Send all of the headers in the collection to browser.
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    public function send()
+    {
+        if (headers_sent()) {
+            throw new RuntimeException('Unable to send the headers! Headers are already sent.');
+        }
+
+        foreach ($this->all() as $name => $value) {
+            if (0 === strcasecmp($name, 'set-cookie')) {
+                foreach ($value as $cookie) {
+                    header(sprintf("%s: %s", $name, $cookie), false);
+                }
+            } else {
+                header(sprintf("%s: %s", $name, $this->getLine($name)));
+            }
+        }
     }
 
     /**
