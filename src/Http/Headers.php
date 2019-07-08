@@ -74,7 +74,7 @@ class Headers implements ArrayAccess
                     ? ';'
                     : ',';
 
-                $method = (0 === strcasecmp($name, 'SET-COOKIE'))
+                $method = (0 === strcmp($name, 'SET-COOKIE'))
                     ? 'add'
                     : 'set';
 
