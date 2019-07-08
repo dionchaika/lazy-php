@@ -384,7 +384,7 @@ class Headers implements ArrayAccess
     }
 
     /**
-     * Stringify the headers collection.
+     * Stringify the header collection.
      *
      * @return string
      */
