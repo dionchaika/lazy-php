@@ -269,6 +269,16 @@ class Headers implements ArrayAccess
     }
 
     /**
+     * Get the count of all of the headers in the collection.
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->headers);
+    }
+
+    /**
      * Send all of the headers in the collection to browser.
      *
      * @return void
