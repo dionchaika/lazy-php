@@ -8,7 +8,7 @@ use RuntimeException;
 use InvalidArgumentException;
 
 /**
- * The PSR-7 HTTP message headers collection class.
+ * The PSR-7 HTTP message header collection class.
  *
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
@@ -27,7 +27,7 @@ class Headers implements ArrayAccess
     protected $headers = [];
 
     /**
-     * The headers collection constructor.
+     * The header collection constructor.
      *
      * @param  mixed[]  $headers
      *
@@ -39,7 +39,7 @@ class Headers implements ArrayAccess
     }
 
     /**
-     * Create a new headers collection from PHP globals.
+     * Create a new header collection from PHP globals.
      *
      * @return self
      *
@@ -51,7 +51,7 @@ class Headers implements ArrayAccess
     }
 
     /**
-     * Create a new headers collection from environment.
+     * Create a new header collection from environment.
      *
      * @param  mixed[]  $environment
      * @return self
@@ -86,7 +86,7 @@ class Headers implements ArrayAccess
     }
 
     /**
-     * Create a new headers collection from string.
+     * Create a new header collection from string.
      *
      * @param  string  $headers
      * @return self
