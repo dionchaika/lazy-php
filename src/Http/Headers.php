@@ -111,6 +111,8 @@ class Headers implements ArrayAccess
 
             $headers->{$method}($name, ('add' === $method) ? $value : explode($delim, $value));
         }
+
+        return $headers;
     }
 
     /**
