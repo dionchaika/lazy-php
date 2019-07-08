@@ -15,7 +15,7 @@ trait BodyParserTrait
     protected $parsers = [];
 
     /**
-     * Register a new body parser for a MIME-type.
+     * Register a new body parser.
      *
      * @param  string  $mimeType
      * @param  callable  $callable
