@@ -12,7 +12,7 @@ trait BodyParserTrait
      *
      * @var mixed[]
      */
-    protected static $parsers = [];
+    protected $parsers = [];
 
     /**
      * Register a new body parser for a MIME-type.
@@ -21,7 +21,7 @@ trait BodyParserTrait
      * @param  callable  $callable
      * @return void
      */
-    public static function registerParser($mimeType, callable $callable)
+    public function registerParser($mimeType, callable $callable)
     {
         $this->parsers[$mimeType] = $callable;
     }
@@ -31,7 +31,7 @@ trait BodyParserTrait
      *
      * @return callable
      */
-    public static function getDefaultXmlParser(): callable
+    public function getDefaultXmlParser(): callable
     {
         return function (ServerRequestInterface $request): ServerRequestInterface {
             return $request->withParsedBody(
@@ -45,7 +45,7 @@ trait BodyParserTrait
      *
      * @return callable
      */
-    public static function getDefaultJsonParser(): callable
+    public function getDefaultJsonParser(): callable
     {
         return function (ServerRequestInterface $request): ServerRequestInterface {
             return $request->withParsedBody(
@@ -55,27 +55,11 @@ trait BodyParserTrait
     }
 
     /**
-     * Get a default multipart/form-data body parser.
-     *
-     * @return callable
-     */
-    public static function getDefaultFormDataParser(): callable
-    {
-        return function (ServerRequestInterface $request): ServerRequestInterface {
-            preg_match('/boundary\=([^\s]+)/', $request->getHeaderLine('Content-Type'), $matches);
-
-            $boundary = trim($matches[1], '"');
-
-            return $request->withParsedBody([]);
-        };
-    }
-
-    /**
      * Get a default application/x-www-form-urlencoded body parser.
      *
      * @return callable
      */
-    public static function getDefaultUrlencodedParser(): callable
+    public function getDefaultUrlencodedParser(): callable
     {
         return function (ServerRequestInterface $request): ServerRequestInterface {
             return $request->withParsedBody(
