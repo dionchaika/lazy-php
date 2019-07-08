@@ -77,7 +77,7 @@ class Headers implements ArrayAccess
                     ? 'add'
                     : 'set';
 
-                $headers->{$method}($name, ('add' === $method) ? $value : explode($delim, $value));
+                $headers->{$method}($name, ('add' === $method) ? $value : array_map('trim', explode($delim, $value)));
             }
         }
 
@@ -109,7 +109,7 @@ class Headers implements ArrayAccess
                 ? 'add'
                 : 'set';
 
-            $headers->{$method}($name, ('add' === $method) ? $value : explode($delim, $value));
+            $headers->{$method}($name, ('add' === $method) ? $value : array_map('trim', explode($delim, $value)));
         }
 
         return $headers;
