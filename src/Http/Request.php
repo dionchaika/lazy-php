@@ -59,7 +59,7 @@ class Request extends Message implements RequestInterface
         if (! $uri) {
             $this->uri = new Uri;
         } else if (is_string($uri)) {
-            $this->uri = new Uri($uri);
+            $this->uri = Uri::fromString($uri);
         } else {
             $this->uri = $uri;
         }
