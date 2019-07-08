@@ -188,13 +188,13 @@ class Cookie
      */
     public static function fromString(string $cookie): self
     {
-        $cookieParts = explode(';', $cookie);
+        $parts = explode(';', $cookie);
 
-        if (false === strpos($cookieParts[0], '=')) {
+        if (false === strpos($parts[0], '=')) {
             throw new InvalidArgumentException('Invalid cookie! Cookie must contain a pair.');
         }
 
-        $pairParts = explode('=', array_shift($cookieParts), 2);
+        $pairParts = explode('=', array_shift($parts), 2);
 
         $name = trim($pairParts[0]);
 
@@ -212,8 +212,8 @@ class Cookie
 
         ];
 
-        foreach ($cookieParts as $cookiePart) {
-            $attributeParts = explode('=', $cookiePart, 2);
+        foreach ($parts as $part) {
+            $attributeParts = explode('=', $part, 2);
 
             $attributeName = trim($attributeParts[0]);
 

@@ -100,7 +100,9 @@ class Headers implements ArrayAccess
         $headers = new static;
 
         foreach ($lines as $line) {
-            [$name, $value] = explode(':', $line, 2);
+            $parts = explode(':', $line, 2);
+
+            $name = trim($parts[0]);
 
             $delim = (0 === strcasecmp($name, 'cookie'))
                 ? ';'
@@ -110,7 +112,7 @@ class Headers implements ArrayAccess
                 ? 'add'
                 : 'set';
 
-            $headers->{$method}($name, ('add' === $method) ? trim($value) : array_map('trim', explode($delim, $value)));
+            $headers->{$method}($name, ('add' === $method) ? trim($parts[1]) : array_map('trim', explode($delim, $parts[1])));
         }
 
         return $headers;
