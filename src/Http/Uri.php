@@ -76,48 +76,39 @@ class Uri implements UriInterface
     /**
      * The URI constructor.
      *
-     * @param  string  $uri
+     * @param  string  $scheme
+     * @param  string  $user
+     * @param  string|null  $password
+     * @param  string  $host
+     * @param  int|null  $port
+     * @param  string  $path
+     * @param  string  $query
+     * @param  string  $fragment
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($uri = '')
+    public function __construct($scheme = '',
+                                $user = '',
+                                $password = null,
+                                $host = '',
+                                $port = null,
+                                $path = '',
+                                $query = '',
+                                $fragment = '')
     {
-        if ($uri) {
-            $parts = parse_url($uri);
+        $userInfo = $user;
 
-            if (false === $parts) {
-                throw new InvalidArgumentException("Unable to parse the URI: {$uri}!");
-            }
-
-            $this->applyParts($parts);
+        if ($userInfo && $password) {
+            $userInfo .= ':'.$password;
         }
-    }
 
-    /**
-     * Create a new URI from parts.
-     *
-     * Allowed URI parts:
-     *      1. scheme (string) - the URI scheme.
-     *      2. host (string) - the URI host.
-     *      3. port (int) - the URI port.
-     *      4. user (string) - the URI user.
-     *      5. pass (string) - the URI password.
-     *      6. path (string) - the URI path.
-     *      7. query (string) - the URI query.
-     *      8. fragment (string) - the URI fragment.
-     *
-     * @param  mixed[]  $parts
-     * @return self
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function fromParts(array $parts)
-    {
-        $uri = new static;
-
-        $uri->applyParts($parts);
-
-        return $uri;
+        $this->scheme = $this->filterScheme($scheme);
+        $this->userInfo = $userInfo;
+        $this->host = $this->filterHost($host);
+        $this->port = $this->filterPort($port);
+        $this->path = $this->filterPath($path);
+        $this->query = $this->filterQuery($query);
+        $this->fragment = $this->filterFragment($fragment);
     }
 
     /**
@@ -127,7 +118,7 @@ class Uri implements UriInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function fromGlobals()
+    public static function fromGlobals()
     {
         return static::fromEnvironment($_SERVER);
     }
@@ -146,6 +137,10 @@ class Uri implements UriInterface
 
         $scheme = $secured ? 'https' : 'http';
 
+        $user = ! empty($environment['PHP_AUTH_USER']) ? $environment['PHP_AUTH_USER'] : '';
+
+        $password = ! empty($environment['PHP_AUTH_PW']) ? $environment['PHP_AUTH_PW'] : null;
+
         if (! empty($environment['SERVER_NAME'])) {
             $host = $environment['SERVER_NAME'];
         } else {
@@ -159,14 +154,38 @@ class Uri implements UriInterface
         }
 
         $path = ! empty($environment['REQUEST_URI']) ? explode('?', $environment['REQUEST_URI'], 2)[0] : '/';
+
         $query = ! empty($environment['QUERY_STRING']) ? $environment['QUERY_STRING'] : '';
 
-        return (new static)
-            ->withScheme($scheme)
-            ->withHost($host)
-            ->withPort($port)
-            ->withPath($path)
-            ->withQuery($query);
+        return new static($scheme, $user, $password, $host, $port, $path, $query);
+    }
+
+    /**
+     * Create a new URI from string.
+     *
+     * @param  string  $uri
+     * @return self
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromString($uri)
+    {
+        $parts = parse_url($uri);
+
+        if (false === $parts) {
+            throw new InvalidArgumentException("Unable to parse the URI: {$uri}!");
+        }
+
+        $scheme = ! empty($parts['scheme']) ? $parts['scheme'] : '';
+        $user = ! empty($parts['user']) ? $parts['user'] : '';
+        $password = ! empty($parts['pass']) ? $parts['pass'] : null;
+        $host = ! empty($parts['host']) ? $parts['host'] : '';
+        $port = ! empty($parts['port']) ? $parts['port'] : null;
+        $path = ! empty($parts['path']) ? $parts['path'] : '';
+        $query = ! empty($parts['query']) ? $parts['query'] : '';
+        $fragment = ! empty($parts['fragment']) ? $parts['fragment'] : '';
+
+        return new static($scheme, $user, $password, $host, $port, $path, $query, $fragment);
     }
 
     /**
@@ -323,6 +342,7 @@ class Uri implements UriInterface
         $new = clone $this;
 
         $new->scheme = $new->filterScheme($scheme);
+
         $new->port = static::isNonStandartPort($new->scheme, $new->port) ? $new->port : null;
 
         return $new;
@@ -528,40 +548,6 @@ class Uri implements UriInterface
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
-    }
-
-    /**
-     * Apply parts to the URI.
-     *
-     * @param  mixed[]  $parts
-     * @return void
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function applyParts(array $parts)
-    {
-        $scheme = ! empty($parts['scheme']) ? $parts['scheme'] : '';
-        $user = ! empty($parts['user']) ? $parts['user'] : '';
-        $password = ! empty($parts['pass']) ? $parts['pass'] : null;
-        $host = ! empty($parts['host']) ? $parts['host'] : '';
-        $port = ! empty($parts['port']) ? $parts['port'] : null;
-        $path = ! empty($parts['path']) ? $parts['path'] : '';
-        $query = ! empty($parts['query']) ? $parts['query'] : '';
-        $fragment = ! empty($parts['fragment']) ? $parts['fragment'] : '';
-
-        $userInfo = $user;
-
-        if ($userInfo && $password) {
-            $userInfo .= ':'.$password;
-        }
-
-        $this->scheme = $this->filterScheme($scheme);
-        $this->userInfo = $userInfo;
-        $this->host = $this->filterHost($host);
-        $this->port = $this->filterPort($port);
-        $this->path = $this->filterPath($path);
-        $this->query = $this->filterQuery($query);
-        $this->fragment = $this->filterFragment($fragment);
     }
 
     /**
