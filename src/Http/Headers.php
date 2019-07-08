@@ -8,8 +8,7 @@ class Headers
 
     public function all()
     {
-        foreach ($this->headers as $header)
-        {
+        foreach ($this->headers as $header) {
             $headers[$header['name']] = $header['value'];
         }
 
