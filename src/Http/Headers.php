@@ -8,7 +8,7 @@ class Headers
      * The array of all of the headers.
      *
      * Note: The array keys
-     * are the lowercased header names while
+     * are the lowercase header names while
      * the array values contains the original
      * header name and the array of header values.
      *
