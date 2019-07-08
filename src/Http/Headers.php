@@ -2,11 +2,11 @@
 
 namespace Lazy\Http;
 
-use Throwable;
 use InvalidArgumentException;
 
 /**
- * The PSR-7 HTTP headers collection class.
+ * The PSR-7 HTTP message
+ * headers collection class.
  *
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
@@ -35,37 +35,6 @@ class Headers
     }
 
     /**
-     * Create a new headers collection from string.
-     *
-     * @param  string  $headers
-     * @return self
-     *
-     * @throws \InvalidArgumentException
-     */
-    public static function fromString($headers)
-    {
-        $lines = explode("\r\n", $headers);
-
-        $headers = [];
-
-        foreach ($lines as $line) {
-            $parts = explode(':', $line, 2);
-
-            $name = $parts[0];
-
-            $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
-
-            $value = (0 === strcasecmp($name, 'set-cookie'))
-                ? $parts[1]
-                : array_map('trim', explode($delim, $parts[1]));
-
-            $headers[$name] = $value;
-        }
-
-        return new static($headers);
-    }
-
-    /**
      * Create a new headers collection from globals.
      *
      * @return self
@@ -78,8 +47,7 @@ class Headers
 
         foreach ($_SERVER as $key => $value) {
             if (0 === strpos($key, 'HTTP_')) {
-                $name = strtolower(str_replace('_', '-', substr($key, 5)));
-                $name = implode('-', array_map('ucfirst', explode('-', $name)));
+                $name = $this->normilizeName(substr($key, 5));
 
                 $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
 
@@ -198,17 +166,27 @@ class Headers
     }
 
     /**
-     * Stringify the headers collection.
+     * Remove a header from the collection.
      *
+     * @param  string  $name
+     * @return void
+     */
+    public function remove($name)
+    {
+        unset($this->headers[strtolower($name)]);
+    }
+
+    /**
+     * Normalize a header name.
+     *
+     * @param  string  $name
      * @return string
      */
-    public function __toString()
+    protected function normilizeName($name)
     {
-        try {
-            
-        } catch (Throwable $e) {
-            trigger_error($e->getMessage(), \E_USER_ERROR);
-        }
+        $name = strtolower(str_replace('_', '-', $name));
+
+        return implode('-', array_map('ucfirst', explode('-', $name)));
     }
 
     /**
