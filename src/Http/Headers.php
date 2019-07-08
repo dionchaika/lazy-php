@@ -100,6 +100,10 @@ class Headers implements ArrayAccess
         $headers = new static;
 
         foreach ($lines as $line) {
+            if (false === strpos($line, ':')) {
+                throw new InvalidArgumentException('Invalid header! Header must be compliant with the "RFC 7230" standart.');
+            }
+
             $parts = explode(':', $line, 2);
 
             $name = trim($parts[0]);
