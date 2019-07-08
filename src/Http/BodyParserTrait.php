@@ -12,7 +12,7 @@ trait BodyParserTrait
      *
      * @var mixed[]
      */
-    protected $parsers = [];
+    protected static $parsers = [];
 
     /**
      * Register a new body parser for a MIME-type.
@@ -21,7 +21,7 @@ trait BodyParserTrait
      * @param  callable  $callable
      * @return void
      */
-    public function registerParser($mimeType, callable $callable)
+    public static function registerParser($mimeType, callable $callable)
     {
         $this->parsers[$mimeType] = $callable;
     }
@@ -31,7 +31,7 @@ trait BodyParserTrait
      *
      * @return callable
      */
-    public function getDefaultXmlParser(): callable
+    public static function getDefaultXmlParser(): callable
     {
         return function (ServerRequestInterface $request): ServerRequestInterface {
             return $request->withParsedBody(
@@ -45,7 +45,7 @@ trait BodyParserTrait
      *
      * @return callable
      */
-    public function getDefaultJsonParser(): callable
+    public static function getDefaultJsonParser(): callable
     {
         return function (ServerRequestInterface $request): ServerRequestInterface {
             return $request->withParsedBody(
@@ -59,7 +59,7 @@ trait BodyParserTrait
      *
      * @return callable
      */
-    public function getDefaultFormDataParser(): callable
+    public static function getDefaultFormDataParser(): callable
     {
         return function (ServerRequestInterface $request): ServerRequestInterface {
             preg_match('/boundary\=([^\s]+)/', $request->getHeaderLine('Content-Type'), $matches);
@@ -75,7 +75,7 @@ trait BodyParserTrait
      *
      * @return callable
      */
-    public function getDefaultUrlencodedParser(): callable
+    public static function getDefaultUrlencodedParser(): callable
     {
         return function (ServerRequestInterface $request): ServerRequestInterface {
             return $request->withParsedBody(

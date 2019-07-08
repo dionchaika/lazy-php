@@ -110,11 +110,11 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
 
-        $this->registerParser('text/xml', $this->getDefaultXmlParser());
-        $this->registerParser('application/xml', $this->getDefaultXmlParser());
-        $this->registerParser('application/json', $this->getDefaultJsonParser());
-        $this->registerParser('multipart/form-data', $this->getDefaultFormDataParser());
-        $this->registerParser('application/x-www-form-urlencoded', $this->getDefaultUrlencodedParser());
+        static::registerParser('text/xml', static::getDefaultXmlParser());
+        static::registerParser('application/xml', static::getDefaultXmlParser());
+        static::registerParser('application/json', static::getDefaultJsonParser());
+        static::registerParser('multipart/form-data', static::getDefaultFormDataParser());
+        static::registerParser('application/x-www-form-urlencoded', static::getDefaultUrlencodedParser());
     }
 
     /**
