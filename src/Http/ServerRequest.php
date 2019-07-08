@@ -26,6 +26,13 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $parsedBody;
 
     /**
+     * Is the request body parsed.
+     *
+     * @var bool
+     */
+    protected $bodyParsed = false;
+
+    /**
      * The array of request attributes.
      *
      * @var mixed[]
@@ -175,14 +182,13 @@ class ServerRequest extends Request implements ServerRequestInterface
             $protocolVersion
         );
 
-        if ('POST' === $method) {
+        if (
+            'POST' === $method &&
+            (false !== stripos($request->getHeaderLine('Content-Type'), 'multipart/form-data') ||
+            false !== stripos($request->getHeaderLine('Content-Type'), 'application/x-www-form-urlencoded'))
+        ) {
+            $request->bodyParsed = true;
             $request = $request->withParsedBody($_POST);
-        } else {
-            foreach ($this->parsers as $type => $callable) {
-                if (false !== stripos($request->getHeaderLine('Content-Type'), $type)) {
-                    return $callable($request);
-                }
-            }
         }
 
         return $request;
