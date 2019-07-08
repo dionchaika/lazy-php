@@ -99,7 +99,7 @@ class Headers implements ArrayAccess
         $headers = new static;
 
         foreach ($lines as $line) {
-            [$name, $value] = explode(':', $line);
+            [$name, $value] = explode(':', $line, 2);
 
             $delim = (0 === strcasecmp($name, 'cookie'))
                 ? ';'
