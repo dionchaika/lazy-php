@@ -123,7 +123,7 @@ class Response extends Message implements ResponseInterface
      *
      * @param  int  $code
      * @param  string  $reasonPhrase
-     * @param  mixed[]  $headers
+     * @param  \Lazy\Http\Headers|mixed[]  $headers
      * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
      * @param  string  $protocolVersion
      *
@@ -131,7 +131,7 @@ class Response extends Message implements ResponseInterface
      */
     public function __construct($code = StatusCode::OK,
                                 $reasonPhrase = '',
-                                array $headers = [],
+                                $headers = [],
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
@@ -143,7 +143,9 @@ class Response extends Message implements ResponseInterface
             $this->setReasonPhraseFromStatusCode($this->statusCode);
         }
 
-        $this->setHeaders($headers);
+        $this->headers = ($headers instanceof Headers)
+            ? $headers
+            : new Headers($headers);
 
         $this->body = create_stream($body);
         $this->protocolVersion = $protocolVersion;
@@ -433,15 +435,7 @@ class Response extends Message implements ResponseInterface
                                         $this->statusCode,
                                         $this->reasonPhrase));
 
-        foreach (array_keys($this->getHeaders()) as $name) {
-            if (0 === strcasecmp($name, 'set-cookie')) {
-                foreach ($this->getHeader($name) as $cookie) {
-                    header(sprintf("%s: %s", $name, $cookie), false);
-                }
-            } else {
-                header(sprintf("%s: %s", $name, $this->getHeaderLine($name)));
-            }
-        }
+        $this->headers->send();
 
         fwrite(fopen('php://output', 'w'), $this->body);
 

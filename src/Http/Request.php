@@ -42,7 +42,7 @@ class Request extends Message implements RequestInterface
      *
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  mixed[]  $headers
+     * @param  \Lazy\Http\Headers|mixed[]  $headers
      * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
      * @param  string  $protocolVersion
      *
@@ -50,7 +50,7 @@ class Request extends Message implements RequestInterface
      */
     public function __construct($method = Method::GET,
                                 $uri = null,
-                                array $headers = [],
+                                $headers = [],
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
@@ -64,7 +64,9 @@ class Request extends Message implements RequestInterface
             $this->uri = $uri;
         }
 
-        $this->setHeaders($headers);
+        $this->headers = ($headers instanceof Headers)
+            ? $headers
+            : new Headers($headers);
 
         if ('1.1' === $this->protocolVersion && ! $this->hasHeader('Host')) {
             $this->setHostHeaderFromUri($this->uri);
@@ -484,7 +486,9 @@ class Request extends Message implements RequestInterface
 
             ];
 
-            $this->headers = array_merge($host, $this->headers);
+            $this->headers = new Headers(
+                array_merge($host, $this->headers->all())
+            );
         }
     }
 

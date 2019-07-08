@@ -83,7 +83,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  mixed[]  $headers
+     * @param  \Lazy\Http\Headers|mixed[]  $headers
      * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
      * @param  mixed[]  $serverParams
      * @param  mixed[]  $queryParams
@@ -95,7 +95,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function __construct($method = Method::GET,
                                 $uri = null,
-                                array $headers = [],
+                                $headers = [],
                                 $body = null,
                                 array $serverParams = [],
                                 array $queryParams = [],
@@ -145,23 +145,11 @@ class ServerRequest extends Request implements ServerRequestInterface
             $protocolVersion = $matches[1];
         }
 
-        $uri = Uri::fromGlobals();
-        $uploadedFiles = UploadedFile::fromGlobals();
-
         $body = fopen('php://input', 'r');
 
-        $headers = [];
-
-        foreach ($_SERVER as $key => $value) {
-            if (0 === strpos($key, 'HTTP_')) {
-                $name = strtolower(str_replace('_', '-', substr($key, 5)));
-                $name = implode('-', array_map('ucfirst', explode('-', $name)));
-
-                $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
-
-                $headers[$name] = array_map('trim', explode($delim, $value));
-            }
-        }
+        $uri = Uri::fromGlobals();
+        $headers = Headers::fromGlobals();
+        $uploadedFiles = UploadedFile::fromGlobals();
 
         $request = new static(
             $method,
