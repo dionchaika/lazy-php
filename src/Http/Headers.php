@@ -64,9 +64,9 @@ class Headers implements ArrayAccess
 
         foreach ($environment as $key => $value) {
             if ('CONTENT_TYPE' === $key) {
-                $headers->set('Content-Type', $value);
+                $headers->set('CONTENT-TYPE', $value);
             } else if ('CONTENT_LENGTH' === $key) {
-                $headers->set('Content-Length', $value);
+                $headers->set('CONTENT-LENGTH', $value);
             } else if (0 === strpos($key, 'HTTP_')) {
                 $name = str_replace('_', '-', substr($key, 5));
 
@@ -78,7 +78,7 @@ class Headers implements ArrayAccess
                     ? 'add'
                     : 'set';
 
-                $headers->{$method}($name, ('add' === $method) ? $value : array_map('trim', explode($delim, $value)));
+                $headers->{$method}($name, ('add' === $method) ? trim($value) : array_map('trim', explode($delim, $value)));
             }
         }
 
@@ -110,7 +110,7 @@ class Headers implements ArrayAccess
                 ? 'add'
                 : 'set';
 
-            $headers->{$method}($name, ('add' === $method) ? $value : array_map('trim', explode($delim, $value)));
+            $headers->{$method}($name, ('add' === $method) ? trim($value) : array_map('trim', explode($delim, $value)));
         }
 
         return $headers;
@@ -163,7 +163,7 @@ class Headers implements ArrayAccess
     {
         $name = $this->normalizeName($name);
 
-        return isset($this->headers[$name]) ? $this->headers[$name] : [];
+        return isset($this->headers[$name]) ? $this->headers[$name]['value'] : [];
     }
 
     /**
