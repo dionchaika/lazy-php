@@ -62,11 +62,7 @@ class Headers implements ArrayAccess
     {
         $headers = new static;
 
-        $environment = array_merge([
-
-            'HTTP_HOST' => 'localhost'
-
-        ], $environment);
+        $environment = array_merge(['HTTP_HOST' => 'localhost'], $environment);
 
         foreach ($environment as $key => $value) {
             if ('CONTENT_TYPE' === $key) {
