@@ -3,7 +3,7 @@
 namespace Lazy\Http;
 
 use SimpleXMLElement;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * @method string getHeaderLine($name)
@@ -30,16 +30,25 @@ trait BodyParserTrait
     }
 
     /**
+     * Get a body media type.
+     *
+     * @return string
+     */
+    public function getMediaType()
+    {
+        return strtolower(trim(explode(';',
+                                       $this->getHeaderLine('Content-Type'))[0]));
+    }
+
+    /**
      * Get a default XML body parser.
      *
      * @return callable
      */
     public function getDefaultXmlParser(): callable
     {
-        return function (ServerRequestInterface $request): ServerRequestInterface {
-            return $request->withParsedBody(
-                new SimpleXMLElement($request->getBody())
-            );
+        return function (StreamInterface $body) {
+            return new SimpleXMLElement($body);
         };
     }
 
@@ -50,10 +59,8 @@ trait BodyParserTrait
      */
     public function getDefaultJsonParser(): callable
     {
-        return function (ServerRequestInterface $request): ServerRequestInterface {
-            return $request->withParsedBody(
-                json_decode($request->getBody())
-            );
+        return function (StreamInterface $body) {
+            return json_decode($body);
         };
     }
 
@@ -64,20 +71,8 @@ trait BodyParserTrait
      */
     public function getDefaultUrlencodedParser(): callable
     {
-        return function (ServerRequestInterface $request): ServerRequestInterface {
-            return $request->withParsedBody(
-                urldecode($request->getBody())
-            );
+        return function (StreamInterface $body) {
+            return urldecode($body);
         };
-    }
-
-    /**
-     * Get the content MIME-type.
-     *
-     * @return string
-     */
-    public function getContentMimeType()
-    {
-        return strtolower(trim(explode(';', $this->getHeaderLine('Content-Type'))[0]));
     }
 }
