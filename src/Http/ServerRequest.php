@@ -65,7 +65,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
      * @param  \Lazy\Http\Headers|array|null  $headers
-     * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
+     * @param  mixed|null  $body
      * @param  array  $serverParams
      * @param  string  $protocolVersion
      *
