@@ -25,7 +25,7 @@ class Uri implements UriInterface
     ];
 
     /**
-     * The default environments
+     * The default environments.
      */
     const DEFAULT_ENVIRONMENTS = [
 
