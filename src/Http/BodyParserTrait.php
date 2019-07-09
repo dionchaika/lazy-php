@@ -20,13 +20,13 @@ trait BodyParserTrait
     /**
      * Register a new body parser.
      *
-     * @param  string  $mimeType
+     * @param  string  $mediaType
      * @param  callable  $callable
      * @return void
      */
-    public function registerParser($mimeType, callable $callable)
+    public function registerParser($mediaType, callable $callable)
     {
-        $this->parsers[$mimeType] = $callable;
+        $this->parsers[$mediaType] = $callable;
     }
 
     /**
