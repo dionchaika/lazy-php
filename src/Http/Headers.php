@@ -22,14 +22,14 @@ class Headers implements ArrayAccess
      * header names while the array values contains
      * the original header name and the array of header values.
      *
-     * @var mixed[]
+     * @var array
      */
     protected $headers = [];
 
     /**
      * The header collection constructor.
      *
-     * @param  mixed[]  $headers
+     * @param  array  $headers
      *
      * @throws \InvalidArgumentException
      */
@@ -41,7 +41,7 @@ class Headers implements ArrayAccess
     /**
      * Create a new header collection from PHP globals.
      *
-     * @return self
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
@@ -53,8 +53,8 @@ class Headers implements ArrayAccess
     /**
      * Create a new header collection from environment.
      *
-     * @param  mixed[]  $environment
-     * @return self
+     * @param  array  $environment
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
@@ -89,7 +89,7 @@ class Headers implements ArrayAccess
      * Create a new header collection from string.
      *
      * @param  string  $headers
-     * @return self
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
@@ -129,7 +129,7 @@ class Headers implements ArrayAccess
      * Get the raw array
      * of all of the headers in the collection.
      *
-     * @return mixed[]
+     * @return array
      */
     public function raw()
     {
@@ -140,7 +140,7 @@ class Headers implements ArrayAccess
      * Get the array
      * of all of the headers in the collection.
      *
-     * @return mixed[]
+     * @return array
      */
     public function all()
     {
@@ -191,7 +191,7 @@ class Headers implements ArrayAccess
      *
      * @param  string  $name
      * @param  string|string[]  $value
-     * @return self
+     * @return $this
      *
      * @throws \InvalidArgumentException
      */
@@ -208,8 +208,8 @@ class Headers implements ArrayAccess
     /**
      * Set the headers to the collection.
      *
-     * @param  mixed[]  $headers
-     * @return self
+     * @param  array  $headers
+     * @return $this
      *
      * @throws \InvalidArgumentException
      */
@@ -227,7 +227,7 @@ class Headers implements ArrayAccess
      *
      * @param  string  $name
      * @param  string|string[]  $value
-     * @return self
+     * @return $this
      *
      * @throws \InvalidArgumentException
      */
@@ -250,8 +250,8 @@ class Headers implements ArrayAccess
     /**
      * Add the headers to the collection.
      *
-     * @param  mixed[]  $headers
-     * @return self
+     * @param  array  $headers
+     * @return $this
      *
      * @throws \InvalidArgumentException
      */
@@ -268,7 +268,7 @@ class Headers implements ArrayAccess
      * Remove the header from the collection.
      *
      * @param  string  $name
-     * @return self
+     * @return $this
      */
     public function remove($name)
     {
