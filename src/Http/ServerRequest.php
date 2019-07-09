@@ -7,8 +7,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * The PSR-7 HTTP request message
- * implementation class for server handling.
+ * The PSR-7 HTTP server request message implementation class.
  *
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
@@ -18,49 +17,49 @@ class ServerRequest extends Request implements ServerRequestInterface
     use BodyParserTrait;
 
     /**
-     * The request parsed body.
+     * The server request parsed body.
      *
      * @var array|object|null
      */
     protected $parsedBody;
 
     /**
-     * The array of request attributes.
+     * The array of server request attributes.
      *
      * @var array
      */
     protected $attributes = [];
 
     /**
-     * The array of request query parameters.
+     * The array of server request query parameters.
      *
      * @var array
      */
     protected $queryParams = [];
 
     /**
-     * The array of request server parameters.
+     * The array of server request environment.
      *
      * @var array
      */
     protected $serverParams = [];
 
     /**
-     * The array of request cookie parameters.
+     * The array of server request cookie parameters.
      *
      * @var array
      */
     protected $cookieParams = [];
 
     /**
-     * The array of request uploaded files.
+     * The array of server request uploaded files.
      *
      * @var array
      */
     protected $uploadedFiles = [];
 
     /**
-     * The request constructor.
+     * The server request constructor.
      *
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
@@ -88,7 +87,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Create a new request from PHP globals.
+     * Create a new server request from PHP globals.
      *
      * @return static
      *
@@ -100,7 +99,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Create a new request from environment.
+     * Create a new server request from environment.
      *
      * @param  array  $environment
      * @return static
@@ -109,47 +108,11 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function fromEnvironment(array $environment)
     {
-        $method = ! empty($environment['REQUEST_METHOD']) ? $environment['REQUEST_METHOD'] : 'GET';
-
-        $protocolVersion = '1.1';
-
-        if (
-            ! empty($environment['SERVER_PROTOCOL']) &&
-            preg_match('/^HTTP\/(\d\.\d)$/', $environment['SERVER_PROTOCOL'], $matches)
-        ) {
-            $protocolVersion = $matches[1];
-        }
-
-        $uri = Uri::fromGlobals();
-        $headers = Headers::fromGlobals();
-        $uploadedFiles = UploadedFile::fromGlobals();
-
-        $request = (new static($method, $uri, $headers, fopen('php://input', 'r'), $environment))
-            ->withQueryParams($_GET)
-            ->withCookieParams($_COOKIE)
-            ->withUploadedFiles($uploadedFiles)
-            ->withProtocolVersion($protocolVersion);
-
-        $contentMimeType = $this->getContentMimeType();
-
-        if (
-            'POST' === $method &&
-            in_array($contentMimeType, ['multipart/form-data', 'application/x-www-form-urlencoded'])
-        ) {
-            $request = $request->withParsedBody($_POST);
-        } else {
-            foreach ($this->parsers as $mimeType => $callable) {
-                if ($mimeType === $contentMimeType) {
-                    return call_user_func($callable, $this);
-                }
-            }
-        }
-
-        return $request;
+        //
     }
 
     /**
-     * Get the array of request server parameters.
+     * Get the array of server request environment.
      *
      * @return array
      */
@@ -159,7 +122,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request cookie parameters.
+     * Get the array of server request cookie parameters.
      *
      * @return array
      */
@@ -170,7 +133,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance with
-     * the specified request cookie parameters.
+     * the specified server request cookie parameters.
      *
      * @param  array  $cookies
      * @return static
@@ -185,7 +148,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request query parameters.
+     * Get the array of server request query parameters.
      *
      * @return array
      */
@@ -196,7 +159,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance with
-     * the specified request query parameters.
+     * the specified server request query parameters.
      *
      * @param  array  $query
      * @return static
@@ -211,7 +174,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request uploaded files.
+     * Get the array of server request uploaded files.
      *
      * @return array
      */
@@ -222,7 +185,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance
-     * with the specified request uploaded files.
+     * with the specified server request uploaded files.
      *
      * @param  array  $uploadedFiles
      * @return static
@@ -239,7 +202,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the request parsed body.
+     * Get the server request parsed body.
      *
      * @return array|object|null
      */
@@ -250,7 +213,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance
-     * with the specified request parsed body.
+     * with the specified server request parsed body.
      *
      * @param  array|object|null  $data
      * @return static
@@ -267,7 +230,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request attributes.
+     * Get the array of server request attributes.
      *
      * @return array
      */
@@ -277,7 +240,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the request attribute.
+     * Get the server request attribute.
      *
      * @param  string  $name
      * @param  mixed|null  $default
@@ -290,7 +253,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance
-     * with the specified request attribute.
+     * with the specified server request attribute.
      *
      * @param  string  $name
      * @param  mixed  $value
@@ -307,7 +270,7 @@ class ServerRequest extends Request implements ServerRequestInterface
 
     /**
      * Return an instance
-     * without the specified request attribute.
+     * without the specified server request attribute.
      *
      * @param  string  $name
      * @return static
@@ -322,7 +285,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Filter an array of request uploaded files.
+     * Filter an array of server request uploaded files.
      *
      * @param  array  $uploadedFiles
      * @return array
@@ -343,7 +306,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Filter a request parsed body.
+     * Filter a server request parsed body.
      *
      * @param  array|object|null  $data
      * @return array|object|null
