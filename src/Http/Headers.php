@@ -16,6 +16,19 @@ use InvalidArgumentException;
 class Headers implements ArrayAccess
 {
     /**
+     * The default environments.
+     */
+    const DEFAULT_ENVIRONMENTS = [
+
+        'HTTP_HOST'            => 'localhost',
+        'HTTP_USER_AGENT'      => 'The Lazy PHP',
+        'HTTP_ACCEPT'          => 'text/html, application/xhtml+xml, application/xml; q=0.9, image/webp, image/apng, */*; q=0.8, application/signed-exchange; v=b3',
+        'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
+        'HTTP_ACCEPT_LANGUAGE' => 'en-US, en; q=0.9'
+
+    ];
+
+    /**
      * The array of all of the headers.
      *
      * Note: The array keys are the normalized
@@ -47,24 +60,24 @@ class Headers implements ArrayAccess
      */
     public static function fromGlobals()
     {
-        return static::fromEnvironment($_SERVER);
+        return static::fromEnvironments($_SERVER);
     }
 
     /**
-     * Create a new header collection from environment.
+     * Create a new header collection from environments.
      *
-     * @param  array  $environment
+     * @param  array  $environments
      * @return static
      *
      * @throws \InvalidArgumentException
      */
-    public static function fromEnvironment(array $environment)
+    public static function fromEnvironments(array $environments)
     {
         $headers = new static;
 
-        $environment = array_merge(['HTTP_HOST' => 'localhost'], $environment);
+        $environments = array_merge(static::DEFAULT_ENVIRONMENTS, $environments);
 
-        foreach ($environment as $key => $value) {
+        foreach ($environments as $key => $value) {
             if ('CONTENT_TYPE' === $key) {
                 $headers->set('CONTENT-TYPE', $value);
             } else if ('CONTENT_LENGTH' === $key) {
