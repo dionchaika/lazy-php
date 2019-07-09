@@ -30,17 +30,6 @@ trait BodyParserTrait
     }
 
     /**
-     * Get a body media type.
-     *
-     * @return string
-     */
-    public function getMediaType()
-    {
-        return strtolower(trim(explode(';',
-                                       $this->getHeaderLine('Content-Type'))[0]));
-    }
-
-    /**
      * Get a default XML body parser.
      *
      * @return callable
@@ -74,5 +63,15 @@ trait BodyParserTrait
         return function (StreamInterface $body) {
             return urldecode($body);
         };
+    }
+
+    /**
+     * Get a body media type.
+     *
+     * @return string
+     */
+    public function getMediaType()
+    {
+        return strtolower(trim(explode(';', $this->getHeaderLine('Content-Type'))[0]));
     }
 }
