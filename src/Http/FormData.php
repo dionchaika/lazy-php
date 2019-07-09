@@ -26,7 +26,7 @@ class FormData
     protected $parts = [];
 
     /**
-     * The multipart/form-data generated boundary.
+     * The multipart/form-data boundary.
      *
      * @var string
      */
@@ -71,7 +71,7 @@ class FormData
     }
 
     /**
-     * Get the multipart/form-data generated boundary.
+     * Get the multipart/form-data boundary.
      *
      * @return string
      */
