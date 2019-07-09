@@ -2,7 +2,6 @@
 
 namespace Lazy\Http;
 
-use SimpleXMLElement;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -37,7 +36,7 @@ trait BodyParserTrait
     public function getDefaultXmlParser(): callable
     {
         return function (StreamInterface $body) {
-            return new SimpleXMLElement($body);
+            return simplexml_load_string($body);
         };
     }
 
