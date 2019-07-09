@@ -95,7 +95,19 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function fromGlobals()
     {
-        return static::fromEnvironment($_SERVER);
+        $serverRequest = (static::fromEnvironment($_SERVER))
+            ->withQueryParams($_GET)
+            ->withCookieParams($_COOKIE)
+            ->withUploadedFiles(UploadedFile::fromGlobals());
+
+        if (
+            'POST' === $serverRequest->getMethod() &&
+            in_array($this->getMediaType(), ['multipart/form-data', 'application/x-www-form-urlencoded'])
+        ) {
+            $serverRequest = $serverRequest->withParsedBody($_POST);
+        }
+
+        return $serverRequest;
     }
 
     /**
@@ -108,7 +120,20 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function fromEnvironment(array $environment)
     {
-        //
+        $environment = array_merge([
+
+            'REQUEST_METHOD'  => 'GET',
+            'SERVER_PROTOCOL' => 'HTTP/1.1'
+
+        ], $environment);
+
+        $method = $environment['REQUEST_METHOD'];
+        $protocolVersion = explode('/', $environment['SERVER_PROTOCOL'], 2)[1];
+
+        $uri = Uri::fromEnvironment($environment);
+        $headers = Headers::fromEnvironment($environment);
+
+        return new static($method, $uri, $headers, fopen('php://input', 'r'), $environment, $protocolVersion);
     }
 
     /**
