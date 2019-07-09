@@ -95,19 +95,14 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function fromGlobals()
     {
-        $serverRequest = (static::fromEnvironment($_SERVER))
+        $request = (static::fromEnvironment($_SERVER))
             ->withQueryParams($_GET)
             ->withCookieParams($_COOKIE)
             ->withUploadedFiles(UploadedFile::fromGlobals());
 
-        if (
-            'POST' === $serverRequest->getMethod() &&
-            in_array($this->getMediaType(), ['multipart/form-data', 'application/x-www-form-urlencoded'])
-        ) {
-            $serverRequest = $serverRequest->withParsedBody($_POST);
-        }
-
-        return $serverRequest;
+        return $request->withParsedBody(
+            ('POST' === $request->getMethod() && in_array($this->getMediaType(), ['multipart/form-data', 'application/x-www-form-urlencoded'])) ? $_POST : null
+        );
     }
 
     /**
