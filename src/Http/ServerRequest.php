@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class ServerRequest extends Request implements ServerRequestInterface
 {
-    use DeserializeTrait;
+    use BodyParserTrait;
 
     /**
      * The request parsed body.
