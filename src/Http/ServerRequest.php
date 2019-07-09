@@ -83,12 +83,9 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  \Lazy\Http\Headers|mixed[]  $headers
+     * @param  \Lazy\Http\Headers|array  $headers
      * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
-     * @param  mixed[]  $serverParams
-     * @param  mixed[]  $queryParams
-     * @param  mixed[]  $cookieParams
-     * @param  mixed[]  $uploadedFiles
+     * @param  array  $serverParams
      * @param  string  $protocolVersion
      *
      * @throws \InvalidArgumentException
@@ -98,15 +95,9 @@ class ServerRequest extends Request implements ServerRequestInterface
                                 $headers = [],
                                 $body = null,
                                 array $serverParams = [],
-                                array $queryParams = [],
-                                array $cookieParams = [],
-                                array $uploadedFiles = [],
                                 $protocolVersion = '1.1')
     {
         $this->serverParams = $serverParams;
-        $this->queryParams = $queryParams;
-        $this->cookieParams = $cookieParams;
-        $this->uploadedFiles = $this->filterUploadedFiles($uploadedFiles);
 
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
 
@@ -126,49 +117,59 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Create a new request from globals.
+     * Create a new request from PHP globals.
      *
-     * @return self
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
     public static function fromGlobals()
     {
-        $method = ! empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+        return static::fromEnvironment($_SERVER);
+    }
+
+    /**
+     * Create a new request from environment.
+     *
+     * @param  array  $environment
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromEnvironment(array $environment)
+    {
+        $method = ! empty($environment['REQUEST_METHOD']) ? $environment['REQUEST_METHOD'] : 'GET';
 
         $protocolVersion = '1.1';
 
         if (
-            ! empty($_SERVER['SERVER_PROTOCOL']) &&
-            preg_match('/^HTTP\/(\d\.\d)$/', $_SERVER['SERVER_PROTOCOL'], $matches)
+            ! empty($environment['SERVER_PROTOCOL']) &&
+            preg_match('/^HTTP\/(\d\.\d)$/', $environment['SERVER_PROTOCOL'], $matches)
         ) {
             $protocolVersion = $matches[1];
         }
-
-        $body = fopen('php://input', 'r');
 
         $uri = Uri::fromGlobals();
         $headers = Headers::fromGlobals();
         $uploadedFiles = UploadedFile::fromGlobals();
 
-        $request = new static(
-            $method,
-            $uri,
-            $headers,
-            $body,
-            $_SERVER,
-            $_GET,
-            $_COOKIE,
-            $uploadedFiles,
-            $protocolVersion
-        );
+        $request = (new static($method, $uri, $headers, fopen('php://input', 'r'), $environment))
+            ->withUploadedFiles($uploadedFiles)
+            ->withProtocolVersion($protocolVersion);
+
+        $contentMimeType = $this->getContentMimeType();
 
         if (
             'POST' === $method &&
-            (false !== stripos($request->getHeaderLine('Content-Type'), 'multipart/form-data') ||
-            false !== stripos($request->getHeaderLine('Content-Type'), 'application/x-www-form-urlencoded'))
+            in_array($contentMimeType, ['multipart/form-data', 'application/x-www-form-urlencoded'])
         ) {
             $request = $request->withParsedBody($_POST);
+        } else {
+            foreach ($this->parsers as $mimeType => $callable) {
+                if ($mimeType === $contentMimeType) {
+                    return call_user_func($callable, $this);
+                }
+            }
         }
 
         return $request;

@@ -114,7 +114,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * Create a new array of uploaded files from globals.
+     * Create a new array of uploaded files from PHP globals.
      *
      * @return array
      *
