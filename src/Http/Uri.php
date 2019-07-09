@@ -343,7 +343,6 @@ class Uri implements UriInterface
         $new = clone $this;
 
         $new->scheme = $new->filterScheme($scheme);
-
         $new->port = static::isNonStandartPort($new->scheme, $new->port) ? $new->port : null;
 
         return $new;
