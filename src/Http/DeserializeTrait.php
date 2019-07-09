@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 /**
  * @method string getHeaderLine($name)
  */
-trait BodyParserTrait
+trait DeserializeTrait
 {
     /**
      * The array of registered body parsers.
