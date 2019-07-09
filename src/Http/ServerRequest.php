@@ -2,7 +2,6 @@
 
 namespace Lazy\Http;
 
-use BadMethodCallException;
 use InvalidArgumentException;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -21,69 +20,51 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * The request parsed body.
      *
-     * @var mixed[]|object|null
+     * @var array|object|null
      */
     protected $parsedBody;
 
     /**
      * The array of request attributes.
      *
-     * @var mixed[]
+     * @var array
      */
     protected $attributes = [];
 
     /**
      * The array of request query parameters.
      *
-     * @var mixed[]
+     * @var array
      */
     protected $queryParams = [];
 
     /**
      * The array of request server parameters.
      *
-     * @var mixed[]
+     * @var array
      */
     protected $serverParams = [];
 
     /**
      * The array of request cookie parameters.
      *
-     * @var mixed[]
+     * @var array
      */
     protected $cookieParams = [];
 
     /**
      * The array of request uploaded files.
      *
-     * @var mixed[]
+     * @var array
      */
     protected $uploadedFiles = [];
-
-    /**
-     * The original request method.
-     *
-     * Note: Affecting after fromGlobals method call.
-     *
-     * @var string
-     */
-    protected $originalMethod = Method::GET;
-
-    /**
-     * Is the request method overridden.
-     *
-     * Note: Affecting after fromGlobals method call.
-     *
-     * @var bool
-     */
-    protected $methodOverridden = false;
 
     /**
      * The request constructor.
      *
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  \Lazy\Http\Headers|array  $headers
+     * @param  \Lazy\Http\Headers|array|null  $headers
      * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
      * @param  array  $serverParams
      * @param  string  $protocolVersion
@@ -92,7 +73,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function __construct($method = Method::GET,
                                 $uri = null,
-                                $headers = [],
+                                $headers = null,
                                 $body = null,
                                 array $serverParams = [],
                                 $protocolVersion = '1.1')
@@ -102,18 +83,8 @@ class ServerRequest extends Request implements ServerRequestInterface
         parent::__construct($method, $uri, $headers, $body, $protocolVersion);
 
         $this->registerParser('text/xml', $this->getDefaultXmlParser());
-        $this->registerParser('application/xml', $this->getDefaultXmlParser());
         $this->registerParser('application/json', $this->getDefaultJsonParser());
-        $this->registerParser('multipart/form-data', $this->getDefaultFormDataParser());
         $this->registerParser('application/x-www-form-urlencoded', $this->getDefaultUrlencodedParser());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public static function fromString($request)
-    {
-        throw new BadMethodCallException('Method "fromString" is unavaliable for server requests!');
     }
 
     /**
@@ -154,6 +125,8 @@ class ServerRequest extends Request implements ServerRequestInterface
         $uploadedFiles = UploadedFile::fromGlobals();
 
         $request = (new static($method, $uri, $headers, fopen('php://input', 'r'), $environment))
+            ->withQueryParams($_GET)
+            ->withCookieParams($_COOKIE)
             ->withUploadedFiles($uploadedFiles)
             ->withProtocolVersion($protocolVersion);
 
@@ -178,7 +151,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of request server parameters.
      *
-     * @return mixed[]
+     * @return array
      */
     public function getServerParams()
     {
@@ -188,7 +161,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of request cookie parameters.
      *
-     * @return mixed[]
+     * @return array
      */
     public function getCookieParams()
     {
@@ -199,7 +172,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance with
      * the specified request cookie parameters.
      *
-     * @param  mixed[]  $cookies
+     * @param  array  $cookies
      * @return static
      */
     public function withCookieParams(array $cookies)
@@ -214,7 +187,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of request query parameters.
      *
-     * @return mixed[]
+     * @return array
      */
     public function getQueryParams()
     {
@@ -225,7 +198,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance with
      * the specified request query parameters.
      *
-     * @param  mixed[]  $query
+     * @param  array  $query
      * @return static
      */
     public function withQueryParams(array $query)
@@ -240,7 +213,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of request uploaded files.
      *
-     * @return mixed[]
+     * @return array
      */
     public function getUploadedFiles()
     {
@@ -251,7 +224,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance
      * with the specified request uploaded files.
      *
-     * @param  mixed[]  $uploadedFiles
+     * @param  array  $uploadedFiles
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -268,7 +241,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the request parsed body.
      *
-     * @return mixed[]|object|null
+     * @return array|object|null
      */
     public function getParsedBody()
     {
@@ -279,7 +252,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance
      * with the specified request parsed body.
      *
-     * @param  mixed[]|object|null  $data
+     * @param  array|object|null  $data
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -296,7 +269,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of request attributes.
      *
-     * @return mixed[]
+     * @return array
      */
     public function getAttributes()
     {
@@ -349,34 +322,10 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the request original method.
-     *
-     * Note: Affecting after fromGlobals method call.
-     *
-     * @return string
-     */
-    public function getOriginalMethod()
-    {
-        return $this->originalMethod;
-    }
-
-    /**
-     * Check is the request method overridden.
-     *
-     * Note: Affecting after fromGlobals method call.
-     *
-     * @return bool
-     */
-    public function isMethodOverridden()
-    {
-        return $this->methodOverridden;
-    }
-
-    /**
      * Filter an array of request uploaded files.
      *
-     * @param  mixed[]  $uploadedFiles
-     * @return mixed[]
+     * @param  array  $uploadedFiles
+     * @return array
      *
      * @throws \InvalidArgumentException
      */
@@ -396,8 +345,8 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Filter a request parsed body.
      *
-     * @param  mixed[]|object|null  $data
-     * @return mixed[]|object|null
+     * @param  array|object|null  $data
+     * @return array|object|null
      *
      * @throws \InvalidArgumentException
      */
