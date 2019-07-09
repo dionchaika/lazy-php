@@ -72,13 +72,8 @@ class Headers implements ArrayAccess
             } else if (0 === strpos($key, 'HTTP_')) {
                 $name = str_replace('_', '-', substr($key, 5));
 
-                $delim = (0 === strcmp($name, 'COOKIE'))
-                    ? ';'
-                    : ',';
-
-                $method = (0 === strcmp($name, 'SET-COOKIE'))
-                    ? 'add'
-                    : 'set';
+                $delim = (0 === strcmp($name, 'COOKIE')) ? ';' : ',';
+                $method = (0 === strcmp($name, 'SET-COOKIE')) ? 'add' : 'set';
 
                 $headers->{$method}($name, ('add' === $method) ? trim($value) : array_map('trim', explode($delim, $value)));
             }
@@ -113,13 +108,8 @@ class Headers implements ArrayAccess
 
             $name = trim($parts[0]);
 
-            $delim = (0 === strcasecmp($name, 'cookie'))
-                ? ';'
-                : ',';
-
-            $method = (0 === strcasecmp($name, 'set-cookie'))
-                ? 'add'
-                : 'set';
+            $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
+            $method = (0 === strcasecmp($name, 'set-cookie')) ? 'add' : 'set';
 
             $headers->{$method}($name, ('add' === $method) ? trim($parts[1]) : array_map('trim', explode($delim, $parts[1])));
         }
