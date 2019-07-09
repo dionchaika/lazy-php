@@ -14,6 +14,11 @@ use InvalidArgumentException;
 class Cookie
 {
     /**
+     * The date format.
+     */
+    const DATE_FORMAT = 'D, d M Y H:i:s T';
+
+    /**
      * The cookie name.
      *
      * @var string
@@ -105,15 +110,15 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(string $name,
-                                ?string $value = null,
-                                ?string $expires = null,
-                                ?int $maxAge = null,
-                                ?string $domain = null,
-                                ?string $path = null,
-                                bool $secure = false,
-                                bool $httpOnly = false,
-                                ?string $sameSite = null)
+    public function __construct($name,
+                                $value = null,
+                                $expires = null,
+                                $maxAge = null,
+                                $domain = null,
+                                $path = null,
+                                $secure = false,
+                                $httpOnly = false,
+                                $sameSite = null)
     {
         if (0 === strpos($name, '__Host-')) {
             $name = substr($name, 7);
@@ -145,53 +150,46 @@ class Cookie
      * @param  bool  $secure
      * @param  bool  $httpOnly
      * @param  string|null  $sameSite
-     * @return self
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
-    public static function create(string $name,
-                                  ?string $value = null,
-                                  ?int $expiryTime = null,
-                                  ?string $domain = null,
-                                  ?string $path = null,
-                                  bool $secure = false,
-                                  bool $httpOnly = false,
-                                  ?string $sameSite = null): self
+    public static function create($name,
+                                  $value = null,
+                                  $expiryTime = null,
+                                  $domain = null,
+                                  $path = null,
+                                  $secure = false,
+                                  $httpOnly = false,
+                                  $sameSite = null)
     {
         if (null === $expiryTime) {
-            $expires = $maxAge = null;
+            $maxAge = $expires = null;
         } else {
-            $expires = gmdate('D, d M Y H:i:s T', $expiryTime);
             $maxAge = $expiryTime - time();
+            $expires = gmdate(static::DATE_FORMAT, $expiryTime);
         }
 
-        return new static(
-            $name,
-            $value,
-            $expires,
-            $maxAge,
-            $domain,
-            $path,
-            $secure,
-            $httpOnly,
-            $sameSite
-        );
+        return new static($name, $value, $expires, $maxAge, $domain, $path, $secure, $httpOnly, $sameSite);
     }
 
     /**
      * Create a new cookie from string.
      *
      * @param  string  $cookie
-     * @return self
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
-    public static function fromString(string $cookie): self
+    public static function fromString($cookie)
     {
         $parts = explode(';', $cookie);
 
         if (false === strpos($parts[0], '=')) {
-            throw new InvalidArgumentException('Invalid cookie! Cookie must contain a pair.');
+            throw new InvalidArgumentException(
+                "Invalid cookie: {$cookie}! "
+                ."Cookie must be compliant with the \"RFC 6265\" standart."
+            );
         }
 
         $pairParts = explode('=', array_shift($parts), 2);
@@ -284,21 +282,21 @@ class Cookie
             }
 
             if (
-                null !== $time &&
-                null !== $day &&
-                null !== $month &&
-                null !== $year &&
-                1 <= $day &&
-                31 >= $day &&
-                1601 <= $year &&
-                23 >= $time['hours'] &&
-                59 >= $time['minutes'] &&
-                59 >= $time['seconds'] &&
-                false !== $expires = gmmktime($time['hours'], $time['minutes'], $time['seconds'], $month, $day, $year)
+                null === $time ||
+                null === $day ||
+                null === $month ||
+                null === $year ||
+                1 > $day ||
+                31 < $day ||
+                1601 > $year ||
+                23 < $time['hours'] ||
+                59 < $time['minutes'] ||
+                59 < $time['seconds'] ||
+                false === $expires = gmmktime($time['hours'], $time['minutes'], $time['seconds'], $month, $day, $year)
             ) {
-                $attributes['Expires'] = $expires;
-            } else {
                 $attributes['Expires'] = null;
+            } else {
+                $attributes['Expires'] = $expires;
             }
         }
 
@@ -318,16 +316,7 @@ class Cookie
             $expiryTime = null;
         }
 
-        return static::create(
-            $name,
-            $value,
-            $expiryTime,
-            $attributes['Domain'],
-            $attributes['Path'],
-            $attributes['Secure'],
-            $attributes['HttpOnly'],
-            $attributes['SameSite']
-        );
+        return static::create($name, $value, $expiryTime, $attributes['Domain'], $attributes['Path'], $attributes['Secure'], $attributes['HttpOnly'], $attributes['SameSite']);
     }
 
     /**
@@ -335,7 +324,7 @@ class Cookie
      *
      * @return string
      */
-    public function getPair(): string
+    public function getPair()
     {
         $pair = $this->name.'=';
 
@@ -351,7 +340,7 @@ class Cookie
      *
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -361,7 +350,7 @@ class Cookie
      *
      * @return string|null
      */
-    public function getValue(): ?string
+    public function getValue()
     {
         return $this->value;
     }
@@ -371,7 +360,7 @@ class Cookie
      *
      * @return string|null
      */
-    public function getExpires(): ?string
+    public function getExpires()
     {
         return $this->expires;
     }
@@ -381,7 +370,7 @@ class Cookie
      *
      * @return int|null
      */
-    public function getMaxAge(): ?int
+    public function getMaxAge()
     {
         return $this->maxAge;
     }
@@ -391,7 +380,7 @@ class Cookie
      *
      * @return string|null
      */
-    public function getDomain(): ?string
+    public function getDomain()
     {
         return $this->domain;
     }
@@ -401,7 +390,7 @@ class Cookie
      *
      * @return string|null
      */
-    public function getPath(): ?string
+    public function getPath()
     {
         return $this->path;
     }
@@ -411,7 +400,7 @@ class Cookie
      *
      * @return bool
      */
-    public function getSecure(): bool
+    public function getSecure()
     {
         return $this->secure;
     }
@@ -421,7 +410,7 @@ class Cookie
      *
      * @return bool
      */
-    public function getHttpOnly(): bool
+    public function getHttpOnly()
     {
         return $this->httpOnly;
     }
@@ -431,7 +420,7 @@ class Cookie
      *
      * @return string|null
      */
-    public function getSameSite(): ?string
+    public function getSameSite()
     {
         return $this->sameSite;
     }
@@ -445,7 +434,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    public function withValue(?string $value): self
+    public function withValue($value)
     {
         $new = clone $this;
 
@@ -463,7 +452,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    public function withExpires(?string $expires): self
+    public function withExpires($expires)
     {
         $new = clone $this;
 
@@ -479,7 +468,7 @@ class Cookie
      * @param  int|null  $maxAge
      * @return static
      */
-    public function withMaxAge(?int $maxAge): self
+    public function withMaxAge($maxAge)
     {
         $new = clone $this;
 
@@ -497,7 +486,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    public function withDomain(?string $domain): self
+    public function withDomain($domain)
     {
         $new = clone $this;
 
@@ -515,7 +504,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    public function withPath(?string $path): self
+    public function withPath($path)
     {
         $new = clone $this;
 
@@ -531,7 +520,7 @@ class Cookie
      * @param  bool  $secure
      * @return static
      */
-    public function withSecure(bool $secure): self
+    public function withSecure($secure)
     {
         $new = clone $this;
 
@@ -547,7 +536,7 @@ class Cookie
      * @param  bool  $httpOnly
      * @return static
      */
-    public function withHttpOnly(bool $httpOnly): self
+    public function withHttpOnly($httpOnly)
     {
         $new = clone $this;
 
@@ -565,7 +554,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    public function withSameSite(?string $sameSite): self
+    public function withSameSite($sameSite)
     {
         $new = clone $this;
 
@@ -577,12 +566,12 @@ class Cookie
     /**
      * Expire the cookie.
      *
-     * @return self
+     * @return $this
      */
-    public function expire(): self
+    public function expire()
     {
-        $this->expires = gmdate('D, d M Y H:i:s T', -2147483648);
         $this->maxAge = -2147483648;
+        $this->expires = gmdate('D, d M Y H:i:s T', -2147483648);
 
         return $this;
     }
@@ -591,16 +580,19 @@ class Cookie
      * Sign the cookie.
      *
      * @param  string  $key
-     * @return void
+     * @return $this
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function sign(string $key): void
+    public function sign($key)
     {
         if (null !== $this->value && '' !== $this->value) {
             if (32 > mb_strlen($key)) {
-                throw new InvalidArgumentException('Invalid key! Key must be at least 32 characters long.');
+                throw new InvalidArgumentException(
+                    "Invalid key: {$key}! "
+                    ."Key must be at least 32 characters long."
+                );
             }
 
             $hash = hash_hmac('sha256', $this->name.$this->value, $key);
@@ -611,22 +603,27 @@ class Cookie
 
             $this->value = $hash.$this->value;
         }
+
+        return $this;
     }
 
     /**
      * Verify the cookie.
      *
      * @param  string  $key
-     * @return void
+     * @return $this
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function verify(string $key): void
+    public function verify($key)
     {
         if (null !== $this->value && '' !== $this->value) {
             if (32 > mb_strlen($key)) {
-                throw new InvalidArgumentException('Invalid key! Key must be at least 32 characters long.');
+                throw new InvalidArgumentException(
+                    "Invalid key: {$key}! "
+                    ."Key must be at least 32 characters long."
+                );
             }
 
             $originalHash = mb_substr($this->value, 0, 64);
@@ -644,6 +641,8 @@ class Cookie
 
             $this->value = $originalValue;
         }
+
+        return $this;
     }
 
     /**
@@ -651,7 +650,7 @@ class Cookie
      *
      * @return bool
      */
-    public function hasHostPrefix(): bool
+    public function hasHostPrefix()
     {
         return $this->hasHostPrefix;
     }
@@ -661,18 +660,17 @@ class Cookie
      *
      * @return bool
      */
-    public function hasSecurePrefix(): bool
+    public function hasSecurePrefix()
     {
         return $this->hasSecurePrefix;
     }
 
     /**
-     * Get the string
-     * representation of the cookie.
+     * Stringify the cookie.
      *
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         try {
             $cookie = $this->getPair();
@@ -725,10 +723,13 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    protected function filterName(string $name): string
+    protected function filterName($name)
     {
         if (! preg_match('/^[^\x00-\x1f\x7f\x20()<>@,;:\\"\/\[\]?={}]+$/', $name)) {
-            throw new InvalidArgumentException('Invalid cookie name! Cookie name must be compliant with the "RFC 6265" standart.');
+            throw new InvalidArgumentException(
+                "Invalid cookie name: {$name}! "
+                ."Cookie name must be compliant with the \"RFC 6265\" standart."
+            );
         }
 
         return $name;
@@ -742,13 +743,16 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    protected function filterValue(?string $value): ?string
+    protected function filterValue($value)
     {
         if (null !== $value) {
             $unquotedValue = preg_match('/^\".*\"$/', $value) ? trim($value, '"') : $value;
 
             if (! preg_match('/^[^\x00-\x1f\x7f\x20,;\\"]*$/', $unquotedValue)) {
-                throw new InvalidArgumentException('Invalid cookie value! Cookie value must be compliant with the "RFC 6265" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid cookie value: {$value}! "
+                    ."Cookie value must be compliant with the \"RFC 6265\" standart."
+                );
             }
         }
 
@@ -763,7 +767,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    protected function filterExpires(?string $expires): ?string
+    protected function filterExpires($expires)
     {
         if (null !== $expires) {
             $day = '(Mon|Tue|Wed|Thu|Fri|Sat|Sun)';
@@ -772,7 +776,10 @@ class Cookie
             $expiresRegEx = "/^{$day}\, \d{2} {$month} \d{4} \d{2}\:\d{2}\:\d{2} GMT$/";
 
             if (! preg_match($expiresRegEx, $expires)) {
-                throw new InvalidArgumentException('Invalid cookie "Expires" attribute! Cookie "Expires" attribute must be compliant with the "RFC 1123" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid cookie \"Expires\" attribute: {$expires}! "
+                    ."Cookie \"Expires\" attribute must be compliant with the \"RFC 6265\" standart."
+                );
             }
         }
 
@@ -787,7 +794,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    protected function filterDomain(?string $domain): ?string
+    protected function filterDomain($domain)
     {
         if (null !== $domain) {
             if ('' === $domain || '.' === $domain) {
@@ -795,7 +802,10 @@ class Cookie
             }
 
             if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])+$/', $domain)) {
-                throw new InvalidArgumentException('Invalid cookie "Domain" attribute! Cookie "Domain" attribute must be compliant with the "RFC 3986" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid cookie \"Domain\" attribute: {$domain}! "
+                    ."Cookie \"Domain\" attribute must be compliant with the \"RFC 6265\" standart."
+                );
             }
 
             return strtolower(ltrim($domain, '.'));
@@ -812,7 +822,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    protected function filterPath(?string $path): ?string
+    protected function filterPath($path)
     {
         if (null !== $path) {
             if ('' === $path || 0 !== strpos($path, '/')) {
@@ -820,7 +830,10 @@ class Cookie
             }
 
             if (! preg_match('/^[^\x00-\x1f\x7f;]+$/', $path)) {
-                throw new InvalidArgumentException('Invalid cookie "Path" attribute! Cookie "Path" attribute must be compliant with the "RFC 6265" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid cookie \"Path\" attribute: {$path}! "
+                    ."Cookie \"Path\" attribute must be compliant with the \"RFC 6265\" standart."
+                );
             }
         }
 
@@ -835,11 +848,14 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    protected function filterSameSite(?string $sameSite): ?string
+    protected function filterSameSite($sameSite)
     {
         if (null !== $sameSite) {
             if ($sameSite !== SameSite::LAX && $sameSite !== SameSite::STRICT) {
-                throw new InvalidArgumentException("Invalid cookie \"SameSite\" attribute! The cookie \"SameSite\" attribute must be \"{SameSite::LAX}\" or \"{SameSite::STRICT}\".");
+                throw new InvalidArgumentException(
+                    "Invalid cookie \"SameSite\" attribute: {$sameSite}! "
+                    ."The cookie \"SameSite\" attribute must be \"{SameSite::LAX}\" or \"{SameSite::STRICT}\"."
+                );
             }
         }
 

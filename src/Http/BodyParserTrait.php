@@ -5,12 +5,15 @@ namespace Lazy\Http;
 use SimpleXMLElement;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * @method string getHeaderLine($name)
+ */
 trait BodyParserTrait
 {
     /**
      * The array of registered body parsers.
      *
-     * @var mixed[]
+     * @var array
      */
     protected $parsers = [];
 
@@ -66,5 +69,15 @@ trait BodyParserTrait
                 urldecode($request->getBody())
             );
         };
+    }
+
+    /**
+     * Get the content MIME-type.
+     *
+     * @return string
+     */
+    public function getContentMimeType()
+    {
+        return strtolower(trim(explode(';', $this->getHeaderLine('Content-Type'))[0]));
     }
 }
