@@ -116,7 +116,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Create a new array of uploaded files from globals.
      *
-     * @return mixed[]
+     * @return array
      *
      * @throws \InvalidArgumentException
      */
@@ -128,12 +128,12 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Normalize an array of uploaded files.
      *
-     * @param  mixed[]  $files
-     * @return mixed[]
+     * @param  array  $files
+     * @return array
      *
      * @throws \InvalidArgumentException
      */
-    public static function normalizeFiles($files)
+    public static function normalizeFiles(array $files)
     {
         $normalized = [];
 

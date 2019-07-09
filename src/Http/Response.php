@@ -123,7 +123,7 @@ class Response extends Message implements ResponseInterface
      *
      * @param  int  $code
      * @param  string  $reasonPhrase
-     * @param  \Lazy\Http\Headers|mixed[]  $headers
+     * @param  \Lazy\Http\Headers|array  $headers
      * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
      * @param  string  $protocolVersion
      *
@@ -155,7 +155,7 @@ class Response extends Message implements ResponseInterface
      * Create a new response from string.
      *
      * @param  string  $response
-     * @return self
+     * @return Response
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -214,7 +214,7 @@ class Response extends Message implements ResponseInterface
      * Return an instance
      * with the specified response cookie.
      *
-     * @param  \Lazy\Http\Cookie  $cookie
+     * @param  Cookie  $cookie
      * @return static
      */
     public function withCookie(Cookie $cookie)

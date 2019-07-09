@@ -42,7 +42,7 @@ class Request extends Message implements RequestInterface
      *
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  \Lazy\Http\Headers|mixed[]  $headers
+     * @param  \Lazy\Http\Headers|array  $headers
      * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
      * @param  string  $protocolVersion
      *
@@ -80,7 +80,7 @@ class Request extends Message implements RequestInterface
      * Create a new request from string.
      *
      * @param  string  $request
-     * @return self
+     * @return Request
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -203,7 +203,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the specified request cookie.
      *
-     * @param  \Lazy\Http\Cookie  $cookie
+     * @param  Cookie  $cookie
      * @return static
      */
     public function withCookie(Cookie $cookie)
@@ -293,7 +293,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the multipart/form-data request body.
      *
-     * @param  \Lazy\Http\FormData|mixed[]  $data
+     * @param  FormData|array  $data
      * @param  string|null  $boundary
      * @return static
      *

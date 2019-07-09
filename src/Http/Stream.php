@@ -69,7 +69,7 @@ class Stream implements StreamInterface
      *      4. writable (bool) - is the stream writable.
      *
      * @param  resource  $resource
-     * @param  mixed[]  $opts
+     * @param  array  $opts
      *
      * @throws \InvalidArgumentException
      */
@@ -332,7 +332,7 @@ class Stream implements StreamInterface
      * as an associative array or retrieve a specific key.
      *
      * @param  string|null  $key
-     * @return mixed|mixed[]|null
+     * @return mixed|array|null
      */
     public function getMetadata($key = null)
     {

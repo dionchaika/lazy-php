@@ -7,7 +7,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * The multipart/form-data body model.
+ * The multipart/form-data model.
  *
  * @see https://tools.ietf.org/html/rfc2046#section-5.1
  */
@@ -19,28 +19,28 @@ class FormData
     const BOUNDARY_CHARSET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
     /**
-     * The array of multipart/form-data body parts.
+     * The array of multipart/form-data parts.
      *
-     * @var mixed[]
+     * @var array
      */
     protected $parts = [];
 
     /**
-     * The multipart/form-data body boundary.
+     * The multipart/form-data generated boundary.
      *
      * @var string
      */
     protected $boundary;
 
     /**
-     * The multipart/form-data body constructor.
+     * The multipart/form-data constructor.
      *
-     * @param  mixed[]  $parts
+     * @param  array  $parts
      * @param  string|null  $boundary
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(array $parts = [], ?string $boundary = null)
+    public function __construct($parts = [], $boundary = null)
     {
         foreach ($parts as $part) {
             $this->append($part);
@@ -56,8 +56,7 @@ class FormData
      * @param  string  $prefix
      * @return string
      */
-    public static function generateBoudary(int $length = 16,
-                                           string $prefix = '----TheLazyPHPFormBoundary'): string
+    public static function generateBoudary($length = 16, $prefix = '----TheLazyPHPFormBoundary')
     {
         $randMin = 0;
         $randMax = strlen(static::BOUNDARY_CHARSET) - 1;
@@ -72,24 +71,24 @@ class FormData
     }
 
     /**
-     * Get the multipart/form-data body boundary.
+     * Get the multipart/form-data generated boundary.
      *
      * @return string
      */
-    public function getBoundary(): string
+    public function getBoundary()
     {
         return $this->boundary;
     }
 
     /**
-     * Append a new multipart/form-data body part.
+     * Append a new multipart/form-data part.
      *
-     * @param  mixed[]  $part
-     * @return self
+     * @param  array  $part
+     * @return $this
      *
      * @throws \InvalidArgumentException
      */
-    public function append(array $part): self
+    public function append(array $part)
     {
         foreach (['name', 'contents'] as $key) {
             if (! array_key_exists($key, $part)) {
@@ -97,45 +96,15 @@ class FormData
             }
         }
 
-        if (! isset($part['headers'])) {
-            $part['headers'] = [];
-        }
+        extract($part);
 
-        if (! isset($part['filename'])) {
-            $part['filename'] = null;
-        }
-
-        $part['contents'] = create_stream($part['contents']);
-
-        if (! $this->hasHeader('Content-Disposition', $part['headers'])) {
-            $disposition = $part['filename']
-                ? sprintf("form-data; name=\"%s\"; filename=\"%s\"",
-                    $part['name'],
-                    basename($part['filename']))
-                : sprintf("form-data; name=\"%s\"", $part['name']);
-
-            $part['headers']['Content-Disposition'] = $disposition;
-        }
-
-        if ($part['filename']) {
-            if (! $this->hasHeader('Content-Type', $part['headers'])) {
-                $part['headers']['Content-Type'] = mime_content_type($part['filename']);
-            }
-
-            $length = $part['contents']->getSize();
-
-            if (! $this->hasHeader('Content-Length', $part['headers']) && $length) {
-                $part['headers']['Content-Length'] = $length;
-            }
-        }
-
-        $this->parts[] = $part;
+        $this->parts[] = compact('name', 'contents', 'headers', 'filename');
 
         return $this;
     }
 
     /**
-     * Get the multipart/form-data body stream.
+     * Get the multipart/form-data stream.
      *
      * @return \Psr\Http\Message\StreamInterface
      *
@@ -147,53 +116,16 @@ class FormData
     }
 
     /**
-     * Stringify the multipart/form-data body.
+     * Stringify the multipart/form-data.
      *
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         try {
-            $str = '';
-
-            foreach ($this->parts as $part) {
-                $str .= $this->stringifyHeaders($part['headers']).$part['contents']."\r\n";
-            }
-
-            return $str.'--'.$this->boundary;
+            
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
-    }
-
-    /**
-     * Check is the header exists in the array.
-     *
-     * @param  string  $name
-     * @param  mixed[]  $headers
-     * @return bool
-     */
-    protected function hasHeader(string $name, array $headers): bool
-    {
-        return array_key_exists(
-            strtolower($name), array_change_key_case($headers)
-        );
-    }
-
-    /**
-     * Stringify headers for the multipart/form-data body.
-     *
-     * @param  mixed[]  $headers
-     * @return string
-     */
-    protected function stringifyHeaders(array $headers): string
-    {
-        $str = '';
-
-        foreach ($headers as $name => $value) {
-            $str .= sprintf("%s: %s\r\n", $name, implode(', ', (array) $value));
-        }
-
-        return sprintf("--%s\r\n%s\r\n", $this->boundary, $str);
     }
 }
