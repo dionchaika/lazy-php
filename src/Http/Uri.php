@@ -25,6 +25,21 @@ class Uri implements UriInterface
     ];
 
     /**
+     * The default environments
+     */
+    const DEFAULT_ENVIRONMENTS = [
+
+        'HTTPS'         => 'off',
+        'PHP_AUTH_USER' => '',
+        'PHP_AUTH_PW'   => '',
+        'SERVER_NAME'   => 'localhost',
+        'SERVER_PORT'   => '80',
+        'REQUEST_URI'   => '/',
+        'QUERY_STRING'  => ''
+
+    ];
+
+    /**
      * The URI scheme.
      *
      * @var string
@@ -120,38 +135,28 @@ class Uri implements UriInterface
      */
     public static function fromGlobals()
     {
-        return static::fromEnvironment($_SERVER);
+        return static::fromEnvironments($_SERVER);
     }
 
     /**
-     * Create a new URI from environment.
+     * Create a new URI from environments.
      *
-     * @param  array  $environment
+     * @param  array  $environments
      * @return static
      *
      * @throws \InvalidArgumentException
      */
-    public static function fromEnvironment(array $environment)
+    public static function fromEnvironments(array $environments)
     {
-        $environment = array_merge([
+        $environments = array_merge(static::DEFAULT_ENVIRONMENTS, $environments);
 
-            'HTTPS'         => 'off',
-            'PHP_AUTH_USER' => '',
-            'PHP_AUTH_PW'   => '',
-            'SERVER_NAME'   => 'localhost',
-            'SERVER_PORT'   => '80',
-            'REQUEST_URI'   => '/',
-            'QUERY_STRING'  => ''
-
-        ], $environment);
-
-        $scheme = 'off' === $environment['HTTPS'] ? 'http' : 'https';
-        $user = $environment['PHP_AUTH_USER'];
-        $password = $environment['PHP_AUTH_PW'] ? $environment['PHP_AUTH_PW'] : null;
-        $host = $environment['SERVER_NAME'];
-        $port = (int) $environment['SERVER_PORT'];
-        $path = explode('?', $environment['REQUEST_URI'], 2)[0];
-        $query = $environment['QUERY_STRING'];
+        $scheme = 'off' === $environments['HTTPS'] ? 'http' : 'https';
+        $user = $environments['PHP_AUTH_USER'];
+        $password = $environments['PHP_AUTH_PW'] ? $environments['PHP_AUTH_PW'] : null;
+        $host = $environments['SERVER_NAME'];
+        $port = (int) $environments['SERVER_PORT'];
+        $path = explode('?', $environments['REQUEST_URI'], 2)[0];
+        $query = $environments['QUERY_STRING'];
 
         return new static($scheme, $user, $password, $host, $port, $path, $query);
     }
