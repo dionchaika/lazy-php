@@ -484,6 +484,28 @@ class Uri implements UriInterface
 
     /**
      * Return an instance
+     * without the specified URI query parameter.
+     *
+     * @param  string  $name
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function withoutQueryParam($name)
+    {
+        $queryParams = explode('&', $this->query);
+
+        foreach ($queryParams as $queryParam) {
+            if (0 !== strpos($queryParam, $name.'=')) {
+                $params[] = $queryParam;
+            }
+        }
+
+        return $this->withQuery(implode('&', $params));
+    }
+
+    /**
+     * Return an instance
      * with the specified URI fragment.
      *
      * @param  string  $fragment
