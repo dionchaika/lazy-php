@@ -195,7 +195,6 @@ class Cookie
         $pairParts = explode('=', array_shift($parts), 2);
 
         $name = trim($pairParts[0]);
-
         $value = ('' !== $value = trim($pairParts[1])) ? $value : null;
 
         $attributes = [
@@ -214,7 +213,6 @@ class Cookie
             $attributeParts = explode('=', $part, 2);
 
             $attributeName = trim($attributeParts[0]);
-
             $attributeValue = isset($attributeParts[1]) ? trim($attributeParts[1]) : true;
 
             foreach (array_keys($attributes) as $attribute) {
@@ -301,10 +299,10 @@ class Cookie
         }
 
         if (null !== $attributes['Max-Age']) {
-            if (preg_match('/^\-?\d+$/', $attributes['Max-Age'])) {
-                $attributes['Max-Age'] = (int) $attributes['Max-Age'];
-            } else {
+            if (false === preg_match('/^\-?\d+$/', $attributes['Max-Age'])) {
                 $attributes['Max-Age'] = null;
+            } else {
+                $attributes['Max-Age'] = (int) $attributes['Max-Age'];
             }
         }
 
@@ -571,7 +569,7 @@ class Cookie
     public function expire()
     {
         $this->maxAge = -2147483648;
-        $this->expires = gmdate('D, d M Y H:i:s T', -2147483648);
+        $this->expires = gmdate(static::DATE_FORMAT, -2147483648);
 
         return $this;
     }
