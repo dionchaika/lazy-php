@@ -114,7 +114,7 @@ class Uri implements UriInterface
     /**
      * Create a new URI from PHP globals.
      *
-     * @return self
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
@@ -126,8 +126,8 @@ class Uri implements UriInterface
     /**
      * Create a new URI from environment.
      *
-     * @param  mixed[]  $environment
-     * @return self
+     * @param  array  $environment
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
@@ -135,36 +135,38 @@ class Uri implements UriInterface
     {
         $secured = ! empty($environment['HTTPS']) && 'off' !== $environment['HTTPS'];
 
-        $scheme = $secured ? 'https' : 'http';
+        $scheme = $secured
+            ? 'https'
+            : 'http';
+        $user = ! empty($environment['PHP_AUTH_USER'])
+            ? $environment['PHP_AUTH_USER']
+            : '';
+        $password = ! empty($environment['PHP_AUTH_PW'])
+            ? $environment['PHP_AUTH_PW']
+            : null;
+        $host = ! empty($environment['SERVER_NAME'])
+            ? $environment['SERVER_NAME']
+            : (! empty($environment['SERVER_ADDR']) ? $environment['SERVER_ADDR'] : '127.0.0.1');
+        $port = ! empty($environment['SERVER_PORT'])
+            ? (int) $environment['SERVER_PORT']
+            : ($secured ? 443 : 80);
+        $path = ! empty($environment['REQUEST_URI'])
+            ? explode('?', $environment['REQUEST_URI'], 2)[0]
+            : '/';
+        $query = ! empty($environment['QUERY_STRING'])
+            ? $environment['QUERY_STRING']
+            : '';
 
-        $user = ! empty($environment['PHP_AUTH_USER']) ? $environment['PHP_AUTH_USER'] : '';
+        $fragment = '';
 
-        $password = ! empty($environment['PHP_AUTH_PW']) ? $environment['PHP_AUTH_PW'] : null;
-
-        if (! empty($environment['SERVER_NAME'])) {
-            $host = $environment['SERVER_NAME'];
-        } else {
-            $host = ! empty($environment['SERVER_ADDR']) ? $environment['SERVER_ADDR'] : '127.0.0.1';
-        }
-
-        if (! empty($environment['SERVER_PORT'])) {
-            $port = (int) $environment['SERVER_PORT'];
-        } else {
-            $port = $secured ? 443 : 80;
-        }
-
-        $path = ! empty($environment['REQUEST_URI']) ? explode('?', $environment['REQUEST_URI'], 2)[0] : '/';
-
-        $query = ! empty($environment['QUERY_STRING']) ? $environment['QUERY_STRING'] : '';
-
-        return new static($scheme, $user, $password, $host, $port, $path, $query);
+        return new static($scheme, $user, $password, $host, $port, $path, $query, $fragment);
     }
 
     /**
      * Create a new URI from string.
      *
      * @param  string  $uri
-     * @return self
+     * @return static
      *
      * @throws \InvalidArgumentException
      */
@@ -285,7 +287,7 @@ class Uri implements UriInterface
     /**
      * Get the array of URI query parameters.
      *
-     * @return mixed[]
+     * @return array
      */
     public function getQueryParams()
     {
