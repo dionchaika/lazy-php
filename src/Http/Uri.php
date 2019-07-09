@@ -133,33 +133,27 @@ class Uri implements UriInterface
      */
     public static function fromEnvironment(array $environment)
     {
-        $secured = ! empty($environment['HTTPS']) && 'off' !== $environment['HTTPS'];
+        $environment = array_merge([
 
-        $scheme = $secured
-            ? 'https'
-            : 'http';
-        $user = ! empty($environment['PHP_AUTH_USER'])
-            ? $environment['PHP_AUTH_USER']
-            : '';
-        $password = ! empty($environment['PHP_AUTH_PW'])
-            ? $environment['PHP_AUTH_PW']
-            : null;
-        $host = ! empty($environment['SERVER_NAME'])
-            ? $environment['SERVER_NAME']
-            : (! empty($environment['SERVER_ADDR']) ? $environment['SERVER_ADDR'] : '127.0.0.1');
-        $port = ! empty($environment['SERVER_PORT'])
-            ? (int) $environment['SERVER_PORT']
-            : ($secured ? 443 : 80);
-        $path = ! empty($environment['REQUEST_URI'])
-            ? explode('?', $environment['REQUEST_URI'], 2)[0]
-            : '/';
-        $query = ! empty($environment['QUERY_STRING'])
-            ? $environment['QUERY_STRING']
-            : '';
+            'HTTPS'         => 'off',
+            'PHP_AUTH_USER' => '',
+            'PHP_AUTH_PW'   => '',
+            'SERVER_NAME'   => 'localhost',
+            'SERVER_PORT'   => '80',
+            'REQUEST_URI'   => '/',
+            'QUERY_STRING'  => ''
 
-        $fragment = '';
+        ], $environment);
 
-        return new static($scheme, $user, $password, $host, $port, $path, $query, $fragment);
+        $scheme = 'off' === $environment['HTTPS'] ? 'http' : 'https';
+        $user = $environment['PHP_AUTH_USER'];
+        $password = $environment['PHP_AUTH_PW'] ? $environment['PHP_AUTH_PW'] : null;
+        $host = $environment['SERVER_NAME'];
+        $port = (int) $environment['SERVER_PORT'];
+        $path = explode('?', $environment['REQUEST_URI'], 2)[0];
+        $query = $environment['QUERY_STRING'];
+
+        return new static($scheme, $user, $password, $host, $port, $path, $query);
     }
 
     /**
@@ -564,7 +558,10 @@ class Uri implements UriInterface
     {
         if ($scheme) {
             if (! preg_match('/^[a-zA-Z][a-zA-Z0-9+\-.]*$/', $scheme)) {
-                throw new InvalidArgumentException('Invalid scheme! Scheme must be compliant with the "RFC 3986" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid scheme: {$scheme}! "
+                    ."Scheme must be compliant with the \"RFC 3986\" standart."
+                );
             }
 
             return strtolower($scheme);
@@ -595,13 +592,19 @@ class Uri implements UriInterface
                 //
                 if (preg_match('/^(v|V)/', $host)) {
                     if (! preg_match('/^(v|V)[a-fA-F0-9]\.([a-zA-Z0-9\-._~]|[!$&\'()*+,;=]|\:)$/', $host)) {
-                        throw new InvalidArgumentException('Invalid host! IP address must be compliant with the "IPvFuture" of the "RFC 3986" standart.');
+                        throw new InvalidArgumentException(
+                            "Invalid host: {$host}! "
+                            ."IP address must be compliant with the \"IPvFuture\" of the \"RFC 3986\" standart."
+                        );
                     }
                 //
                 // Matching an IPv6address.
                 //
                 } else if (false === filter_var($host, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6)) {
-                    throw new InvalidArgumentException('Invalid host! IP address must be compliant with the "IPv6address" of the "RFC 3986" standart.');
+                    throw new InvalidArgumentException(
+                        "Invalid host: {$host}! "
+                        ."IP address must be compliant with the \"IPv6address\" of the \"RFC 3986\" standart."
+                    );
                 }
 
                 $host = '['.$host.']';
@@ -610,14 +613,20 @@ class Uri implements UriInterface
             //
             } else if (preg_match('/^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\./', $host)) {
                 if (false === filter_var($host, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
-                    throw new InvalidArgumentException('Invalid host! IP address must be compliant with the "IPv4address" of the "RFC 3986" standart.');
+                    throw new InvalidArgumentException(
+                        "Invalid host: {$host}! "
+                        ."IP address must be compliant with the \"IPv4address\" of the \"RFC 3986\" standart."
+                    );
                 }
             //
             // Matching a domain name.
             //
             } else {
                 if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])*$/', $host)) {
-                    throw new InvalidArgumentException('Invalid host! Host must be compliant with the "RFC 3986" standart.');
+                    throw new InvalidArgumentException(
+                        "Invalid host: {$host}! "
+                        ."Host must be compliant with the \"RFC 3986\" standart."
+                    );
                 }
             }
 
@@ -639,7 +648,10 @@ class Uri implements UriInterface
     {
         if (null !== $port) {
             if (1 > $port || 65535 < $port) {
-                throw new InvalidArgumentException('Invalid port! TCP or UDP port must be between 1 and 65535.');
+                throw new InvalidArgumentException(
+                    "Invalid port: {$port}! "
+                    ."TCP or UDP port must be between 1 and 65535."
+                );
             }
 
             return static::isNonStandartPort($this->scheme, $port) ? $port : null;
@@ -659,22 +671,34 @@ class Uri implements UriInterface
     protected function filterPath($path)
     {
         if (! $this->scheme && 0 === strpos($path, ':')) {
-            throw new InvalidArgumentException('Invalid path! Path of a URI without a scheme cannot begin with a colon.');
+            throw new InvalidArgumentException(
+                "Invalid path: {$path}! "
+                ."Path of a URI without a scheme cannot begin with a colon."
+            );
         }
 
         $authority = $this->getAuthority();
 
         if (! $authority && 0 === strpos($path, '//')) {
-            throw new InvalidArgumentException('Invalid path! Path of a URI without an authority cannot begin with two slashes.');
+            throw new InvalidArgumentException(
+                "Invalid path: {$path}! "
+                ."Path of a URI without an authority cannot begin with two slashes."
+            );
         }
 
         if ($authority && $path && 0 !== strpos($path, '/')) {
-            throw new InvalidArgumentException('Invalid path! Path of a URI with an authority must be empty or begin with a slash.');
+            throw new InvalidArgumentException(
+                "Invalid path: {$path}! "
+                ."Path of a URI with an authority must be empty or begin with a slash."
+            );
         }
 
         if ($path && '/' !== $path) {
             if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\%)*$/', $path)) {
-                throw new InvalidArgumentException('Invalid path! Path must be compliant with the "RFC 3986" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid path: {$path}! "
+                    ."Path must be compliant with the \"RFC 3986\" standart."
+                );
             }
 
             return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
@@ -697,7 +721,10 @@ class Uri implements UriInterface
     {
         if ($query) {
             if (! preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=]|\:|\@|\/|\?|\%)*$/', $query)) {
-                throw new InvalidArgumentException('Invalid query! Query must be compliant with the "RFC 3986" standart.');
+                throw new InvalidArgumentException(
+                    "Invalid query: {$query}! "
+                    ."Query must be compliant with the \"RFC 3986\" standart."
+                );
             }
 
             return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/?%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
