@@ -466,7 +466,7 @@ class Uri implements UriInterface
      * Return an instance
      * with the specified URI query parameters.
      *
-     * @param  mixed[]  $params
+     * @param  array  $params
      * @return static
      *
      * @throws \InvalidArgumentException
