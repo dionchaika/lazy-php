@@ -88,15 +88,15 @@ class FormData
                 );
             }
 
-            preg_match('/name\=\"(.+)\"/', $headers->getLine('Content-Disposition'), $nameMatch);
-            preg_match('/filename\=\"(.+)\"/', $headers->getLine('Content-Disposition'), $filenameMatch);
+            preg_match('/name\=\"(.+)\"/', $headers->getLine('Content-Disposition'), $nameMatches);
+            preg_match('/filename\=\"(.+)\"/', $headers->getLine('Content-Disposition'), $filenameMatches);
 
             $formData->append([
 
-                'name'     => $nameMatch[1],
+                'name'     => $nameMatches[1],
                 'headers'  => $headers,
                 'contents' => $contents,
-                'filename' => isset($filenameMatch[1]) ? $filenameMatch[1] : null
+                'filename' => isset($filenameMatches[1]) ? $filenameMatches[1] : null
 
             ]);
         }
