@@ -3,7 +3,6 @@
 namespace Lazy\Http;
 
 use Throwable;
-use SimpleXMLElement;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
@@ -42,15 +41,15 @@ class Request extends Message implements RequestInterface
      *
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  \Lazy\Http\Headers|array  $headers
-     * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
+     * @param  \Lazy\Http\Headers|array|null  $headers
+     * @param  \Psr\Http\Message\StreamInterface|mixed|null  $body
      * @param  string  $protocolVersion
      *
      * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
                                 $uri = null,
-                                $headers = [],
+                                $headers = null,
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
@@ -58,10 +57,10 @@ class Request extends Message implements RequestInterface
 
         if (! $uri) {
             $this->uri = new Uri;
-        } else if (is_string($uri)) {
-            $this->uri = Uri::fromString($uri);
         } else {
-            $this->uri = $uri;
+            $this->uri = ($uri instanceof UriInterface)
+                ? $uri
+                : Uri::fromString($uri);
         }
 
         $this->headers = ($headers instanceof Headers)

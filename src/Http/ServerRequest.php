@@ -23,6 +23,16 @@ class ServerRequest extends Request implements ServerRequestInterface
     const DEFAULT_MEDIA_TYPES =  ['multipart/form-data', 'application/x-www-form-urlencoded'];
 
     /**
+     * The default environments.
+     */
+    const DEFAULT_ENVIRONMENTS = [
+
+        'REQUEST_METHOD'  => 'GET',
+        'SERVER_PROTOCOL' => 'HTTP/1.1'
+
+    ];
+
+    /**
      * The request parsed body.
      *
      * @var array|object|null
@@ -70,7 +80,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @param  string  $method
      * @param  \Psr\Http\Message\UriInterface|string|null  $uri
      * @param  \Lazy\Http\Headers|array|null  $headers
-     * @param  mixed|null  $body
+     * @param  \Psr\Http\Message\StreamInterface|mixed|null  $body
      * @param  array  $serverParams
      * @param  string  $protocolVersion
      *
@@ -101,7 +111,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function fromGlobals()
     {
-        $request = (static::fromEnvironment($_SERVER))
+        $request = (static::fromEnvironments($_SERVER))
             ->withQueryParams($_GET)
             ->withCookieParams($_COOKIE)
             ->withUploadedFiles(UploadedFile::fromGlobals());
@@ -112,29 +122,24 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Create a new request from environment.
+     * Create a new request from environments.
      *
-     * @param  array  $environment
+     * @param  array  $environments
      * @return static
      *
      * @throws \InvalidArgumentException
      */
-    public static function fromEnvironment(array $environment)
+    public static function fromEnvironments(array $environments)
     {
-        $environment = array_merge([
+        $environments = array_merge(static::DEFAULT_ENVIRONMENTS, $environments);
 
-            'REQUEST_METHOD'  => 'GET',
-            'SERVER_PROTOCOL' => 'HTTP/1.1'
+        $method = $environments['REQUEST_METHOD'];
+        $protocolVersion = explode('/', $environments['SERVER_PROTOCOL'], 2)[1];
 
-        ], $environment);
+        $uri = Uri::fromEnvironment($environments);
+        $headers = Headers::fromEnvironment($environments);
 
-        $method = $environment['REQUEST_METHOD'];
-        $protocolVersion = explode('/', $environment['SERVER_PROTOCOL'], 2)[1];
-
-        $uri = Uri::fromEnvironment($environment);
-        $headers = Headers::fromEnvironment($environment);
-
-        return new static($method, $uri, $headers, fopen('php://input', 'r'), $environment, $protocolVersion);
+        return new static($method, $uri, $headers, fopen('php://input', 'r'), $environments, $protocolVersion);
     }
 
     /**
