@@ -50,6 +50,67 @@ class FormData
     }
 
     /**
+     * Create a new multipart/form-data from string.
+     *
+     * @param  string  $formData
+     * @param  string  $boundary
+     * @return static
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function fromString($formData, $boundary)
+    {
+        $parts = preg_split("/(\r\n)*\-\-{$boundary}(\r\n)*/", $formData);
+
+        array_pop($parts);
+        array_shift($parts);
+
+        $formData = new static;
+
+        foreach ($parts as $part) {
+            if (false === strpos($part, "\r\n\r\n")) {
+                throw new InvalidArgumentException(
+                    "Invalid \"multipart/form-data\" part: {$part}! "
+                    ."\"multipart/form-data\" part must be compliant with the \"RFC-2046\" standart."
+                );
+            }
+
+            [$headers, $contents] = explode("\r\n\r\n", $part, 2);
+
+            $headers = Headers::fromString($headers);
+
+            if (! $headers->has('Content-Disposition')) {
+                throw new InvalidArgumentException(
+                    "Invalid \"multipart/form-data\" part: {$part}! "
+                    ."\"multipart/form-data\" part must be compliant with the \"RFC-2046\" standart."
+                );
+            }
+
+            preg_match('/name\=([^\s]+)/', $headers->getLine('Content-Disposition'), $matches);
+
+            if (!isset($matches[1]) || ! $name = trim($matches[1], '"')) {
+                throw new InvalidArgumentException(
+                    "Invalid \"multipart/form-data\" part: {$part}! "
+                    ."\"multipart/form-data\" part must be compliant with the \"RFC-2046\" standart."
+                );
+            }
+
+            preg_match('/filename\=([^\s]+)/', $headers->getLine('Content-Disposition'), $matches);
+
+            $formData->append([
+
+                'name'     => $name,
+                'headers'  => $headers,
+                'contents' => $contents,
+                'filename' => isset($matches[1]) ? trim($matches[1], '"') : null
+
+            ]);
+        }
+
+        return $formData;
+    }
+
+    /**
      * Generate a multipart/form-data boundary.
      *
      * @param  int  $length
@@ -68,16 +129,6 @@ class FormData
         }
 
         return $prefix.$boundary;
-    }
-
-    /**
-     * Get the multipart/form-data boundary.
-     *
-     * @return string
-     */
-    public function getBoundary()
-    {
-        return $this->boundary;
     }
 
     /**
@@ -101,6 +152,16 @@ class FormData
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
 
         return $this;
+    }
+
+    /**
+     * Get the multipart/form-data boundary.
+     *
+     * @return string
+     */
+    public function getBoundary()
+    {
+        return $this->boundary;
     }
 
     /**
