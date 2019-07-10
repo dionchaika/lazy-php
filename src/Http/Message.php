@@ -195,6 +195,16 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
+     * Get the message header collection.
+     *
+     * @return \Lazy\Http\Headers
+     */
+    public function getHeaderCollection()
+    {
+        return $this->headers;
+    }
+
+    /**
      * Get the message header line.
      *
      * @param  string  $name

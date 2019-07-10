@@ -20,11 +20,7 @@ class Headers implements ArrayAccess
      */
     const DEFAULT_ENVIRONMENTS = [
 
-        'HTTP_HOST'            => 'localhost',
-        'HTTP_USER_AGENT'      => 'The Lazy PHP',
-        'HTTP_ACCEPT'          => 'text/html, application/xhtml+xml, application/xml; q=0.9, image/webp, image/apng, */*; q=0.8, application/signed-exchange; v=b3',
-        'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
-        'HTTP_ACCEPT_LANGUAGE' => 'en-US, en; q=0.9'
+        'HTTP_HOST' => 'localhost'
 
     ];
 

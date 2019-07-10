@@ -362,6 +362,16 @@ class Stream implements StreamInterface
     }
 
     /**
+     * Send a stream contents to browser.
+     *
+     * @return void
+     */
+    public function send()
+    {
+        fwrite(fopen('php://output', 'w'), $this);
+    }
+
+    /**
      * Read all data from the stream
      * into a string, from the beginning to end.
      *

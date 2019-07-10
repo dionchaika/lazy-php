@@ -3,6 +3,7 @@
 namespace Lazy\Http;
 
 use Throwable;
+use SimpleXMLElement;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
@@ -79,7 +80,7 @@ class Request extends Message implements RequestInterface
      * Create a new request from string.
      *
      * @param  string  $request
-     * @return Request
+     * @return \Lazy\Http\Request
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -292,7 +293,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the multipart/form-data request body.
      *
-     * @param  FormData|array  $data
+     * @param  \Lazy\Http\FormData|array  $data
      * @param  string|null  $boundary
      * @return static
      *
@@ -502,7 +503,10 @@ class Request extends Message implements RequestInterface
     protected function filterMethod($method)
     {
         if (! preg_match('/^[!#$%&\'*+\-.^_`|~0-9a-zA-Z]+$/', $method)) {
-            throw new InvalidArgumentException('Invalid method! Method must be compliant with the "RFC 7230" standart.');
+            throw new InvalidArgumentException(
+                "Invalid method: {$method}! "
+                ."Method must be compliant with the \"RFC 7230\" standart."
+            );
         }
 
         return $method;

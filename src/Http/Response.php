@@ -123,15 +123,15 @@ class Response extends Message implements ResponseInterface
      *
      * @param  int  $code
      * @param  string  $reasonPhrase
-     * @param  \Lazy\Http\Headers|array  $headers
-     * @param  \Psr\Http\Message\StreamInterface|callable|resource|object|array|int|float|bool|string|null  $body
+     * @param  \Lazy\Http\Headers|array|null  $headers
+     * @param  \Psr\Http\Message\StreamInterface|mixed|null  $body
      * @param  string  $protocolVersion
      *
      * @throws \InvalidArgumentException
      */
     public function __construct($code = StatusCode::OK,
                                 $reasonPhrase = '',
-                                $headers = [],
+                                $headers = null,
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
@@ -155,7 +155,7 @@ class Response extends Message implements ResponseInterface
      * Create a new response from string.
      *
      * @param  string  $response
-     * @return Response
+     * @return \Lazy\Http\Response
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -431,15 +431,10 @@ class Response extends Message implements ResponseInterface
             throw new RuntimeException('Unable to send the response! Headers are already sent.');
         }
 
-        header(sprintf("HTTP/%s %s %s", $this->protocolVersion,
-                                        $this->statusCode,
-                                        $this->reasonPhrase));
+        header(sprintf("HTTP/%s %s %s", $this->protocolVersion, $this->statusCode, $this->reasonPhrase));
 
         $this->headers->send();
-
-        fwrite(fopen('php://output', 'w'), $this->body);
-
-        exit;
+        $this->body->send();
     }
 
     /**
@@ -478,11 +473,11 @@ class Response extends Message implements ResponseInterface
     protected function filterStatusCode($code)
     {
         if (306 === $code) {
-            throw new InvalidArgumentException('Invalid status code! Status code 306 is unused.');
+            throw new InvalidArgumentException("Invalid status code: {$code}! "."Status code 306 is unused.");
         }
 
         if (100 > $code || 599 < $code) {
-            throw new InvalidArgumentException('Invalid status code! Status code must be between 100 and 599.');
+            throw new InvalidArgumentException("Invalid status code: {$code}! Status code must be between 100 and 599.");
         }
 
         return $code;
