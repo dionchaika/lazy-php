@@ -35,9 +35,12 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * The request parsed body.
      *
+     * Note: contains FALSE
+     * if the request body is not parsed.
+     *
      * @var array|object|null
      */
-    protected $parsedBody;
+    protected $parsedBody = false;
 
     /**
      * The array of request attributes.
@@ -75,6 +78,13 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $uploadedFiles = [];
 
     /**
+     * The original request method.
+     *
+     * @var string
+     */
+    protected $originalMethod = Method::GET;
+
+    /**
      * The request constructor.
      *
      * @param  string  $method
@@ -93,9 +103,14 @@ class ServerRequest extends Request implements ServerRequestInterface
                                 array $serverParams = [],
                                 $protocolVersion = '1.1')
     {
+        $this->originalMethod = $this->filterMethod($method);
         $this->serverParams = $serverParams;
 
-        parent::__construct($method, $uri, $headers, $body, $protocolVersion);
+        parent::__construct($this->originalMethod, $uri, $headers, $body, $protocolVersion);
+
+        if ($this->hasHeader('X-HTTP-Method-Override')) {
+            $this->method = $this->filterMethod($this->getHeaderLine('X-HTTP-Method-Override'));
+        }
 
         $this->registerParser('text/xml', $this->getDefaultXmlParser());
         $this->registerParser('application/json', $this->getDefaultJsonParser());
@@ -148,6 +163,26 @@ class ServerRequest extends Request implements ServerRequestInterface
     public static function fromString($request)
     {
         trigger_error('Method "fromString" is not supported by server requests!', \E_USER_ERROR);
+    }
+
+    /**
+     * Get the original request method.
+     *
+     * @return string
+     */
+    public function getOriginalMethod()
+    {
+        return $this->originalMethod;
+    }
+
+    /**
+     * Check is the request method overridden.
+     *
+     * @return bool
+     */
+    public function isMethodOverridden()
+    {
+        return $this->method !== $this->originalMethod;
     }
 
     /**
@@ -247,6 +282,16 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public function getParsedBody()
     {
+        if (false === $this->parsedBody) {
+            $mediaType = $this->getMediaType();
+
+            if (isset($this->parsers[$mediaType])) {
+                $this->parsedBody = $this->filterParsedBody(
+                    call_user_func($this->parsers[$mediaType], $this->body)
+                );
+            }
+        }
+
         return $this->parsedBody;
     }
 
