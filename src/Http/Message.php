@@ -65,7 +65,7 @@ abstract class Message implements ArrayAccess, MessageInterface
     /**
      * Get the array of message headers.
      *
-     * @return mixed[]
+     * @return array
      */
     public function getHeaders()
     {
