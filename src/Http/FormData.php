@@ -65,7 +65,33 @@ class FormData
         array_pop($parts);
         array_shift($parts);
 
-        //
+        $formData = new static([], $boundary);
+
+        foreach ($parts as $part) {
+            if (false === strpos("\r\n\r\n", $part)) {
+                throw new InvalidArgumentException(
+                    "Invalid \"multipart/form-data\" part: {$part}! "
+                    ."\"multipart/form-data\" part must contain header fields and contents."
+                );
+            }
+
+            [$headers, $contents] = explode("\r\n\r\n", $part, 2);
+            [$headers, $contents] = [Headers::fromString($headers), create_stream($contents)];
+
+            if (
+                ! $headers->has('Content-Disposition') ||
+                ! preg_match('/^form\-data\;\s+name\=\"(.+)\"/i', $headers->getLine('Content-Disposition'), $matches)
+            ) {
+                throw new InvalidArgumentException(
+                    "Invalid \"multipart/form-data\" part: {$part}! "
+                    ."\"multipart/form-data\" part must contain a \"Content-Disposition\" header field with \"form-data\" type and \"name\" parameter."
+                );
+            }
+
+            $name = $matches[1];
+        }
+
+        return $formData;
     }
 
     /**
