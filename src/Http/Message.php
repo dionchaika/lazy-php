@@ -73,6 +73,16 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
+     * Get the message header collection.
+     *
+     * @return \Lazy\Http\Headers
+     */
+    public function getHeaderCollection()
+    {
+        return $this->headers;
+    }
+
+    /**
      * Check is the message header exists.
      *
      * @param  string  $name
@@ -192,16 +202,6 @@ abstract class Message implements ArrayAccess, MessageInterface
         $new->body = $new->filterBody($body);
 
         return $new;
-    }
-
-    /**
-     * Get the message header collection.
-     *
-     * @return \Lazy\Http\Headers
-     */
-    public function getHeaderCollection()
-    {
-        return $this->headers;
     }
 
     /**
