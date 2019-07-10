@@ -136,8 +136,8 @@ class ServerRequest extends Request implements ServerRequestInterface
         $method = $environments['REQUEST_METHOD'];
         $protocolVersion = explode('/', $environments['SERVER_PROTOCOL'], 2)[1];
 
-        $uri = Uri::fromEnvironment($environments);
-        $headers = Headers::fromEnvironment($environments);
+        $uri = Uri::fromEnvironments($environments);
+        $headers = Headers::fromEnvironments($environments);
 
         return new static($method, $uri, $headers, fopen('php://input', 'r'), $environments, $protocolVersion);
     }
