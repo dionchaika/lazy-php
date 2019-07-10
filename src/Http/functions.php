@@ -20,9 +20,9 @@ if (! function_exists('stringify')) {
     function stringify(MessageInterface $message): string
     {
         if ($message instanceof RequestInterface) {
-            $str = sprintf("%s %s HTTP/%s\r\n", $message->getMethod(),
-                                                $message->getRequestTarget(),
-                                                $message->getProtocolVersion());
+            $str = sprintf(
+                "%s %s HTTP/%s\r\n", $message->getMethod(), $message->getRequestTarget(), $message->getProtocolVersion()
+            );
 
             foreach (array_keys($message->getHeaders()) as $name) {
                 $value = (0 !== strcasecmp($name, 'cookie'))
@@ -32,9 +32,9 @@ if (! function_exists('stringify')) {
                 $str .= sprintf("%s: %s\r\n", $name, $value);
             }
         } else if ($message instanceof ResponseInterface) {
-            $str = sprintf("HTTP/%s %s %s\r\n", $message->getProtocolVersion(),
-                                                $message->getStatusCode(),
-                                                $message->getReasonPhrase());
+            $str = sprintf(
+                "HTTP/%s %s %s\r\n", $message->getProtocolVersion(), $message->getStatusCode(), $message->getReasonPhrase()
+            );
 
             foreach (array_keys($message->getHeaders()) as $name) {
                 if (0 === strcasecmp($name, 'set-cookie')) {
