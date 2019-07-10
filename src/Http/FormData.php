@@ -82,7 +82,7 @@ class FormData
             if (! $headers->has('Content-Disposition')) {
                 throw new InvalidArgumentException(
                     "Invalid \"multipart/form-data\" part: {$part}! "
-                    ."\"multipart/form-data\" part must be compliant with the \"RFC-2046\" standart."
+                    ."\"multipart/form-data\" part must contain a \"Content-Disposition\" header."
                 );
             }
 
@@ -91,7 +91,7 @@ class FormData
             if (! isset($matches[1]) || ! $name = trim($matches[1], '"')) {
                 throw new InvalidArgumentException(
                     "Invalid \"multipart/form-data\" part: {$part}! "
-                    ."\"multipart/form-data\" part must be compliant with the \"RFC-2046\" standart."
+                    ."\"multipart/form-data\" part \"Content-Disposition\" header must contain a \"name\" directive."
                 );
             }
 
@@ -147,7 +147,18 @@ class FormData
             }
         }
 
+        if (! isset($part['headers'])) {
+            $part['headers'] = [];
+        }
+
+        if (! isset($part['filename'])) {
+            $part['filename'] = null;
+        }
+
         extract($part);
+
+        $headers = ($headers instanceof Headers) ? $headers : new Headers($headers);
+        $contents = create_stream($contents);
 
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
 
@@ -184,7 +195,15 @@ class FormData
     public function __toString()
     {
         try {
-            
+            $str = '';
+
+            foreach ($this->parts as $part) {
+                $str .= sprintf("--%s\r\n%s\r\n%s\r\n", $this->boundary,
+                                                        $part['headers'],
+                                                        $part['contents']);
+            }
+
+            return $str.'--'.$this->boundary;
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
