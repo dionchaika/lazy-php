@@ -133,6 +133,8 @@ class FormData
 
         extract($part);
 
+        
+
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
     }
 
@@ -165,7 +167,7 @@ class FormData
      */
     public function getStream(): StreamInterface
     {
-        return create_stream((string) $this);
+        return create_stream($this);
     }
 
     /**
@@ -176,7 +178,7 @@ class FormData
     public function __toString()
     {
         try {
-            //
+
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
