@@ -143,6 +143,14 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public static function fromString($request)
+    {
+        trigger_error('Method "fromString" is not supported by server requests!', \E_USER_ERROR);
+    }
+
+    /**
      * Get the array of request server parameters.
      *
      * @return array
