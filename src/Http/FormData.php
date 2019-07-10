@@ -160,6 +160,21 @@ class FormData
         $headers = ($headers instanceof Headers) ? $headers : new Headers($headers);
         $contents = create_stream($contents);
 
+        if (! $headers->has('Content-Disposition')) {
+            $headers->set('Content-Disposition', ! $filename
+                ? sprintf('form-data; name="%s"', $name)
+                : sprintf('form-data; name="%s"; filename="%s"', $name, basename($filename))
+            );
+        }
+
+        if ($filename && ! $headers->has('Content-Type')) {
+            $headers->set('Content-Type', mime_content_type($filename));
+        }
+
+        if ($filename && $size = $contents->getSize() && ! $headers->has('Content-Length')) {
+            $headers->set('Content-Length', (string) $size);
+        }
+
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
 
         return $this;
