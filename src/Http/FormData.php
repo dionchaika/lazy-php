@@ -7,7 +7,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * The multipart/form-data model.
+ * The multipart/form-data model class.
  *
  * @see https://tools.ietf.org/html/rfc2046#section-5.1
  */
