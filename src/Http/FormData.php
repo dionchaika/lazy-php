@@ -88,7 +88,7 @@ class FormData
 
             preg_match('/name\=([^\s]+)/', $headers->getLine('Content-Disposition'), $matches);
 
-            if (!isset($matches[1]) || ! $name = trim($matches[1], '"')) {
+            if (! isset($matches[1]) || ! $name = trim($matches[1], '"')) {
                 throw new InvalidArgumentException(
                     "Invalid \"multipart/form-data\" part: {$part}! "
                     ."\"multipart/form-data\" part must be compliant with the \"RFC-2046\" standart."
