@@ -71,7 +71,7 @@ class FormData
             if (false === strpos($part, "\r\n\r\n")) {
                 throw new InvalidArgumentException(
                     "Invalid \"multipart/form-data\" part: {$part}! "
-                    ."\"multipart/form-data\" part must contain header fields and contents."
+                    ."\"multipart/form-data\" part must contain header fields and the contents."
                 );
             }
 
@@ -159,6 +159,14 @@ class FormData
             );
         }
 
+        if ($filename && ! $headers->has('Content-Type')) {
+            try {
+                $headers->set('Content-Type', mime_content_type($filename));
+            } catch (Throwable $e) {
+                $headers->set('Content-Type', 'application/octet-stream');
+            }
+        }
+
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
     }
 
@@ -210,7 +218,7 @@ class FormData
                 );
             }
 
-            return "{$str}--{$this->boundary}";
+            return sprintf('%s--%s', $str, $this->boundary);
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
