@@ -88,7 +88,17 @@ class FormData
                 );
             }
 
+            preg_match('/name\=\"(.+)\"/', $headers->getLine('Content-Disposition'), $nameMatch);
+            preg_match('/filename\=\"(.+)\"/', $headers->getLine('Content-Disposition'), $filenameMatch);
 
+            $formData->append([
+
+                'name'     => $nameMatch[1],
+                'headers'  => $headers,
+                'contents' => $contents,
+                'filename' => isset($filenameMatch[1]) ? $filenameMatch[1] : null
+
+            ]);
         }
 
         return $formData;
