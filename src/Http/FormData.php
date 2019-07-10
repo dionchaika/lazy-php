@@ -159,13 +159,6 @@ class FormData
             );
         }
 
-        if (! $headers->has('Content-Type')) {
-            $headers->set('Content-Type', ! $filename
-                ? 'text/plain'
-                : $mimeType = false !== mime_content_type($filename) ? $mimeType : 'application/octet-stream'
-            );
-        }
-
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
     }
 
@@ -209,7 +202,15 @@ class FormData
     public function __toString()
     {
         try {
+            $str = '';
 
+            foreach ($this->parts as $part) {
+                $str .= sprintf(
+                    "--%s\r\n%s\r\n%s\r\n", $this->boundary, $part['headers'], $part['contents']
+                );
+            }
+
+            return "{$str}--{$this->boundary}";
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
