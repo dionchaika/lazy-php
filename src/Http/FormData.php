@@ -143,7 +143,21 @@ class FormData
 
         extract($part);
 
+        if (! isset($headers)) {
+            $headers = new Headers;
+        } else {
+            $headers = ($headers instanceof Headers) ? $headers : new Headers($headers);
+        }
 
+        $filename = isset($filename) ? $filename : null;
+        $contents = ($contents instanceof StreamInterface) ? $contents : create_stream($contents);
+
+        if (! $headers->has('Content-Disposition')) {
+            $headers->set('Content-Disposition', ! $filename
+                ? sprintf('form-data; name="%s"', $name)
+                : sprintf('form-data; name="%s"; filename="%s"', $name, basename($filename))
+            );
+        }
 
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
     }
