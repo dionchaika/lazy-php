@@ -68,7 +68,7 @@ class FormData
         $formData = new static([], $boundary);
 
         foreach ($parts as $part) {
-            if (false === strpos("\r\n\r\n", $part)) {
+            if (false === strpos($part, "\r\n\r\n")) {
                 throw new InvalidArgumentException(
                     "Invalid \"multipart/form-data\" part: {$part}! "
                     ."\"multipart/form-data\" part must contain header fields and contents."
@@ -80,7 +80,7 @@ class FormData
 
             if (
                 ! $headers->has('Content-Disposition') ||
-                ! preg_match('/^form\-data\;\s+name\=\".+\"/', $headers->getLine('Content-Disposition'))
+                ! preg_match('/^form\-data\;\s*name\=\".+\"/', $headers->getLine('Content-Disposition'))
             ) {
                 throw new InvalidArgumentException(
                     "Invalid \"multipart/form-data\" part: {$part}! \"multipart/form-data\" part "
@@ -88,7 +88,7 @@ class FormData
                 );
             }
 
-            
+
         }
 
         return $formData;
@@ -133,7 +133,7 @@ class FormData
 
         extract($part);
 
-        
+
 
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
     }
