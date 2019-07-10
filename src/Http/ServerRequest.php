@@ -40,7 +40,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @var array|object|null
      */
-    protected $parsedBody = false;
+    protected $parsedBody;
 
     /**
      * The array of request attributes.
@@ -133,7 +133,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             ->withUploadedFiles(UploadedFile::fromGlobals());
 
         return $request->withParsedBody(
-            ('POST' === $request->getMethod() && in_array($this->getMediaType(), static::DEFAULT_MEDIA_TYPES)) ? $_POST : null
+            ('POST' === $request->getMethod() && in_array($request->getMediaType(), static::DEFAULT_MEDIA_TYPES)) ? $_POST : null
         );
     }
 
