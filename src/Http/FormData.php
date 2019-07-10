@@ -80,15 +80,15 @@ class FormData
 
             if (
                 ! $headers->has('Content-Disposition') ||
-                ! preg_match('/^form\-data\;\s+name\=\"(.+)\"/i', $headers->getLine('Content-Disposition'), $matches)
+                ! preg_match('/^form\-data\;\s+name\=\".+\"/', $headers->getLine('Content-Disposition'))
             ) {
                 throw new InvalidArgumentException(
-                    "Invalid \"multipart/form-data\" part: {$part}! "
-                    ."\"multipart/form-data\" part must contain a \"Content-Disposition\" header field with \"form-data\" type and \"name\" parameter."
+                    "Invalid \"multipart/form-data\" part: {$part}! \"multipart/form-data\" part "
+                    ."must contain a \"Content-Disposition\" header field with \"form-data\" type and \"name\" parameter."
                 );
             }
 
-            $name = $matches[1];
+            
         }
 
         return $formData;
