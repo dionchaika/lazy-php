@@ -103,10 +103,11 @@ class ServerRequest extends Request implements ServerRequestInterface
                                 array $serverParams = [],
                                 $protocolVersion = '1.1')
     {
-        $this->originalMethod = $this->filterMethod($method);
         $this->serverParams = $serverParams;
 
-        parent::__construct($this->originalMethod, $uri, $headers, $body, $protocolVersion);
+        parent::__construct($method, $uri, $headers, $body, $protocolVersion);
+
+        $this->originalMethod = $method;
 
         if ($this->hasHeader('X-HTTP-Method-Override')) {
             $this->method = $this->filterMethod($this->getHeaderLine('X-HTTP-Method-Override'));
