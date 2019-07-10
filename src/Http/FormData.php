@@ -160,13 +160,10 @@ class FormData
         }
 
         if (! $headers->has('Content-Type')) {
-            if (! $filename) {
-                $headers->set('Content-Type', 'text/plain');
-            } else {
-                $headers->set(
-                    'Content-Type', file_exists($filename) ? mime_content_type($filename) : 'application/octet-stream'
-                );
-            }
+            $headers->set('Content-Type', ! $filename
+                ? 'text/plain'
+                : $mimeType = false !== mime_content_type($filename) ? $mimeType : 'application/octet-stream'
+            );
         }
 
         $this->parts[] = compact('name', 'contents', 'headers', 'filename');
