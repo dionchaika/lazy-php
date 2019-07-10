@@ -69,9 +69,9 @@ class Headers implements ArrayAccess
      */
     public static function fromEnvironments(array $environments)
     {
-        $headers = new static;
-
         $environments = array_merge(static::DEFAULT_ENVIRONMENTS, $environments);
+
+        $headers = new static;
 
         foreach ($environments as $key => $value) {
             if ('CONTENT_TYPE' === $key) {
@@ -101,9 +101,9 @@ class Headers implements ArrayAccess
      */
     public static function fromString($headers)
     {
-        $headers = new static;
-
         $lines = explode("\r\n", $headers);
+
+        $headers = new static;
 
         foreach ($lines as $line) {
             if (false === strpos($line, ':')) {
