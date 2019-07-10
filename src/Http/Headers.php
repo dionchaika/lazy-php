@@ -115,12 +115,10 @@ class Headers implements ArrayAccess
 
             $parts = explode(':', $line, 2);
 
-            $name = $parts[0];
+            $delim = (0 === strcasecmp($parts[0], 'cookie')) ? ';' : ',';
+            $method = (0 === strcasecmp($parts[0], 'set-cookie')) ? 'add' : 'set';
 
-            $delim = (0 === strcasecmp($name, 'cookie')) ? ';' : ',';
-            $method = (0 === strcasecmp($name, 'set-cookie')) ? 'add' : 'set';
-
-            $headers->{$method}($name, ('add' === $method) ? trim($parts[1]) : array_map('trim', explode($delim, $parts[1])));
+            $headers->{$method}($parts[0], ('add' === $method) ? trim($parts[1]) : array_map('trim', explode($delim, $parts[1])));
         }
 
         return $headers;
