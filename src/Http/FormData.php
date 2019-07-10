@@ -131,7 +131,9 @@ class FormData
             }
         }
 
-        //
+        extract($part);
+
+        $this->parts[] = compact('name', 'contents', 'headers', 'filename');
     }
 
     /**
