@@ -65,49 +65,7 @@ class FormData
         array_pop($parts);
         array_shift($parts);
 
-        $formData = new static;
-
-        foreach ($parts as $part) {
-            if (false === strpos($part, "\r\n\r\n")) {
-                throw new InvalidArgumentException(
-                    "Invalid \"multipart/form-data\" part: {$part}! "
-                    ."\"multipart/form-data\" part must be compliant with the \"RFC-2046\" standart."
-                );
-            }
-
-            [$headers, $contents] = explode("\r\n\r\n", $part, 2);
-
-            $headers = Headers::fromString($headers);
-
-            if (! $headers->has('Content-Disposition')) {
-                throw new InvalidArgumentException(
-                    "Invalid \"multipart/form-data\" part: {$part}! "
-                    ."\"multipart/form-data\" part must contain a \"Content-Disposition\" header."
-                );
-            }
-
-            preg_match('/name\=([^\s]+)/', $headers->getLine('Content-Disposition'), $matches);
-
-            if (! isset($matches[1]) || ! $name = trim($matches[1], '"')) {
-                throw new InvalidArgumentException(
-                    "Invalid \"multipart/form-data\" part: {$part}! "
-                    ."\"multipart/form-data\" part \"Content-Disposition\" header must contain a \"name\" directive."
-                );
-            }
-
-            preg_match('/filename\=([^\s]+)/', $headers->getLine('Content-Disposition'), $matches);
-
-            $formData->append([
-
-                'name'     => $name,
-                'headers'  => $headers,
-                'contents' => $contents,
-                'filename' => isset($matches[1]) ? trim($matches[1], '"') : null
-
-            ]);
-        }
-
-        return $formData;
+        //
     }
 
     /**
@@ -147,37 +105,7 @@ class FormData
             }
         }
 
-        if (! isset($part['headers'])) {
-            $part['headers'] = [];
-        }
-
-        if (! isset($part['filename'])) {
-            $part['filename'] = null;
-        }
-
-        extract($part);
-
-        $headers = ($headers instanceof Headers) ? $headers : new Headers($headers);
-        $contents = create_stream($contents);
-
-        if (! $headers->has('Content-Disposition')) {
-            $headers->set('Content-Disposition', ! $filename
-                ? sprintf('form-data; name="%s"', $name)
-                : sprintf('form-data; name="%s"; filename="%s"', $name, basename($filename))
-            );
-        }
-
-        if ($filename && ! $headers->has('Content-Type')) {
-            $headers->set('Content-Type', mime_content_type($filename));
-        }
-
-        if ($filename && $size = $contents->getSize() && ! $headers->has('Content-Length')) {
-            $headers->set('Content-Length', (string) $size);
-        }
-
-        $this->parts[] = compact('name', 'contents', 'headers', 'filename');
-
-        return $this;
+        //
     }
 
     /**
@@ -210,15 +138,7 @@ class FormData
     public function __toString()
     {
         try {
-            $str = '';
-
-            foreach ($this->parts as $part) {
-                $str .= sprintf("--%s\r\n%s\r\n%s\r\n", $this->boundary,
-                                                        $part['headers'],
-                                                        $part['contents']);
-            }
-
-            return $str.'--'.$this->boundary;
+            //
         } catch (Throwable $e) {
             trigger_error($e->getMessage(), \E_USER_ERROR);
         }
