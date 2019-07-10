@@ -137,6 +137,16 @@ class FormData
     }
 
     /**
+     * Get the array of multipart/form-data parts.
+     *
+     * @return array
+     */
+    public function getParts()
+    {
+        return $this->parts;
+    }
+
+    /**
      * Get the multipart/form-data boundary.
      *
      * @return string
