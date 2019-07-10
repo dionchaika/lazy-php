@@ -162,7 +162,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function fromString($request)
     {
-        trigger_error('Method "fromString" is not supported by server requests!', \E_USER_ERROR);
+        trigger_error('Method "fromString" is not supported by the server requests!', \E_USER_ERROR);
     }
 
     /**
@@ -285,11 +285,9 @@ class ServerRequest extends Request implements ServerRequestInterface
         if (false === $this->parsedBody) {
             $mediaType = $this->getMediaType();
 
-            if (isset($this->parsers[$mediaType])) {
-                $this->parsedBody = $this->filterParsedBody(
-                    call_user_func($this->parsers[$mediaType], $this->body)
-                );
-            }
+            $this->parsedBody = $this->filterParsedBody(
+                isset($this->parsers[$mediaType]) ? call_user_func($this->parsers[$mediaType], $this->body) : null
+            );
         }
 
         return $this->parsedBody;
