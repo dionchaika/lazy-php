@@ -1,6 +1,6 @@
 <?php
 
-namespace Lazy\Db\Connectors;
+namespace Lazy\Db\ConnectionFactories;
 
 use PDO;
 use PDOException;
@@ -8,9 +8,9 @@ use Lazy\Db\ConnectionInterface;
 use Lazy\Db\Connection as BaseConnection;
 
 /**
- * The MySQL database connector class.
+ * The MySQL database connection factory class.
  */
-class MySQLConnector implements ConnectorInterface
+class MySQLConnectionFactory implements ConnectionFactoryInterface
 {
     /**
      * The default config.
@@ -32,8 +32,8 @@ class MySQLConnector implements ConnectorInterface
     /**
      * {@inheritDoc}
      */
-    public function connect(array $config = []): ConnectionInterface
+    public function createConnection($config = []): Lazy\Db\ConnectionInterface
     {
-        return new BaseConnection($this->getPdo($config), $config);
+        //
     }
 }
