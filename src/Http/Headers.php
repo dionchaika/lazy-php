@@ -20,10 +20,8 @@ class Headers implements ArrayAccess
      */
     const DEFAULT_ENVIRONMENTS = [
 
-        'HTTP_HOST'            => 'localhost',
-        'HTTP_ACCEPT'          => 'text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8',
-        'HTTP_ACCEPT_CHARSET'  => 'utf-8, iso-8859-1;q=0.9, *;q=0.8',
-        'HTTP_ACCEPT_LANGUAGE' => 'en-US, en;q=0.9',
+        'HTTP_HOST'   => 'localhost',
+        'HTTP_ACCEPT' => 'text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8'
 
     ];
 
@@ -78,7 +76,7 @@ class Headers implements ArrayAccess
     {
         $environments = array_merge(static::DEFAULT_ENVIRONMENTS, $environments);
 
-        $headers = new static;
+        $headers = new static();
 
         foreach ($environments as $key => $value) {
             if ('CONTENT_TYPE' === $key) {
@@ -110,7 +108,7 @@ class Headers implements ArrayAccess
     {
         $lines = explode("\r\n", trim($headers, "\r\n"));
 
-        $headers = new static;
+        $headers = new static();
 
         foreach ($lines as $line) {
             if (false === strpos($line, ':')) {
