@@ -50,6 +50,21 @@ class Client implements ArrayAccess, ClientInterface
     }
 
     /**
+     * Get the client config option.
+     *
+     * @param  string|null  $name
+     * @return mixed|null
+     */
+    public function getConfig($name = null)
+    {
+        if (! $name) {
+            return $this->config;
+        }
+
+        return isset($this->config[$name]) ? $this->config[$name] : null;
+    }
+
+    /**
      * Set an array of client config options.
      *
      * @param  array  $config
@@ -69,33 +84,70 @@ class Client implements ArrayAccess, ClientInterface
     }
 
     /**
-     * Make an HTTP request.
+     * Get the client config option.
      *
-     * @param  string  $method
-     * @param  \Psr\Http\Message\UriInterface|string  $uri
-     * @param  array  $opts
-     * @return \Psr\Http\Message\ResponseInterface
-     *
-     * @throws \Psr\Http\Client\ClientExceptionInterface
+     * @param  string  $name
+     * @return mixed|null
      */
-    public function request($method = Method::GET, $uri = '/', $opts = []): ResponseInterface
+    public function __get($name)
     {
-        $request = new Request($method, $uri);
+        return $this->getConfig($name);
+    }
 
-        if (isset($opts['data'])) {
-            $request = $request->withBody(
-                create_stream($opts['data'])
-            );
-        } else if (isset($opts['xml'])) {
-            $request = $request->withXml($opts['xml']);
-        } else if (isset($opts['json'])) {
-            $request = $request->withJson($opts['json']);
-        } else if (isset($opts['form_data'])) {
-            $request = $request->withFormData($opts['form_data']);
-        } else if (isset($opts['urlencoded'])) {
-            $request = $request->withUrlencoded($opts['urlencoded']);
-        }
+    /**
+     * Set the client config option.
+     *
+     * @param  string  $name
+     * @param  mixed  $value
+     * @return void
+     */
+    public function __set($name, $value)
+    {
+        $this->setConfig([$name => $value]);
+    }
 
-        return $this->sendRequest($request);
+    /**
+     * Check is the client config option set.
+     *
+     * @param  string  $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->config[$offset]);
+    }
+
+    /**
+     * Get the client config option.
+     *
+     * @param  string  $offset
+     * @return mixed|null
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getConfig($offset);
+    }
+
+    /**
+     * Set the client config option.
+     *
+     * @param  string  $offset
+     * @param  mixed  $value
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->setConfig([$offset => $value]);
+    }
+
+    /**
+     * Unset the client config option.
+     *
+     * @param  string  $offset
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->config[$offset]);
     }
 }
