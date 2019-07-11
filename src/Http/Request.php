@@ -9,10 +9,7 @@ use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * The PSR-7 HTTP request message implementation class.
- *
- * @see https://www.php-fig.org/psr/psr-7/
- * @see https://tools.ietf.org/html/rfc7230
+ * {@inheritDoc}
  */
 class Request extends Message implements RequestInterface
 {
@@ -95,9 +92,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Get the request target.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getRequestTarget()
     {
@@ -121,11 +116,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Return an instance
-     * with the specified request target.
-     *
-     * @param  mixed  $requestTarget
-     * @return static
+     * {@inheritDoc}
      */
     public function withRequestTarget($requestTarget)
     {
@@ -137,9 +128,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Get the request method.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getMethod()
     {
@@ -147,13 +136,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Return an instance
-     * with the specified request method.
-     *
-     * @param  string  $method
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withMethod($method)
     {
@@ -165,26 +148,19 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Get the request URI.
-     *
-     * @return \Psr\Http\Message\UriInterface
+     * {@inheritDoc}
      */
     public function getUri()
     {
         if (! $this->uri) {
-            $this->uri = new Uri;
+            $this->uri = new Uri();
         }
 
         return $this->uri;
     }
 
     /**
-     * Return an instance
-     * with the specified request URI.
-     *
-     * @param  \Psr\Http\Message\UriInterface  $uri
-     * @param  bool  $preserveHost
-     * @return static
+     * {@inheritDoc}
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
@@ -205,7 +181,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the specified request cookie.
      *
-     * @param  Cookie  $cookie
+     * @param  \Lazy\Http\Cookie  $cookie
      * @return static
      */
     public function withCookie(Cookie $cookie)

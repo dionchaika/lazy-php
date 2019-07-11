@@ -8,7 +8,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
 
 /**
- * @inheritDoc
+ * {@inheritDoc}
  */
 abstract class Message implements ArrayAccess, MessageInterface
 {

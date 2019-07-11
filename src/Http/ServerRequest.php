@@ -7,11 +7,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * The PSR-7 HTTP request message
- * implementation class for server handling.
- *
- * @see https://www.php-fig.org/psr/psr-7/
- * @see https://tools.ietf.org/html/rfc7230
+ * {@inheritDoc}
  */
 class ServerRequest extends Request implements ServerRequestInterface
 {
@@ -97,8 +93,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
-                                $uri = null,
-                                $headers = null,
+                                $uri = '/',
+                                $headers = [],
                                 $body = null,
                                 array $serverParams = [],
                                 $protocolVersion = '1.1')
@@ -187,9 +183,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request server parameters.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getServerParams()
     {
@@ -197,9 +191,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request cookie parameters.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getCookieParams()
     {
@@ -207,11 +199,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Return an instance with
-     * the specified request cookie parameters.
-     *
-     * @param  array  $cookies
-     * @return static
+     * {@inheritDoc}
      */
     public function withCookieParams(array $cookies)
     {
@@ -223,9 +211,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request query parameters.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getQueryParams()
     {
@@ -233,11 +219,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Return an instance with
-     * the specified request query parameters.
-     *
-     * @param  array  $query
-     * @return static
+     * {@inheritDoc}
      */
     public function withQueryParams(array $query)
     {
@@ -249,9 +231,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request uploaded files.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getUploadedFiles()
     {
@@ -259,13 +239,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Return an instance
-     * with the specified request uploaded files.
-     *
-     * @param  array  $uploadedFiles
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
@@ -277,9 +251,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the request parsed body.
-     *
-     * @return array|object|null
+     * {@inheritDoc}
      */
     public function getParsedBody()
     {
@@ -295,13 +267,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Return an instance
-     * with the specified request parsed body.
-     *
-     * @param  array|object|null  $data
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withParsedBody($data)
     {
@@ -313,9 +279,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the array of request attributes.
-     *
-     * @return array
+     * {@inheritDoc}
      */
     public function getAttributes()
     {
@@ -323,11 +287,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Get the request attribute.
-     *
-     * @param  string  $name
-     * @param  mixed|null  $default
-     * @return mixed
+     * {@inheritDoc}
      */
     public function getAttribute($name, $default = null)
     {
@@ -335,12 +295,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Return an instance
-     * with the specified request attribute.
-     *
-     * @param  string  $name
-     * @param  mixed  $value
-     * @return static
+     * {@inheritDoc}
      */
     public function withAttribute($name, $value)
     {
@@ -352,11 +307,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     }
 
     /**
-     * Return an instance
-     * without the specified request attribute.
-     *
-     * @param  string  $name
-     * @return static
+     * {@inheritDoc}
      */
     public function withoutAttribute($name)
     {

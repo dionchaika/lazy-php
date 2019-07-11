@@ -9,10 +9,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * The PSR-7 HTTP response message implementation class.
- *
- * @see https://www.php-fig.org/psr/psr-7/
- * @see https://tools.ietf.org/html/rfc7230
+ * {@inheritDoc}
  */
 class Response extends Message implements ResponseInterface
 {
@@ -130,8 +127,8 @@ class Response extends Message implements ResponseInterface
      * @throws \InvalidArgumentException
      */
     public function __construct($code = StatusCode::OK,
-                                $reasonPhrase = '',
-                                $headers = null,
+                                $reasonPhrase = self::REASON_PHRASES[StatusCode::OK],
+                                $headers = [],
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
@@ -144,7 +141,7 @@ class Response extends Message implements ResponseInterface
         }
 
         if (! $headers) {
-            $this->headers = new Headers;
+            $this->headers = new Headers();
         } else {
             $this->headers = ($headers instanceof Headers)
                 ? $headers
@@ -170,9 +167,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Get the response status code.
-     *
-     * @return int
+     * {@inheritDoc}
      */
     public function getStatusCode()
     {
@@ -180,14 +175,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Return an instance
-     * with the specified response status.
-     *
-     * @param  int  $code
-     * @param  string  $reasonPhrase
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withStatus($code, $reasonPhrase = '')
     {
@@ -205,9 +193,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Get the response reason phrase.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getReasonPhrase()
     {
@@ -218,7 +204,7 @@ class Response extends Message implements ResponseInterface
      * Return an instance
      * with the specified response cookie.
      *
-     * @param  Cookie  $cookie
+     * @param  \Lazy\Http\Cookie  $cookie
      * @return static
      */
     public function withCookie(Cookie $cookie)
@@ -373,7 +359,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response an informational response.
+     * Check is the response Informational response.
      *
      * @return bool
      */
@@ -383,7 +369,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response a successful response.
+     * Check is the response Successful response.
      *
      * @return bool
      */
@@ -393,7 +379,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response a redirection response.
+     * Check is the response Redirection response.
      *
      * @return bool
      */
@@ -413,7 +399,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response a server error response.
+     * Check is the response Server Error response.
      *
      * @return bool
      */
