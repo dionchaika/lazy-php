@@ -72,6 +72,18 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * Run a select statement and return the first selected row.
+     *
+     * @param  string  $sql
+     * @param  array|mixed  $bindings
+     * @return object
+     */
+    public function selectFirst($sql, $bindings = [])
+    {
+        return array_shift($this->select($sql, $bindings));
+    }
+
+    /**
      * Run an insert statement.
      *
      * @param  string  $sql
@@ -142,7 +154,7 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Execute statement and return the number of affected raws.
+     * Execute statement and return the number of affected rows.
      *
      * @param  string  $sql
      * @param  array|mixed  $bindings
