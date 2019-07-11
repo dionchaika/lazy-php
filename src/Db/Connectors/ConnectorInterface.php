@@ -1,10 +1,10 @@
 <?php
 
-namespace Lazy\Db\ConnectionFactories;
+namespace Lazy\Db\Connectors;
 
 use Lazy\Db\ConnectionInterface;
 
-interface ConnectionFactoryInterface
+interface ConnectorInterface
 {
     /**
      * Create a new database connection.
