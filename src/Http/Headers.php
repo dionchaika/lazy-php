@@ -318,7 +318,7 @@ class Headers implements ArrayAccess
      */
     public function __get($name)
     {
-        return $this->getLine($name);
+        return $this->getLine(str_replace('_', '-', $name));
     }
 
     /**
@@ -332,7 +332,7 @@ class Headers implements ArrayAccess
      */
     public function __set($name, $value)
     {
-        $this->add($name, $value);
+        $this->add(str_replace('_', '-', $name), $value);
     }
 
     /**

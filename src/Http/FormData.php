@@ -161,7 +161,8 @@ class FormData
 
         if ($filename && ! $headers->has('Content-Type')) {
             try {
-                $headers->set('Content-Type', mime_content_type($filename));
+                $mimeType = mime_content_type($filename);
+                $headers->set('Content-Type', $mimeType);
             } catch (Throwable $e) {
                 $headers->set('Content-Type', 'application/octet-stream');
             }
