@@ -9,7 +9,7 @@ use Lazy\Db\Connection as BaseConnection;
 /**
  * The MySQL database connector class.
  */
-class MySQLConnector
+class MySQLConnector extends BaseConnector implements ConnectorInterface
 {
     /**
      * The default config options.
