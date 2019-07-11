@@ -46,6 +46,16 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * Get the database PDO connection.
+     *
+     * @return \PDO
+     */
+    public function getPdo(): PDO
+    {
+        return $this->pdo;
+    }
+
+    /**
      * Run a select statement.
      *
      * @param  string  $sql
