@@ -108,7 +108,7 @@ class Headers implements ArrayAccess
      */
     public static function fromString($headers)
     {
-        $lines = explode("\r\n", trim($headers, "\r\n"));
+        $lines = explode("\r\n", $headers);
 
         $headers = new static;
 
