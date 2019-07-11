@@ -21,6 +21,21 @@ interface ConnectionInterface
     public function getPdo(): PDO;
 
     /**
+     * Get the array of database connection log.
+     *
+     * @return array
+     */
+    public function getLog();
+
+    /**
+     * Get the database connection config option.
+     *
+     * @param  string|null  $name
+     * @return mixed|null
+     */
+    public function getConfig($name = null);
+
+    /**
      * Execute a select statement.
      *
      * @param  string  $sql
