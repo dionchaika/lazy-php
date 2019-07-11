@@ -182,6 +182,24 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * Bind values to their parameters in the statement.
+     *
+     * @param  \PDOStatement  $statement
+     * @param  mixed|array  $bindings
+     * @return void
+     */
+    protected function bindValues(PDOStatement $statement, $bindings = [])
+    {
+        $bindings = (array) $bindings;
+
+        foreach ($bindings as $key => $value) {
+            $statement->bindValue(is_int($key) ? $key + 1 : $key,
+                                  $value,
+                                  is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+    }
+
+    /**
      * Execute a statement.
      *
      * @param  string  $sql
