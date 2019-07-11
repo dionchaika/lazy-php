@@ -25,6 +25,10 @@ class Connection implements ConnectionInterface
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
+
+        $this->pdo->setAttribute(
+            PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ
+        );
     }
 
     /**
