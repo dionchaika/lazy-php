@@ -69,7 +69,7 @@ interface ConnectionInterface
      * @param  mixed|array  $bindings
      * @return mixed
      */
-    public function selectRandom($sql, $bindings = []);
+    public function selectRand($sql, $bindings = []);
 
     /**
      * Execute an insert statement.
@@ -85,7 +85,7 @@ interface ConnectionInterface
      *
      * @param  string  $sql
      * @param  mixed|array  $bindings
-     * @return int
+     * @return int|string
      */
     public function insertGetId($sql, $bindings = []);
 
