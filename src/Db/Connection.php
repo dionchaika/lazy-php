@@ -49,6 +49,22 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * The database connection destructor.
+     */
+    public function __destruct()
+    {
+        $this->close();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function close()
+    {
+        $this->pdo = null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getPdo(): PDO
