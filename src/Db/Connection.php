@@ -73,13 +73,25 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * Clear the array of database connection statement log.
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function clearLog()
     {
         $this->statementLog = [];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function bindParams(PDOStatement $statement, $bindings = [])
+    {
+        $bindings = (array) $bindings;
+
+        foreach ($bindings as $key => $value) {
+            $statement->bindParam(
+                is_int($key) ? $key + 1 : $key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
+            );
+        }
     }
 
     /**
