@@ -107,6 +107,19 @@ class Client implements ArrayAccess, ClientInterface
     }
 
     /**
+     * Send an HTTP request and return an HTTP response.
+     *
+     * @param  \Psr\Http\Message\RequestInterface  $request
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Psr\Http\Client\ClientExceptionInterface
+     */
+    public function __invoke(RequestInterface $request): ResponseInterface
+    {
+        return $this->sendRequest($request);
+    }
+
+    /**
      * Check is the client config option set.
      *
      * @param  string  $offset
