@@ -76,7 +76,7 @@ class Connection implements ConnectionInterface
      *
      * @param  string  $sql
      * @param  array|mixed  $bindings
-     * @return object
+     * @return mixed
      */
     public function selectFirst($sql, $bindings = [])
     {
