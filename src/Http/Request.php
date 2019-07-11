@@ -64,11 +64,15 @@ class Request extends Message implements RequestInterface
                 : Uri::fromString($uri);
         }
 
-        $this->headers = ($headers instanceof Headers)
-            ? $headers
-            : new Headers($headers);
+        if (! $headers) {
+            $this->headers = new Headers;
+        } else {
+            $this->headers = ($headers instanceof Headers)
+                ? $headers
+                : new Headers($headers);
+        }
 
-        if ('1.1' === $this->protocolVersion && ! $this->hasHeader('Host')) {
+        if (! $this->hasHeader('Host')) {
             $this->setHostHeaderFromUri($this->uri);
         }
 
@@ -188,13 +192,11 @@ class Request extends Message implements RequestInterface
 
         $new->uri = $uri;
 
-        if ('1.1' === $this->protocolVersion) {
-            if ($preserveHost && $new->hasHeader('Host')) {
-                return $new;
-            }
-
-            $new->setHostHeaderFromUri($new->uri);
+        if ($preserveHost && $new->hasHeader('Host')) {
+            return $new;
         }
+
+        $new->setHostHeaderFromUri($new->uri);
 
         return $new;
     }

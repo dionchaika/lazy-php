@@ -143,9 +143,13 @@ class Response extends Message implements ResponseInterface
             $this->setReasonPhraseFromStatusCode($this->statusCode);
         }
 
-        $this->headers = ($headers instanceof Headers)
-            ? $headers
-            : new Headers($headers);
+        if (! $headers) {
+            $this->headers = new Headers;
+        } else {
+            $this->headers = ($headers instanceof Headers)
+                ? $headers
+                : new Headers($headers);
+        }
 
         $this->body = create_stream($body);
         $this->protocolVersion = $protocolVersion;
