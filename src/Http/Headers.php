@@ -20,7 +20,10 @@ class Headers implements ArrayAccess
      */
     const DEFAULT_ENVIRONMENTS = [
 
-        'HTTP_HOST' => 'localhost'
+        'HTTP_HOST'            => 'localhost',
+        'HTTP_ACCEPT'          => 'text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8',
+        'HTTP_ACCEPT_CHARSET'  => 'utf-8, iso-8859-1;q=0.5, *;q=0.1',
+        'HTTP_ACCEPT_LANGUAGE' => 'en-US, en;q=0.5',
 
     ];
 
@@ -56,6 +59,10 @@ class Headers implements ArrayAccess
      */
     public static function fromGlobals()
     {
+        if (function_exists('getallheaders')) {
+            return new static(getallheaders());
+        }
+
         return static::fromEnvironments($_SERVER);
     }
 
