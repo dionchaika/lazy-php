@@ -26,28 +26,22 @@ class Connection implements ConnectionInterface
     protected $config = [];
 
     /**
-     * The database PDO connection fetch mode.
+     * The array of database connection statement log.
      *
-     * @var int
+     * @var array
      */
-    protected $fetchMode = PDO::FETCH_OBJ;
+    protected $statementLog = [];
 
     /**
      * The database connection constructor.
      *
      * @param  \PDO  $pdo  The database PDO connection.
      * @param  array  $config  The array of database connection config.
-     * @param  int  $fetchMode  The database PDO connection fetch mode.
      */
-    public function __construct(PDO $pdo, array $config = [], $fetchMode = PDO::FETCH_OBJ)
+    public function __construct(PDO $pdo, array $config = [])
     {
         $this->pdo = $pdo;
         $this->config = $config;
-        $this->fetchMode = $fetchMode;
-
-        $this->pdo->setAttribute(
-            PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION
-        );
     }
 
     /**
@@ -76,5 +70,30 @@ class Connection implements ConnectionInterface
         }
 
         return isset($this->config[$name]) ? $this->config[$name] : null;
+    }
+
+    /**
+     * Clear the array of database connection statement log.
+     *
+     * @return void
+     */
+    public function clearLog()
+    {
+        $this->statementLog = [];
+    }
+
+    /**
+     * Log statement.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return void
+     */
+    protected function logStatement($sql, $bindings = [])
+    {
+        $time = microtime(true);
+        $bindings = (array) $bindings;
+
+        $this->statementLog[] = compact('time', 'sql', 'bindings');
     }
 }
