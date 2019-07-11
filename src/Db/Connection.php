@@ -80,7 +80,9 @@ class Connection implements ConnectionInterface
      */
     public function selectFirst($sql, $bindings = [])
     {
-        return array_shift($this->select($sql, $bindings));
+        $rows = $this->select($sql, $bindings);
+
+        return array_shift($rows);
     }
 
     /**
