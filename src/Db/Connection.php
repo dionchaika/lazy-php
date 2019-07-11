@@ -59,10 +59,10 @@ class Connection implements ConnectionInterface
      * Run a select statement.
      *
      * @param  string  $sql
-     * @param  array  $bindings
+     * @param  array|mixed  $bindings
      * @return array
      */
-    public function select($sql, array $bindings = [])
+    public function select($sql, $bindings = [])
     {
         return $this->statement($sql, $bindings)->fetchAll();
     }
@@ -71,10 +71,10 @@ class Connection implements ConnectionInterface
      * Run an insert statement.
      *
      * @param  string  $sql
-     * @param  array  $bindings
+     * @param  array|mixed  $bindings
      * @return int
      */
-    public function insert($sql, array $bindings = [])
+    public function insert($sql, $bindings = [])
     {
         return $this->affectedStatement($sql, $bindings);
     }
@@ -83,10 +83,10 @@ class Connection implements ConnectionInterface
      * Run an insert statement and return the last inserted row ID.
      *
      * @param  string  $sql
-     * @param  array  $bindings
+     * @param  array|mixed  $bindings
      * @return int|string
      */
-    public function insertGetId($sql, array $bindings = [])
+    public function insertGetId($sql, $bindings = [])
     {
         $this->insert($sql, $bindings);
 
@@ -111,7 +111,7 @@ class Connection implements ConnectionInterface
      * Run a delete statement.
      *
      * @param  string  $sql
-     * @param  array  $bindings
+     * @param  array|mixed  $bindings
      * @return int
      */
     public function delete($sql, $bindings = [])
@@ -123,10 +123,10 @@ class Connection implements ConnectionInterface
      * Execute statement.
      *
      * @param  string  $sql
-     * @param  array  $bindings
+     * @param  array|mixed  $bindings
      * @return \PDOStatement
      */
-    public function statement($sql, array $bindings = []): PDOStatement
+    public function statement($sql, $bindings = []): PDOStatement
     {
         $statement = $this->pdo->prepare($sql);
 
@@ -141,10 +141,10 @@ class Connection implements ConnectionInterface
      * Execute statement and return the number of affected raws.
      *
      * @param  string  $sql
-     * @param  array  $bindings
+     * @param  array|mixed  $bindings
      * @return int
      */
-    public function affectedStatement($sql, array $bindings = [])
+    public function affectedStatement($sql, $bindings = [])
     {
         return $this->statement($sql, $bindings)->rowCount();
     }
@@ -153,11 +153,13 @@ class Connection implements ConnectionInterface
      * Bind values to their parameters in the statement.
      *
      * @param  \PDOStatement  $statement
-     * @param  array  $bindings
+     * @param  array|mixed  $bindings
      * @return void
      */
-    public function bindParams(PDOStatement $statement, array $bindings = [])
+    public function bindParams(PDOStatement $statement, $bindings = [])
     {
+        $bindings = (array) $bindings;
+
         foreach ($bindings as $key => $value) {
             $statement->bindValue(is_int($key) ? $key + 1 : $key,
                                   $value,
