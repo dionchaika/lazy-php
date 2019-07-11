@@ -26,13 +26,6 @@ class Connection implements ConnectionInterface
     protected $config = [];
 
     /**
-     * The array of database connection statement log.
-     *
-     * @var array
-     */
-    protected $statementLog = [];
-
-    /**
      * The database connection constructor.
      *
      * @param  \PDO  $pdo  The database PDO connection.
@@ -75,14 +68,6 @@ class Connection implements ConnectionInterface
     /**
      * {@inheritDoc}
      */
-    public function clearLog()
-    {
-        $this->statementLog = [];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function bindParams(PDOStatement $statement, $bindings = [])
     {
         $bindings = (array) $bindings;
@@ -92,20 +77,5 @@ class Connection implements ConnectionInterface
                 is_int($key) ? $key + 1 : $key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
             );
         }
-    }
-
-    /**
-     * Log statement.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return void
-     */
-    protected function logStatement($sql, $bindings = [])
-    {
-        $time = microtime(true);
-        $bindings = (array) $bindings;
-
-        $this->statementLog[] = compact('time', 'sql', 'bindings');
     }
 }
