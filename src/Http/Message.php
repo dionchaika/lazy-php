@@ -8,7 +8,14 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
 
 /**
+<<<<<<< HEAD
  * {@inheritDoc}
+=======
+ * The PSR-7 HTTP message implementation class.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ * @see https://tools.ietf.org/html/rfc7230
+>>>>>>> parent of 16896a7... Some fixes
  */
 abstract class Message implements ArrayAccess, MessageInterface
 {
@@ -34,7 +41,9 @@ abstract class Message implements ArrayAccess, MessageInterface
     protected $protocolVersion = '1.1';
 
     /**
-     * {@inheritDoc}
+     * Get the message protocol version.
+     *
+     * @return string
      */
     public function getProtocolVersion()
     {
@@ -42,7 +51,11 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Return an instance
+     * with the specified message protocol version.
+     *
+     * @param  string  $version
+     * @return static
      */
     public function withProtocolVersion($version)
     {
@@ -54,7 +67,9 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Get the array of message headers.
+     *
+     * @return array
      */
     public function getHeaders()
     {
@@ -72,7 +87,10 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Check is the message header exists.
+     *
+     * @param  string  $name
+     * @return bool
      */
     public function hasHeader($name)
     {
@@ -80,7 +98,10 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Get the message header.
+     *
+     * @param  string  $name
+     * @return string[]
      */
     public function getHeader($name)
     {
@@ -88,7 +109,10 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Get the message header line.
+     *
+     * @param  string  $name
+     * @return string
      */
     public function getHeaderLine($name)
     {
@@ -96,7 +120,14 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Return an instance
+     * with the specified message header.
+     *
+     * @param  string  $name
+     * @param  string|string[]  $value
+     * @return static
+     *
+     * @throws \InvalidArgumentException
      */
     public function withHeader($name, $value)
     {
@@ -108,7 +139,15 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Return an instance
+     * with the specified message
+     * header appended with the given value.
+     *
+     * @param  string  $name
+     * @param  string|string[]  $value
+     * @return static
+     *
+     * @throws \InvalidArgumentException
      */
     public function withAddedHeader($name, $value)
     {
@@ -120,7 +159,11 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Return an instance
+     * without the specified message header.
+     *
+     * @param  string  $name
+     * @return static
      */
     public function withoutHeader($name)
     {
@@ -132,7 +175,11 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Get the message body.
+     *
+     * @return \Psr\Http\Message\StreamInterface
+     *
+     * @throws \InvalidArgumentException
      */
     public function getBody()
     {
@@ -144,7 +191,13 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Return an instance
+     * with the specified message body.
+     *
+     * @param  \Psr\Http\Message\StreamInterface  $body
+     * @return static
+     *
+     * @throws \InvalidArgumentException
      */
     public function withBody(StreamInterface $body)
     {

@@ -46,15 +46,15 @@ class Request extends Message implements RequestInterface
      * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
-                                $uri = '/',
-                                $headers = [],
+                                $uri = null,
+                                $headers = null,
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
         $this->method = $this->filterMethod($method);
 
         if (! $uri) {
-            $this->uri = new Uri();
+            $this->uri = new Uri;
         } else {
             $this->uri = ($uri instanceof UriInterface)
                 ? $uri
@@ -62,7 +62,7 @@ class Request extends Message implements RequestInterface
         }
 
         if (! $headers) {
-            $this->headers = new Headers();
+            $this->headers = new Headers;
         } else {
             $this->headers = ($headers instanceof Headers)
                 ? $headers
