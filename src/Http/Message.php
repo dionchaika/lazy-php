@@ -62,7 +62,9 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Get the message header collection.
+     *
+     * @return \Lazy\Http\Headers
      */
     public function getHeaderCollection()
     {
