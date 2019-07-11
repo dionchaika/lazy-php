@@ -31,7 +31,7 @@ interface ConnectionInterface
      * Get the database connection config option.
      *
      * @param  string|null  $name
-     * @return mixed|null
+     * @return array|mixed|null
      */
     public function getConfig($name = null);
 
