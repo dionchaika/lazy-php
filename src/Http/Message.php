@@ -8,14 +8,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
 
 /**
-<<<<<<< HEAD
  * {@inheritDoc}
-=======
- * The PSR-7 HTTP message implementation class.
- *
- * @see https://www.php-fig.org/psr/psr-7/
- * @see https://tools.ietf.org/html/rfc7230
->>>>>>> parent of 16896a7... Some fixes
  */
 abstract class Message implements ArrayAccess, MessageInterface
 {
