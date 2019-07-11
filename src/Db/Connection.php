@@ -68,12 +68,12 @@ class Connection implements ConnectionInterface
     /**
      * {@inheritDoc}
      */
-    public function bindParams(PDOStatement $statement, $bindings = [])
+    public function bindValues(PDOStatement $statement, $bindings = [])
     {
         $bindings = (array) $bindings;
 
         foreach ($bindings as $key => $value) {
-            $statement->bindParam(
+            $statement->bindValue(
                 is_int($key) ? $key + 1 : $key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
             );
         }

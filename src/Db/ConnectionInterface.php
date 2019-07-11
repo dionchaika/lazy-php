@@ -3,6 +3,7 @@
 namespace Lazy\Db;
 
 use PDO;
+use PDOStatement;
 
 interface ConnectionInterface
 {
@@ -21,14 +22,7 @@ interface ConnectionInterface
     public function getPdo(): PDO;
 
     /**
-     * Get the array of database connection log.
-     *
-     * @return array
-     */
-    public function getLog();
-
-    /**
-     * Get the database connection config option.
+     * Get the database connection config.
      *
      * @param  string|null  $name
      * @return array|mixed|null
@@ -36,74 +30,11 @@ interface ConnectionInterface
     public function getConfig($name = null);
 
     /**
-     * Execute a select statement.
+     * Bind values to their parameters in the statement.
      *
-     * @param  string  $sql
+     * @param  \PDOStatement  $statement
      * @param  mixed|array  $bindings
-     * @return array
+     * @return void
      */
-    public function select($sql, $bindings = []);
-
-    /**
-     * Execute a select statement and return the first selected row.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return mixed
-     */
-    public function selectFirst($sql, $bindings = []);
-
-    /**
-     * Execute a select statement and return the last selected row.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return mixed
-     */
-    public function selectLast($sql, $bindings = []);
-
-    /**
-     * Execute a select statement and return the random selected row.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return mixed
-     */
-    public function selectRand($sql, $bindings = []);
-
-    /**
-     * Execute an insert statement.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return int
-     */
-    public function insert($sql, $bindings = []);
-
-    /**
-     * Execute an insert statement and return the last inserted row ID.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return int|string
-     */
-    public function insertGetId($sql, $bindings = []);
-
-    /**
-     * Execute an update statement.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return int
-     */
-    public function update($sql, $bindings = []);
-
-    /**
-     * Execute a delete statement.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return int
-     */
-    public function delete($sql, $bindings = []);
+    public function bindValues(PDOStatement $statement, $bindings = []);
 }
