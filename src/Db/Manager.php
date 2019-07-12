@@ -10,9 +10,9 @@ use Lazy\Db\Connectors\MySQLConnector;
 class Manager
 {
     /**
-     * The global instance.
+     * The globally available database manager instance.
      *
-     * @var \Lazy\Db\Database
+     * @var \Lazy\Db\Manager
      */
     protected static $instance;
 
@@ -49,5 +49,15 @@ class Manager
     public function __construct(array $config = [])
     {
         $this->config = $config;
+    }
+
+    /**
+     * Set the database manager globally available.
+     *
+     * @return void
+     */
+    public function setAsGlobal()
+    {
+        static::$instance = $this;
     }
 }
