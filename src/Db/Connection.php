@@ -92,7 +92,10 @@ class Connection implements ConnectionInterface
     {
         if (1 === $this->savepointNumber) {
             $this->pdo->rollBack();
-        } else if ($this->isSupportsSavepoints()) {
+        } else if (
+            1 < $this->savepointNumber &&
+            $this->isSupportsSavepoints()
+        ) {
             $this->pdo->exec(
                 $this->getSqlForSavepointRollBack('savepoint'.$this->savepointNumber)
             );
@@ -108,7 +111,10 @@ class Connection implements ConnectionInterface
     {
         if (0 === $this->savepointNumber) {
             $this->pdo->beginTransaction();
-        } else if ($this->isSupportsSavepoints()) {
+        } else if (
+            1 < $this->savepointNumber &&
+            $this->isSupportsSavepoints()
+        ) {
             $this->pdo->exec(
                 $this->getSqlForSavepoint('savepoint'.$this->savepointNumber)
             );
