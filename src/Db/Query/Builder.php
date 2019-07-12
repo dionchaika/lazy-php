@@ -35,8 +35,7 @@ class Builder
         'where'   => [],
         'groupBy' => [],
         'having'  => [],
-        'orderBy' => [],
-        'union'   => []
+        'orderBy' => []
 
     ];
 
