@@ -94,7 +94,7 @@ class Connection implements ConnectionInterface
             $this->pdo->rollBack();
         } else if ($this->isSupportsSavepoints()) {
             $this->pdo->exec(
-                $this->getSqlForSavepointRollBack('savepoint'.($this->savepointNumber - 1))
+                $this->getSqlForSavepointRollBack('savepoint'.$this->savepointNumber)
             );
         }
 
@@ -110,7 +110,7 @@ class Connection implements ConnectionInterface
             $this->pdo->beginTransaction();
         } else if ($this->isSupportsSavepoints()) {
             $this->pdo->exec(
-                $this->getSqlForSavepoint('savepoint'.($this->savepointNumber - 1))
+                $this->getSqlForSavepoint('savepoint'.$this->savepointNumber)
             );
         }
 
