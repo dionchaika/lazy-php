@@ -27,11 +27,11 @@ class Connection implements ConnectionInterface
     protected $config = [];
 
     /**
-     * The number of current transaction savepoint.
+     * The current database connection transaction level.
      *
      * @var int
      */
-    protected $savepointNumber = 0;
+    protected $transactionLevel = 0;
 
     /**
      * The database connection constructor.
@@ -78,11 +78,11 @@ class Connection implements ConnectionInterface
      */
     public function commit()
     {
-        if (1 === $this->savepointNumber) {
+        if (1 === $this->transactionLevel) {
             $this->pdo->commit();
         }
 
-        $this->savepointNumber = max(0, $this->savepointNumber - 1);
+        $this->transactionLevel = max(0, $this->transactionLevel - 1);
     }
 
     /**
@@ -90,11 +90,17 @@ class Connection implements ConnectionInterface
      */
     public function rollBack()
     {
-        if (1 === $this->savepointNumber) {
+        if (1 === $this->transactionLevel) {
             $this->pdo->rollBack();
         } else if ($this->isSupportsSavepoints()) {
+            $toSavepoint = $this->transactionLevel - 1;
+
+            if (0 >= $toSavepoint) {
+                return;
+            }
+
             $this->pdo->exec(
-                $this->getSqlForSavepointRollBack('savepoint'.$this->savepointNumber)
+                $this->getSqlForSavepointRollBack('savepoint'.$toSavepoint)
             );
         }
 
@@ -106,15 +112,15 @@ class Connection implements ConnectionInterface
      */
     public function beginTransaction()
     {
-        if (0 === $this->savepointNumber) {
+        if (0 === $this->transactionLevel) {
             $this->pdo->beginTransaction();
         } else if ($this->isSupportsSavepoints()) {
             $this->pdo->exec(
-                $this->getSqlForSavepoint('savepoint'.$this->savepointNumber)
+                $this->getSqlForSavepoint('savepoint'.$this->transactionLevel)
             );
         }
 
-        $this->savepointNumber++;
+        $this->transactionLevel++;
     }
 
     /**
