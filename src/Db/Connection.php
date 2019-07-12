@@ -132,13 +132,45 @@ class Connection implements ConnectionInterface
 
         try {
 
-            $result = call_user_func($callback, $this);
+            $result = $callback($this);
 
             $this->commit();
 
             return $result;
 
         } catch (Throwable $e) { $this->rollBack(); throw $e; }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function select($sql, $bindings = [])
+    {
+        //
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function insert($sql, $bindings = [])
+    {
+        //
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function update($sql, $bindings = [])
+    {
+        //
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function delete($sql, $bindings = [])
+    {
+        //
     }
 
     /**
