@@ -30,7 +30,7 @@ interface ConnectionInterface
     public function getConfig($name = null);
 
     /**
-     * Bind values to their parameters in the statement.
+     * Bind values to parameters in the statement.
      *
      * @param  \PDOStatement  $statement
      * @param  mixed|array  $bindings

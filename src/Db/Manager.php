@@ -10,21 +10,36 @@ use Lazy\Db\Connectors\MySQLConnector;
 class Manager
 {
     /**
-     * The globally available database manager instance.
+     * The default config.
+     */
+    const DEFAULT_CONFIG = [
+
+        'default' => [
+
+            'driver'      => 'mysql',
+            'user'        => null,
+            'password'    => null,
+            'host'        => 'localhost',
+            'port'        => 3306,
+            'unix_socket' => null,
+            'database'    => null,
+            'charset'     => 'utf8mb4',
+            'collation'   => 'utf8mb4_general_ci'
+
+        ]
+
+    ];
+
+    /**
+     * The globally available
+     * database manager instance.
      *
      * @var \Lazy\Db\Manager
      */
     protected static $instance;
 
     /**
-     * The array of database manager config.
-     *
-     * @var array
-     */
-    protected $config = [];
-
-    /**
-     * The array of database manager connectors.
+     * The array of database connectors.
      *
      * @var array
      */
@@ -35,21 +50,11 @@ class Manager
     ];
 
     /**
-     * The array of database manager connections.
+     * The array of database connections.
      *
      * @var array
      */
     protected $connections = [];
-
-    /**
-     * The database manager constructor.
-     *
-     * @param  array  $config  The array of database manager config.
-     */
-    public function __construct(array $config = [])
-    {
-        $this->config = $config;
-    }
 
     /**
      * Set the database manager globally available.
@@ -59,5 +64,18 @@ class Manager
     public function setAsGlobal()
     {
         static::$instance = $this;
+    }
+
+    /**
+     * Add a new database connector.
+     *
+     * @param  string  $driver
+     * @param  string  $class
+     *
+     * @return void
+     */
+    public function addConnector($driver, $class)
+    {
+        $this->connectors[$driver] = $class;
     }
 }

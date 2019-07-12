@@ -20,9 +20,9 @@ class MySQLConnector implements ConnectorInterface
 
         'name'        => 'default',
         'driver'      => 'mysql',
-        'user'        => 'root',
+        'user'        => null,
         'password'    => null,
-        'host'        => '127.0.0.1',
+        'host'        => 'localhost',
         'port'        => 3306,
         'unix_socket' => null,
         'database'    => null,
