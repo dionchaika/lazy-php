@@ -3,8 +3,8 @@
 namespace Lazy\Db;
 
 use PDO;
-use PDOStatement;
 use Closure;
+use PDOStatement;
 
 interface ConnectionInterface
 {
