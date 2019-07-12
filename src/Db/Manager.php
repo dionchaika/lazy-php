@@ -2,10 +2,7 @@
 
 namespace Lazy\Db;
 
-use Exception;
-use InvalidArgumentException;
 use Lazy\Db\Connectors\MySQLConnector;
-use Lazy\Db\Connectors\ConnectorInterface;
 
 /**
  * The database manager class.
