@@ -66,7 +66,7 @@ interface ConnectionInterface
      * @param  mixed|array  $bindings
      * @return array
      */
-    public function select($sql, $bindings = []);
+    //public function select($sql, $bindings = []);
 
     /**
      * Execute an insert statement.
@@ -75,7 +75,7 @@ interface ConnectionInterface
      * @param  mixed|array  $bindings
      * @return bool
      */
-    public function insert($sql, $bindings = []);
+    //public function insert($sql, $bindings = []);
 
     /**
      * Execute an update statement.
@@ -84,7 +84,7 @@ interface ConnectionInterface
      * @param  mixed|array  $bindings
      * @return int
      */
-    public function update($sql, $bindings = []);
+    //public function update($sql, $bindings = []);
 
     /**
      * Execute a delete statement.
@@ -93,7 +93,7 @@ interface ConnectionInterface
      * @param  mixed|array  $bindings
      * @return int
      */
-    public function delete($sql, $bindings = []);
+    //public function delete($sql, $bindings = []);
 
     /**
      * Bind values to parameters in the statement.

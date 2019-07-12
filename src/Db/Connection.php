@@ -93,18 +93,18 @@ class Connection implements ConnectionInterface
         if (1 === $this->transactionLevel) {
             $this->pdo->rollBack();
         } else if ($this->isSupportsSavepoints()) {
-            $toSavepoint = $this->transactionLevel - 1;
+            $savepoint = $this->transactionLevel - 1;
 
-            if (0 >= $toSavepoint) {
+            if (0 >= $savepoint) {
                 return;
             }
 
             $this->pdo->exec(
-                $this->getSqlForSavepointRollBack('savepoint'.$toSavepoint)
+                $this->getSqlForSavepointRollBack('savepoint'.$savepoint)
             );
         }
 
-        $this->savepointNumber = max(0, $this->savepointNumber - 1);
+        $this->transactionLevel = max(0, $this->transactionLevel - 1);
     }
 
     /**
