@@ -5,7 +5,7 @@ namespace Lazy\Db\Connectors;
 use PDO;
 use PDOException;
 use Lazy\Db\ConnectionInterface;
-use Lazy\Db\Connection as DefaultConnection;
+use Lazy\Db\Connection as BaseConnection;
 
 /**
  * The MySQL database connector class.

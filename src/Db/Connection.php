@@ -7,7 +7,7 @@ use PDOException;
 use PDOStatement;
 
 /**
- * The database connection base class.
+ * The base database connection class.
  */
 class Connection implements ConnectionInterface
 {
