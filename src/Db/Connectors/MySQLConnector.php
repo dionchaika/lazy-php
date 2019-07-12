@@ -124,16 +124,16 @@ class MySQLConnector implements ConnectorInterface
      */
     protected function getUnixSocketDsn(array $config)
     {
-        $dsn = 'mysql:unix_socket='.$config['unix_socket'];
+        $dsn = 'mysql:';
 
         if (! empty($config['database'])) {
-            $dsn .= ';dbname='.$config['database'];
+            $dsn .= 'dbname='.$config['database'];
         }
 
         if (! empty($config['charset'])) {
             $dsn .= ';charset='.$config['charset'];
         }
 
-        return $dsn;
+        return $dsn.';unix_socket='.$config['unix_socket'];
     }
 }
