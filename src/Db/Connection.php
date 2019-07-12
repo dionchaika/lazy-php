@@ -72,7 +72,7 @@ class Connection implements ConnectionInterface
      */
     public function select($sql, $bindings = [])
     {
-        return $this->statement($sql, $bindings)->fetchAll();
+        return $this->execute($sql, $bindings)->fetchAll();
     }
 
     /**
@@ -80,7 +80,7 @@ class Connection implements ConnectionInterface
      */
     public function insert($sql, $bindings = [])
     {
-        return $this->affectingStatement($sql, $bindings);
+        return $this->execute($sql, $bindings)->rowCount();
     }
 
     /**
@@ -88,7 +88,7 @@ class Connection implements ConnectionInterface
      */
     public function update($sql, $bindings = [])
     {
-        return $this->affectingStatement($sql, $bindings);
+        return $this->execute($sql, $bindings)->rowCount();
     }
 
     /**
@@ -96,21 +96,37 @@ class Connection implements ConnectionInterface
      */
     public function delete($sql, $bindings = [])
     {
-        return $this->affectingStatement($sql, $bindings);
+        return $this->execute($sql, $bindings)->rowCount();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function execute($sql, $bindings = [])
+    public function selectGetFirst($sql, $bindings = [])
     {
-        return $this->executeCallback($sql, $bindings, function ($sql, $bindings) {
-            $statement = $this->pdo->prepare($sql);
+        $rows = $this->select($sql, $bindings);
 
-            $this->bindValues($statement, $bindings);
+        return array_shift($rows);
+    }
 
-            return $statement->execute();
-        });
+    /**
+     * {@inheritDoc}
+     */
+    public function selectGetLast($sql, $bindings = [])
+    {
+        $rows = $this->select($sql, $bindings);
+
+        return array_pop($rows);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function selectGetRand($sql, $bindings = [])
+    {
+        $rows = $this->select($sql, $bindings);
+
+        return $rows[rand(0, count($rows) - 1)];
     }
 
     /**
@@ -125,76 +141,5 @@ class Connection implements ConnectionInterface
                 is_int($key) ? $key + 1 : $key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
             );
         }
-    }
-
-    /**
-     * Excecute a statement.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return \PDOStatement
-     *
-     * @throws \Exception
-     */
-    protected function statement($sql, $bindings = []): PDOStatement
-    {
-        return $this->executeCallback($sql, $bindings, function ($sql, $bindings) {
-            $statement = $this->pdo->prepare($sql);
-
-            $this->bindValues($statement, $bindings);
-
-            $statement->execute();
-
-            return $statement;
-        });
-    }
-
-    /**
-     * Excecute a statement and return the number of affected rows.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @return int
-     *
-     * @throws \Exception
-     */
-    protected function affectingStatement($sql, $bindings = [])
-    {
-        return $this->executeCallback($sql, $bindings, function ($sql, $bindings) {
-            $statement = $this->pdo->prepare($sql);
-
-            $this->bindValues($statement, $bindings);
-
-            $statement->execute();
-
-            return $statement->rowCount();
-        });
-    }
-
-    /**
-     * Execute a statement within the callback.
-     *
-     * @param  string  $sql
-     * @param  mixed|array  $bindings
-     * @param  \Closure  $callback
-     * @return mixed
-     *
-     * @throws \Exception
-     */
-    protected function executeCallback($sql, $bindings = [], Closure $callback)
-    {
-        $startTime = microtime(true);
-
-        try {
-            $result = call_user_func(
-                $callback, $sql, $bindings
-            );
-        } catch (PDOException $e) {
-            throw new Exception($e->getMessage());
-        }
-
-        $executionTime = microtime(true) - $startTime;
-
-        return is_numeric($result) ? (int) $result : $result;
     }
 }
