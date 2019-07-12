@@ -132,19 +132,6 @@ class Builder
     /**
      * Execute a select statement.
      *
-     * @return array
-     */
-    public function get()
-    {
-        return $this->connection->select(
-            $this->sqlCompiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
-        );
-    }
-
-    /**
-     * Execute a select statement
-     * and return all of the rows.
-     *
      * Note: An alias method name to "get".
      *
      * @return array
@@ -152,6 +139,18 @@ class Builder
     public function all()
     {
         return $this->get();
+    }
+
+    /**
+     * Execute a select statement.
+     *
+     * @return array
+     */
+    public function get()
+    {
+        return $this->connection->select(
+            $this->sqlCompiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
+        );
     }
 
     /**
