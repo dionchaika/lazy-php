@@ -2,7 +2,10 @@
 
 namespace Lazy\Db;
 
+use Exception;
+use InvalidArgumentException;
 use Lazy\Db\Connectors\MySQLConnector;
+use Lazy\Db\Connectors\ConnectorInterface;
 
 /**
  * The database manager class.
@@ -68,6 +71,20 @@ class Manager
         return $this;
     }
 
+    public function createConnector($driver): ConnectorInterface
+    {
+        if (isset($this->connectors[$driver])) {
+            return new $this->connectors[$driver];
+        }
+
+        throw new InvalidArgumentException("The connector for \"{$driver}\" driver is not specified!");
+    }
+
+    public function createConnection($name = 'default')
+    {
+
+    }
+
     /**
      * Add a new database connector.
      *
@@ -80,6 +97,15 @@ class Manager
         $this->connectors[$driver] = $class;
 
         return $this;
+    }
+
+    public function getConnection($name = 'default'): ConnectionInterface
+    {
+        if (isset($this->connections[$name])) {
+            return $this->connections[$name];
+        }
+
+        throw new InvalidArgumentException("The database connection \"{$name}\" is not specified!");
     }
 
     /**
