@@ -46,7 +46,14 @@ class MySQLConnector implements ConnectorInterface
     {
         $config = array_merge(static::DEFAULT_CONFIG, $config);
 
-        //
+        $connection = new BaseConnection($this->getPdo($config), $config);
+
+        $connection
+            ->getPdo()
+            ->prepare('set names ? collate ?')
+            ->execute($config['charset'], $config['collation']);
+
+        return $connection;
     }
 
     /**
