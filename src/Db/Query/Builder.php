@@ -117,14 +117,14 @@ class Builder
     /**
      * where...
      *
-     * @param  \Closure  $callabck
+     * @param  \Closure  $callback
      * @return $this
      */
-    public function where(Closure $callabck)
+    public function where(Closure $callback)
     {
         $where = new WhereClause();
 
-        $this->clauses['where'] = $callabck($where, $this);
+        $this->clauses['where'] = $callback($where, $this);
 
         return $this;
     }
