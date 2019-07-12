@@ -168,7 +168,7 @@ interface ConnectionInterface
      * @param  mixed|array  $bindings
      * @return bool
      */
-    public function statement($sql, $bindings = []);
+    public function execute($sql, $bindings = []);
 
     /**
      * Execute a statement and return the number of affected rows.
@@ -177,7 +177,7 @@ interface ConnectionInterface
      * @param  mixed|array  $bindings
      * @return int
      */
-    public function affectingStatement($sql, $bindings = []);
+    public function executeGetCount($sql, $bindings = []);
 
     /**
      * Bind values to parameters in the statement.

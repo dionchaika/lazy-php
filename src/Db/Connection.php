@@ -238,7 +238,7 @@ class Connection implements ConnectionInterface
      */
     public function insert($sql, $bindings = [])
     {
-        return $this->statement($sql, $bindings);
+        return $this->execute($sql, $bindings);
     }
 
     /**
@@ -258,7 +258,7 @@ class Connection implements ConnectionInterface
      */
     public function update($sql, $bindings = [])
     {
-        return $this->affectingStatement($sql, $bindings);
+        return $this->executeGetCount($sql, $bindings);
     }
 
     /**
@@ -266,13 +266,13 @@ class Connection implements ConnectionInterface
      */
     public function delete($sql, $bindings = [])
     {
-        return $this->affectingStatement($sql, $bindings);
+        return $this->executeGetCount($sql, $bindings);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function statement($sql, $bindings = [])
+    public function execute($sql, $bindings = [])
     {
         return $this->run($sql, $bindings, function ($sql, $bindings) {
             $statement = $this->pdo->prepare($sql);
@@ -286,7 +286,7 @@ class Connection implements ConnectionInterface
     /**
      * {@inheritDoc}
      */
-    public function affectingStatement($sql, $bindings = [])
+    public function executeGetCount($sql, $bindings = [])
     {
         return $this->run($sql, $bindings, function ($sql, $bindings) {
             $statement = $this->pdo->prepare($sql);
