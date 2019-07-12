@@ -132,7 +132,11 @@ class Connection implements ConnectionInterface
 
         try {
 
-            call_user_func($callback, $this); $this->commit();
+            $result = call_user_func($callback, $this);
+
+            $this->commit();
+
+            return $result;
 
         } catch (Throwable $e) { $this->rollBack(); throw $e; }
     }
