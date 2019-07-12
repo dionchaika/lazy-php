@@ -11,6 +11,8 @@ interface ConnectorInterface
      *
      * @param  array  $config
      * @return \Lazy\Db\ConnectionInterface
+     *
+     * @throws \Exception
      */
     public function createConnection(array $config = []): ConnectionInterface;
 }

@@ -3,6 +3,7 @@
 namespace Lazy\Db\Connectors;
 
 use PDO;
+use Exception;
 use PDOException;
 use Lazy\Db\ConnectionInterface;
 use Lazy\Db\Connection as BaseConnection;
@@ -49,6 +50,8 @@ class MySQLConnector implements ConnectorInterface
         if (in_array($config['driver'], PDO::getAvailableDrivers())) {
             return new BaseConnection($this->getPdo($config), $config);
         }
+
+        throw new Exception("Unsupporeded database driver: {$config['driver']}!");
     }
 
     /**
@@ -56,6 +59,8 @@ class MySQLConnector implements ConnectorInterface
      *
      * @param  array  $config
      * @return \PDO
+     *
+     * @throws \Exception
      */
     protected function getPdo(array $config): PDO
     {
@@ -66,7 +71,9 @@ class MySQLConnector implements ConnectorInterface
                 $config['password'],
                 static::DEFAULT_PDO_OPTIONS
             );
-        } catch (PDOException $e) {}
+        } catch (PDOException $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
@@ -119,16 +126,16 @@ class MySQLConnector implements ConnectorInterface
      */
     protected function getUnixSocketDsn(array $config)
     {
-        $dsn = 'mysql:';
+        $dsn = 'mysql:unix_socket='.$config['unix_socket'];
 
         if (! empty($config['database'])) {
-            $dsn .= 'dbname='.$config['database'];
+            $dsn .= ';dbname='.$config['database'];
         }
 
         if (! empty($config['charset'])) {
             $dsn .= ';charset='.$config['charset'];
         }
 
-        return $dsn.';unix_socket='.$config['unix_socket'];
+        return $dsn;
     }
 }
