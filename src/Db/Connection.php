@@ -5,6 +5,7 @@ namespace Lazy\Db;
 use PDO;
 use Closure;
 use Throwable;
+use PDOException;
 use PDOStatement;
 
 /**
@@ -25,6 +26,13 @@ class Connection implements ConnectionInterface
      * @var array
      */
     protected $config = [];
+
+    /**
+     * The array of database connection statement log.
+     *
+     * @var array
+     */
+    protected $statementLog = [];
 
     /**
      * The current database connection transaction level.
@@ -71,6 +79,22 @@ class Connection implements ConnectionInterface
         }
 
         return isset($this->config[$name]) ? $this->config[$name] : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getStatementLog()
+    {
+        return $this->statementLog;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clearStatementLog()
+    {
+        $this->statementLog = [];
     }
 
     /**
@@ -185,6 +209,42 @@ class Connection implements ConnectionInterface
                 is_int($key) ? $key + 1 : $key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
             );
         }
+    }
+
+    /**
+     * Run a statement.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @param  \Closure  $callback
+     * @return void
+     */
+    protected function run($sql, $bindings = [], Closure $callback)
+    {
+        $startTime = microtime(true);
+
+        $result = $callback($sql, $bindings);
+
+        $executionTime = microtime(true) - $startTime;
+
+        $this->logStatement($sql, $bindings, $executionTime);
+
+        return $result;
+    }
+
+    /**
+     * Log a statement.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @param  float  $executionTime
+     * @return void
+     */
+    public function logStatement($sql, $bindings = [], $executionTime)
+    {
+        $bindings = (array) $bindings;
+
+        $this->statementLog[] = compact('sql', 'bindings', 'executionTime');
     }
 
     /**

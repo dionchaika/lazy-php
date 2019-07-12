@@ -31,6 +31,20 @@ interface ConnectionInterface
     public function getConfig($name = null);
 
     /**
+     * Get the array of database connection statement log.
+     *
+     * @return array
+     */
+    public function getStatementLog();
+
+    /**
+     * Clear the array of database connection statement log.
+     *
+     * @return void
+     */
+    public function clearStatementLog();
+
+    /**
      * Commit the transaction.
      *
      * @return void
