@@ -59,11 +59,13 @@ class Manager
     /**
      * Set the database manager globally available.
      *
-     * @return void
+     * @return $this
      */
     public function setAsGlobal()
     {
         static::$instance = $this;
+
+        return $this;
     }
 
     /**
@@ -71,11 +73,26 @@ class Manager
      *
      * @param  string  $driver
      * @param  string  $class
-     *
-     * @return void
+     * @return $this
      */
     public function addConnector($driver, $class)
     {
         $this->connectors[$driver] = $class;
+
+        return $this;
+    }
+
+    /**
+     * Add a new database connection.
+     *
+     * @param  string  $name
+     * @param  \Lazy\Db\ConnectionInterface  $connection
+     * @return $this
+     */
+    public function addConnection($name, ConnectionInterface $connection)
+    {
+        $this->connections[$name] = $connection;
+
+        return $this;
     }
 }
