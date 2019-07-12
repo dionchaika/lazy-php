@@ -74,7 +74,7 @@ interface ConnectionInterface
     public function commit();
 
     /**
-     * Rollback the transaction.
+     * Roll back the transaction.
      *
      * @return void
      */
