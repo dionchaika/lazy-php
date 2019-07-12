@@ -3,9 +3,6 @@
 namespace Lazy\Db;
 
 use PDO;
-use Closure;
-use Exception;
-use PDOException;
 use PDOStatement;
 
 /**
@@ -65,68 +62,6 @@ class Connection implements ConnectionInterface
         }
 
         return isset($this->config[$name]) ? $this->config[$name] : null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function select($sql, $bindings = [])
-    {
-        return $this->execute($sql, $bindings)->fetchAll();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function insert($sql, $bindings = [])
-    {
-        return $this->execute($sql, $bindings)->rowCount();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function update($sql, $bindings = [])
-    {
-        return $this->execute($sql, $bindings)->rowCount();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function delete($sql, $bindings = [])
-    {
-        return $this->execute($sql, $bindings)->rowCount();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function selectGetFirst($sql, $bindings = [])
-    {
-        $rows = $this->select($sql, $bindings);
-
-        return array_shift($rows);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function selectGetLast($sql, $bindings = [])
-    {
-        $rows = $this->select($sql, $bindings);
-
-        return array_pop($rows);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function selectGetRand($sql, $bindings = [])
-    {
-        $rows = $this->select($sql, $bindings);
-
-        return $rows[rand(0, count($rows) - 1)];
     }
 
     /**

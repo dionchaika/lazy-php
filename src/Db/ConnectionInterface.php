@@ -4,6 +4,7 @@ namespace Lazy\Db;
 
 use PDO;
 use PDOStatement;
+use Closure;
 
 interface ConnectionInterface
 {
@@ -28,6 +29,71 @@ interface ConnectionInterface
      * @return array|mixed|null
      */
     public function getConfig($name = null);
+
+    /**
+     * Execute a select statement.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return array
+     */
+    public function select($sql, $bindings = []);
+
+    /**
+     * Execute an insert statement.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return bool
+     */
+    public function insert($sql, $bindings = []);
+
+    /**
+     * Execute an update statement.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return int
+     */
+    public function update($sql, $bindings = []);
+
+    /**
+     * Execute a delete statement.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return int
+     */
+    public function delete($sql, $bindings = []);
+
+    /**
+     * Commit the transaction.
+     *
+     * @return void
+     */
+    public function commit();
+
+    /**
+     * Rollback the transaction.
+     *
+     * @return void
+     */
+    public function rollBack();
+
+    /**
+     * Begin a new transaction.
+     *
+     * @return void
+     */
+    public function beginTransaction();
+
+    /**
+     * Execute a callback within the transaction.
+     *
+     * @param  \Closure  $callback
+     * @return mixed
+     */
+    public function transaction(Closure $callback);
 
     /**
      * Bind values to parameters in the statement.
