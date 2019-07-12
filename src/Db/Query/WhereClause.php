@@ -23,7 +23,19 @@ class WhereClause
      */
     public function equal($column, $value)
     {
+        //
+    }
 
+    /**
+     * not equal...
+     *
+     * @param  mixed  $column
+     * @param  mixed  $value
+     * @return $this
+     */
+    public function notEqual($column, $value)
+    {
+        //
     }
 
     /**
@@ -35,6 +47,18 @@ class WhereClause
      */
     public function orEqual($column, $value)
     {
-        
+        //
+    }
+
+    /**
+     * or not equal...
+     *
+     * @param  mixed  $column
+     * @param  mixed  $value
+     * @return $this
+     */
+    public function orNotEqual($column, $value)
+    {
+        //
     }
 }
