@@ -6,6 +6,7 @@ use PDO;
 use Closure;
 use Throwable;
 use PDOStatement;
+use Lazy\Db\Query\Builder;
 
 /**
  * The base database connection class.
@@ -185,6 +186,22 @@ class Connection implements ConnectionInterface
             return $result;
 
         } catch (Throwable $e) { $this->rollBack(); throw $e; }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function query(): Builder
+    {
+        return (new Builder($this, new \Lazy\Db\Query\Compilers\Compiler));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function table($table): Builder
+    {
+        return $this->query()->from($table);
     }
 
     /**

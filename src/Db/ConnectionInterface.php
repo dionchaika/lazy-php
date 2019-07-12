@@ -5,6 +5,7 @@ namespace Lazy\Db;
 use PDO;
 use Closure;
 use PDOStatement;
+use Lazy\Db\Query\Builder;
 
 interface ConnectionInterface
 {
@@ -87,6 +88,21 @@ interface ConnectionInterface
      * @return mixed
      */
     public function transaction(Closure $callback);
+
+    /**
+     * Return a query builder.
+     *
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function query(): Builder;
+
+    /**
+     * Return a query builder for table.
+     *
+     * @param  mixed  $table
+     * @return \Lazy\Db\Query\Builder
+     */
+    public function table($table): Builder;
 
     /**
      * Execute a select statement.
