@@ -31,6 +31,21 @@ interface ConnectionInterface
     public function getConfig($name = null);
 
     /**
+     * Get the database PDO connection fetch mode.
+     *
+     * @return int
+     */
+    public function getFetchMode();
+
+    /**
+     * Set the database PDO connection fetch mode.
+     *
+     * @param  int  $fetchMode
+     * @return void
+     */
+    public function setFetchMode($fetchMode);
+
+    /**
      * Get the array of database connection statement log.
      *
      * @return array
@@ -108,6 +123,24 @@ interface ConnectionInterface
      * @return int
      */
     public function delete($sql, $bindings = []);
+
+    /**
+     * Execute a statement and return the boolean result.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return bool
+     */
+    public function statement($sql, $bindings = []);
+
+    /**
+     * Execute a statement and return the number of affected rows.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return int
+     */
+    public function affectingStatement($sql, $bindings = []);
 
     /**
      * Bind values to parameters in the statement.

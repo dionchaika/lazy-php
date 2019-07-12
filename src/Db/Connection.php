@@ -5,7 +5,6 @@ namespace Lazy\Db;
 use PDO;
 use Closure;
 use Throwable;
-use PDOException;
 use PDOStatement;
 
 /**
@@ -26,6 +25,13 @@ class Connection implements ConnectionInterface
      * @var array
      */
     protected $config = [];
+
+    /**
+     * The database PDO connection fetch mode.
+     *
+     * @var int
+     */
+    protected $fetchMode = PDO::FETCH_OBJ;
 
     /**
      * The array of database connection statement log.
@@ -79,6 +85,22 @@ class Connection implements ConnectionInterface
         }
 
         return isset($this->config[$name]) ? $this->config[$name] : null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getFetchMode()
+    {
+        return $this->fetchMode;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setFetchMode($fetchMode)
+    {
+        $this->fetchMode = $fetchMode;
     }
 
     /**
@@ -170,7 +192,15 @@ class Connection implements ConnectionInterface
      */
     public function select($sql, $bindings = [])
     {
-        //
+        return $this->run($sql, $bindings, function ($sql, $bindings) {
+            $statement = $this->pdo->prepare($sql);
+
+            $this->bindValues($statement, $bindings);
+
+            $statement->execute();
+
+            return $statement->fetchAll($this->fetchMode);
+        });
     }
 
     /**
@@ -178,7 +208,7 @@ class Connection implements ConnectionInterface
      */
     public function insert($sql, $bindings = [])
     {
-        //
+        return $this->statement($sql, $bindings);
     }
 
     /**
@@ -186,7 +216,7 @@ class Connection implements ConnectionInterface
      */
     public function update($sql, $bindings = [])
     {
-        //
+        return $this->affectingStatement($sql, $bindings);
     }
 
     /**
@@ -194,7 +224,37 @@ class Connection implements ConnectionInterface
      */
     public function delete($sql, $bindings = [])
     {
-        //
+        return $this->affectingStatement($sql, $bindings);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function statement($sql, $bindings = [])
+    {
+        return $this->run($sql, $bindings, function ($sql, $bindings) {
+            $statement = $this->pdo->prepare($sql);
+
+            $this->bindValues($statement, $bindings);
+
+            return $statement->execute();
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function affectingStatement($sql, $bindings = [])
+    {
+        return $this->run($sql, $bindings, function ($sql, $bindings) {
+            $statement = $this->pdo->prepare($sql);
+
+            $this->bindValues($statement, $bindings);
+
+            $statement->execute();
+
+            return $statement->rowCount();
+        });
     }
 
     /**
@@ -217,7 +277,7 @@ class Connection implements ConnectionInterface
      * @param  string  $sql
      * @param  mixed|array  $bindings
      * @param  \Closure  $callback
-     * @return void
+     * @return mixed
      */
     protected function run($sql, $bindings = [], Closure $callback)
     {
