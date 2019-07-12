@@ -46,7 +46,9 @@ class MySQLConnector implements ConnectorInterface
     {
         $config = array_merge(static::DEFAULT_CONFIG, $config);
 
-        return new BaseConnection($this->getPdo($config), $config);
+        if (in_array($config['driver'], PDO::getAvailableDrivers())) {
+            return new BaseConnection($this->getPdo($config), $config);
+        }
     }
 
     /**
