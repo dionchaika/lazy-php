@@ -2,6 +2,7 @@
 
 namespace Lazy\Db\Query;
 
+use Closure;
 use Lazy\Db\ConnectionInterface;
 use Lazy\Db\Query\Compilers\CompilerInterface;
 
@@ -31,11 +32,11 @@ class Builder
      */
     protected $clauses = [
 
-        'join'    => [],
-        'where'   => [],
-        'groupBy' => [],
-        'having'  => [],
-        'orderBy' => []
+        'join'    => null,
+        'where'   => null,
+        'groupBy' => null,
+        'having'  => null,
+        'orderBy' => null
 
     ];
 
@@ -109,6 +110,21 @@ class Builder
     public function distinct()
     {
         $this->distinct = true;
+
+        return $this;
+    }
+
+    /**
+     * where...
+     *
+     * @param  \Closure  $callabck
+     * @return $this
+     */
+    public function where(Closure $callabck)
+    {
+        $where = new WhereClause();
+
+        $this->clauses['where'] = $callabck($where, $this);
 
         return $this;
     }
