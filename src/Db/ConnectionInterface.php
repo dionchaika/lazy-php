@@ -98,6 +98,33 @@ interface ConnectionInterface
     public function select($sql, $bindings = []);
 
     /**
+     * Execute a select statement and return the first row.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return mixed
+     */
+    public function selectFirst($sql, $bindings = []);
+
+    /**
+     * Execute a select statement and return the last row.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return mixed
+     */
+    public function selectLast($sql, $bindings = []);
+
+    /**
+     * Execute a select statement and return the random row.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return mixed
+     */
+    public function selectRand($sql, $bindings = []);
+
+    /**
      * Execute an insert statement.
      *
      * @param  string  $sql
@@ -105,6 +132,16 @@ interface ConnectionInterface
      * @return bool
      */
     public function insert($sql, $bindings = []);
+
+    /**
+     * Execute an insert statement
+     * and return the last inserted row ID.
+     *
+     * @param  string  $sql
+     * @param  mixed|array  $bindings
+     * @return int|string
+     */
+    public function insertGetId($sql, $bindings = []);
 
     /**
      * Execute an update statement.
