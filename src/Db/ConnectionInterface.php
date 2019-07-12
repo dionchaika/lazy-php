@@ -31,6 +31,35 @@ interface ConnectionInterface
     public function getConfig($name = null);
 
     /**
+     * Commit the transaction.
+     *
+     * @return void
+     */
+    public function commit();
+
+    /**
+     * Roll back the transaction.
+     *
+     * @return void
+     */
+    public function rollBack();
+
+    /**
+     * Begin a new transaction.
+     *
+     * @return void
+     */
+    public function beginTransaction();
+
+    /**
+     * Execute a callback within the transaction.
+     *
+     * @param  \Closure  $callback
+     * @return mixed
+     */
+    public function transaction(Closure $callback);
+
+    /**
      * Execute a select statement.
      *
      * @param  string  $sql
@@ -65,35 +94,6 @@ interface ConnectionInterface
      * @return int
      */
     public function delete($sql, $bindings = []);
-
-    /**
-     * Commit the transaction.
-     *
-     * @return void
-     */
-    public function commit();
-
-    /**
-     * Roll back the transaction.
-     *
-     * @return void
-     */
-    public function rollBack();
-
-    /**
-     * Begin a new transaction.
-     *
-     * @return void
-     */
-    public function beginTransaction();
-
-    /**
-     * Execute a callback within the transaction.
-     *
-     * @param  \Closure  $callback
-     * @return mixed
-     */
-    public function transaction(Closure $callback);
 
     /**
      * Bind values to parameters in the statement.
