@@ -318,7 +318,9 @@ class Stream implements StreamInterface
             throw new RuntimeException('Unable to clear the stream!');
         }
 
-        $this->rewind();
+        if ($this->seekable) {
+            $this->rewind();
+        }
     }
 
     /**
