@@ -65,16 +65,6 @@ abstract class Message implements ArrayAccess, MessageInterface
     }
 
     /**
-     * Get the message header collection.
-     *
-     * @return \Lazy\Http\Headers
-     */
-    public function getHeaderCollection(): Headers
-    {
-        return $this->headers;
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function hasHeader($name)
@@ -156,6 +146,16 @@ abstract class Message implements ArrayAccess, MessageInterface
         $new->body = $new->filterBody($body);
 
         return $new;
+    }
+
+    /**
+     * Get the message header collection.
+     *
+     * @return \Lazy\Http\Headers
+     */
+    public function getHeaderCollection(): Headers
+    {
+        return $this->headers;
     }
 
     /**
