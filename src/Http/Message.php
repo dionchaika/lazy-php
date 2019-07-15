@@ -8,10 +8,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
 
 /**
- * The PSR-7 HTTP message implementation class.
- *
- * @see https://www.php-fig.org/psr/psr-7/
- * @see https://tools.ietf.org/html/rfc7230
+ * {@inheritDoc}
  */
 abstract class Message implements ArrayAccess, MessageInterface
 {
@@ -153,7 +150,7 @@ abstract class Message implements ArrayAccess, MessageInterface
      *
      * @return \Lazy\Http\Headers
      */
-    public function getHeaderCollection(): Headers
+    public function getHeaderCollection()
     {
         return $this->headers;
     }
