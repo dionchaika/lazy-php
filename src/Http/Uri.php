@@ -345,6 +345,46 @@ class Uri implements UriInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+        try {
+            $uri = '';
+
+            if ($this->scheme) {
+                $uri .= $this->scheme.':';
+            }
+
+            $authority = $this->getAuthority();
+
+            if ($authority) {
+                $uri .= '//'.$authority;
+            }
+
+            if ($authority && 0 !== strpos($this->path, '/')) {
+                $uri .= '/'.$this->path;
+            } else if (! $authority && 0 === strpos($this->path, '//')) {
+                $uri .= '/'.ltrim($this->path, '/');
+            } else {
+                $uri .= $this->path;
+            }
+
+            if ($this->query) {
+                $uri .= '?'.$this->query;
+            }
+
+            if ($this->fragment) {
+                $uri .= '#'.$this->fragment;
+            }
+
+            return $uri;
+        } catch (Throwable $e) {
+            trigger_error($e->getMessage(), \E_USER_ERROR);
+        }
+    }
+
+    /**
      * Get the array of URI query parameters.
      *
      * @return array
@@ -479,46 +519,6 @@ class Uri implements UriInterface
     public function isRelativePathReference()
     {
         return ! $this->scheme && ! $this->getAuthority() && 0 !== strpos($this->path, '/');
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function __toString()
-    {
-        try {
-            $uri = '';
-
-            if ($this->scheme) {
-                $uri .= $this->scheme.':';
-            }
-
-            $authority = $this->getAuthority();
-
-            if ($authority) {
-                $uri .= '//'.$authority;
-            }
-
-            if ($authority && 0 !== strpos($this->path, '/')) {
-                $uri .= '/'.$this->path;
-            } else if (! $authority && 0 === strpos($this->path, '//')) {
-                $uri .= '/'.ltrim($this->path, '/');
-            } else {
-                $uri .= $this->path;
-            }
-
-            if ($this->query) {
-                $uri .= '?'.$this->query;
-            }
-
-            if ($this->fragment) {
-                $uri .= '#'.$this->fragment;
-            }
-
-            return $uri;
-        } catch (Throwable $e) {
-            trigger_error($e->getMessage(), \E_USER_ERROR);
-        }
     }
 
     /**

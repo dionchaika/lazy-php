@@ -288,17 +288,17 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Append another stream to this stream.
-     *
-     * @param  \Psr\Http\Message\StreamInterface  $stream  The stream to append.
-     * @return void
-     *
-     * @throws \RuntimeException
+     * {@inheritDoc}
      */
-    public function append(StreamInterface $stream)
+    public function __toString()
     {
-        $this->seek($this->size);
-        $this->write((string) $stream);
+        try {
+            if ($this->seekable) {
+                $this->rewind();
+            }
+
+            return $this->getContents();
+        } catch (Throwable $e) { return ''; }
     }
 
     /**
@@ -312,17 +312,17 @@ class Stream implements StreamInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Append another stream to this stream.
+     *
+     * @param  \Psr\Http\Message\StreamInterface  $stream  The stream to append.
+     * @return void
+     *
+     * @throws \RuntimeException
      */
-    public function __toString()
+    public function append(StreamInterface $stream)
     {
-        try {
-            if ($this->seekable) {
-                $this->rewind();
-            }
-
-            return $this->getContents();
-        } catch (Throwable $e) { return ''; }
+        $this->seek($this->size);
+        $this->write((string) $stream);
     }
 
     /**
