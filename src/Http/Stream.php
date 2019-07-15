@@ -317,6 +317,8 @@ class Stream implements StreamInterface
         if (false === ftruncate($this->resource, 0)) {
             throw new RuntimeException('Unable to clear the stream!');
         }
+
+        $this->rewind();
     }
 
     /**
