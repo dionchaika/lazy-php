@@ -14,42 +14,32 @@ use Psr\Http\Message\RequestInterface;
 class Request extends Message implements RequestInterface
 {
     /**
-     * The request URI.
-     *
-     * @var \Psr\Http\Message\UriInterface
+     * @var \Psr\Http\Message\UriInterface The request URI.
      */
     protected $uri;
 
     /**
-     * The request method.
-     *
-     * @var string
+     * @var string The request method.
      */
     protected $method = Method::GET;
 
     /**
-     * The request target.
-     *
-     * @var string
+     * @var string The request target.
      */
     protected $requestTarget;
 
     /**
      * The request constructor.
      *
-     * @param  string  $method
-     * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  \Lazy\Http\Headers|array|null  $headers
-     * @param  \Psr\Http\Message\StreamInterface|mixed|null  $body
-     * @param  string  $protocolVersion
+     * @param  string  $method  The request method.
+     * @param  \Psr\Http\Message\UriInterface|string|null  $uri  The request URI.
+     * @param  \Lazy\Http\Headers|array|null  $headers  The request headers.
+     * @param  \Psr\Http\Message\StreamInterface|mixed|null  $body  The request body.
+     * @param  string  $protocolVersion  The request protocol version.
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($method = Method::GET,
-                                $uri = '/',
-                                $headers = [],
-                                $body = null,
-                                $protocolVersion = '1.1')
+    public function __construct($method = Method::GET, $uri = '/', $headers = [], $body = null, $protocolVersion = '1.1')
     {
         $this->method = $this->filterMethod($method);
 
@@ -80,7 +70,7 @@ class Request extends Message implements RequestInterface
     /**
      * Create a new request from string.
      *
-     * @param  string  $request
+     * @param  string  $request  The request string.
      * @return \Lazy\Http\Request
      *
      * @throws \RuntimeException
@@ -181,7 +171,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the specified request cookie.
      *
-     * @param  \Lazy\Http\Cookie  $cookie
+     * @param  \Lazy\Http\Cookie  $cookie  The request cookie.
      * @return static
      */
     public function withCookie(Cookie $cookie)
@@ -193,7 +183,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the "text/plain" request body.
      *
-     * @param  mixed  $text
+     * @param  mixed  $text  The request plain text.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -211,7 +201,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the "application/json" request body.
      *
-     * @param  mixed  $data
+     * @param  mixed  $data  The request JSON data.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -231,7 +221,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the "text/xml" request body.
      *
-     * @param  \SimpleXMLElement  $xml
+     * @param  \SimpleXMLElement  $xml  The request XML element.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -251,7 +241,7 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the "application/x-www-form-urlencoded" request body.
      *
-     * @param  mixed  $data
+     * @param  mixed  $data  The request urlencoded data.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -271,8 +261,8 @@ class Request extends Message implements RequestInterface
      * Return an instance
      * with the "multipart/form-data" request body.
      *
-     * @param  \Lazy\Http\FormData|array  $data
-     * @param  string|null  $boundary
+     * @param  \Lazy\Http\FormData|array  $data  The request form-data.
+     * @param  string|null  $boundary  The request form-data boundary.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -439,7 +429,7 @@ class Request extends Message implements RequestInterface
     /**
      * Set the request "Host" header from the URI.
      *
-     * @param  \Psr\Http\Message\UriInterface  $uri
+     * @param  \Psr\Http\Message\UriInterface  $uri  The request URI.
      * @return void
      */
     protected function setHostHeaderFromUri(UriInterface $uri)
@@ -473,7 +463,7 @@ class Request extends Message implements RequestInterface
     /**
      * Filter a request method.
      *
-     * @param  string  $method
+     * @param  string  $method  The request method.
      * @return string
      *
      * @throws \InvalidArgumentException
