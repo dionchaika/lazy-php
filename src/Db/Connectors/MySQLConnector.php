@@ -4,14 +4,14 @@ namespace Lazy\Db\Connectors;
 
 use PDO;
 use Exception;
-use PDOException;
 use Lazy\Db\ConnectionInterface;
 use Lazy\Db\Connection as BaseConnection;
+use Lazy\Db\Connectors\Connector as BaseConnector;
 
 /**
  * The MySQL database connector class.
  */
-class MySQLConnector implements ConnectorInterface
+class MySQLConnector extends BaseConnector implements ConnectorInterface
 {
     /**
      * The default config.
@@ -32,15 +32,6 @@ class MySQLConnector implements ConnectorInterface
     ];
 
     /**
-     * The default PDO options.
-     */
-    const DEFAULT_PDO_OPTIONS = [
-
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-
-    ];
-
-    /**
      * {@inheritDoc}
      */
     public function createConnection(array $config = []): ConnectionInterface
@@ -52,28 +43,6 @@ class MySQLConnector implements ConnectorInterface
         }
 
         throw new Exception("Unsupporeded database driver: {$config['driver']}!");
-    }
-
-    /**
-     * Get a new database PDO connection.
-     *
-     * @param  array  $config
-     * @return \PDO
-     *
-     * @throws \Exception
-     */
-    protected function getPdo(array $config): PDO
-    {
-        try {
-            return new PDO(
-                $this->getDsn($config),
-                $config['user'],
-                $config['password'],
-                static::DEFAULT_PDO_OPTIONS
-            );
-        } catch (PDOException $e) {
-            throw new Exception($e->getMessage());
-        }
     }
 
     /**

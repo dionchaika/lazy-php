@@ -191,22 +191,6 @@ class Connection implements ConnectionInterface
     /**
      * {@inheritDoc}
      */
-    public function query(): Builder
-    {
-        return (new Builder($this, new \Lazy\Db\Query\Compilers\Compiler));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function table($table): Builder
-    {
-        return $this->query()->from($table);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function select($sql, $bindings = [])
     {
         return $this->run($sql, $bindings, function ($sql, $bindings) {
