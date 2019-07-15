@@ -318,6 +318,8 @@ class Stream implements StreamInterface
             throw new RuntimeException('Unable to clear the stream!');
         }
 
+        $this->size = 0;
+
         if ($this->seekable) {
             $this->rewind();
         }
