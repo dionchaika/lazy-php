@@ -128,9 +128,11 @@ class ServerRequest extends Request implements ServerRequestInterface
             ->withCookieParams($_COOKIE)
             ->withUploadedFiles(UploadedFile::fromGlobals());
 
-        return $request->withParsedBody(
-            ('POST' === $request->getMethod() && in_array($request->getMediaType(), static::DEFAULT_MEDIA_TYPES)) ? $_POST : null
-        );
+        if ('POST' === $request->getOriginalMethod() && in_array($request->getMediaType(), static::DEFAULT_MEDIA_TYPES)) {
+            $request = $request->withParsedBody($_POST);
+        }
+
+        return $request;
     }
 
     /**
