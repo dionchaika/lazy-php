@@ -452,6 +452,36 @@ class Uri implements UriInterface
     }
 
     /**
+     * Check is the URI network-path reference.
+     *
+     * @return bool
+     */
+    public function isNetworkPathReference()
+    {
+        return ! $this->scheme && $this->getAuthority();
+    }
+
+    /**
+     * Check is the URI absolute-path reference.
+     *
+     * @return bool
+     */
+    public function isAbsolutePathReference()
+    {
+        return ! $this->scheme && ! $this->getAuthority() && 0 === strpos($this->path, '/');
+    }
+
+    /**
+     * Check is the URI relative-path reference.
+     *
+     * @return bool
+     */
+    public function isRelativePathReference()
+    {
+        return ! $this->scheme && ! $this->getAuthority() && 0 !== strpos($this->path, '/');
+    }
+
+    /**
      * Stringify the URI.
      *
      * @return string
