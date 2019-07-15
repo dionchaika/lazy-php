@@ -209,7 +209,7 @@ class Response extends Message implements ResponseInterface
      */
     public function withCookie(Cookie $cookie)
     {
-        return $this->withAddedHeader('Set-Cookie', (string) $cookie);
+        return $this->withAddedHeader(Header::SET_COOKIE, (string) $cookie);
     }
 
     /**
@@ -228,12 +228,12 @@ class Response extends Message implements ResponseInterface
 
         return $new
             ->withStatus($code, $reasonPhrase)
-            ->withHeader('Location', (string) $location);
+            ->withHeader(Header::LOCATION, (string) $location);
     }
 
     /**
      * Return an instance
-     * with the HTML response body.
+     * with the "text/html" response body.
      *
      * @param  mixed  $html
      * @return static
@@ -245,31 +245,31 @@ class Response extends Message implements ResponseInterface
         $new = (clone $this)->withBody(create_stream($html));
 
         return $new
-            ->withHeader('Content-Type', 'text/html')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, 'text/html')
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
      * Return an instance
-     * with the plain text response body.
+     * with the "text/plain" response body.
      *
-     * @param  mixed  $plainText
+     * @param  mixed  $text
      * @return static
      *
      * @throws \InvalidArgumentException
      */
-    public function withPlainText($plainText)
+    public function withPlainText($text)
     {
-        $new = (clone $this)->withBody(create_stream($plainText));
+        $new = (clone $this)->withBody(create_stream($text));
 
         return $new
-            ->withHeader('Content-Type', 'text/plain')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, 'text/plain')
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
      * Return an instance
-     * with the JSON response body.
+     * with the "application/json" response body.
      *
      * @param  mixed  $data
      * @return static
@@ -283,13 +283,13 @@ class Response extends Message implements ResponseInterface
         );
 
         return $new
-            ->withHeader('Content-Type', 'application/json')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, 'application/json')
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
      * Return an instance
-     * with the XML response body.
+     * with the "text/xml" response body.
      *
      * @param  \SimpleXMLElement  $xml
      * @return static
@@ -303,8 +303,8 @@ class Response extends Message implements ResponseInterface
         );
 
         return $new
-            ->withHeader('Content-Type', 'text/xml')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, 'text/xml')
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
@@ -323,8 +323,8 @@ class Response extends Message implements ResponseInterface
         );
 
         return $new
-            ->withHeader('Content-Type', mime_content_type($filename))
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, mime_content_type($filename))
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
@@ -343,9 +343,9 @@ class Response extends Message implements ResponseInterface
         );
 
         return $new
-            ->withHeader('Content-Type', 'application/octet-stream')
-            ->withHeader('Content-Description', 'File Transfer')
-            ->withHeader('Content-Disposition', sprintf("attachment; filename=\"%s\"", basename($filename)));
+            ->withHeader(Header::CONTENT_TYPE, 'application/octet-stream')
+            ->withHeader(Header::CONTENT_DESCRIPTION, 'File Transfer')
+            ->withHeader(Header::CONTENT_DISPOSITION, sprintf("attachment; filename=\"%s\"", basename($filename)));
     }
 
     /**
@@ -359,7 +359,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response Informational response.
+     * Check is the response an "Informational" response.
      *
      * @return bool
      */
@@ -369,7 +369,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response Successful response.
+     * Check is the response a "Successful" response.
      *
      * @return bool
      */
@@ -379,7 +379,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response Redirection response.
+     * Check is the response a "Redirection" response.
      *
      * @return bool
      */
@@ -389,7 +389,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response a client error response.
+     * Check is the response a "Client Error" response.
      *
      * @return bool
      */
@@ -399,7 +399,7 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * Check is the response Server Error response.
+     * Check is the response a "Server Error" response.
      *
      * @return bool
      */

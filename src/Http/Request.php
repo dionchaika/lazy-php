@@ -9,10 +9,7 @@ use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * The PSR-7 HTTP request message implementation class.
- *
- * @see https://www.php-fig.org/psr/psr-7/
- * @see https://tools.ietf.org/html/rfc7230
+ * {@inheritDoc}
  */
 class Request extends Message implements RequestInterface
 {
@@ -49,8 +46,8 @@ class Request extends Message implements RequestInterface
      * @throws \InvalidArgumentException
      */
     public function __construct($method = Method::GET,
-                                $uri = null,
-                                $headers = null,
+                                $uri = '/',
+                                $headers = [],
                                 $body = null,
                                 $protocolVersion = '1.1')
     {
@@ -189,30 +186,30 @@ class Request extends Message implements RequestInterface
      */
     public function withCookie(Cookie $cookie)
     {
-        return $this->withAddedHeader('Cookie', $cookie->getPair());
+        return $this->withAddedHeader(Header::COOKIE, $cookie->getPair());
     }
 
     /**
      * Return an instance
-     * with the plain text request body.
+     * with the "text/plain" request body.
      *
-     * @param  mixed  $plainText
+     * @param  mixed  $text
      * @return static
      *
      * @throws \InvalidArgumentException
      */
-    public function withPlainText($plainText)
+    public function withPlainText($text)
     {
-        $new = (clone $this)->withBody(create_stream($plainText));
+        $new = (clone $this)->withBody(create_stream($text));
 
         return $new
-            ->withHeader('Content-Type', 'text/plain')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, 'text/plain')
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
      * Return an instance
-     * with the JSON request body.
+     * with the "application/json" request body.
      *
      * @param  mixed  $data
      * @return static
@@ -226,13 +223,13 @@ class Request extends Message implements RequestInterface
         );
 
         return $new
-            ->withHeader('Content-Type', 'application/json')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, 'application/json')
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
      * Return an instance
-     * with the XML request body.
+     * with the "text/xml" request body.
      *
      * @param  \SimpleXMLElement  $xml
      * @return static
@@ -246,13 +243,13 @@ class Request extends Message implements RequestInterface
         );
 
         return $new
-            ->withHeader('Content-Type', 'text/xml')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, 'text/xml')
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
      * Return an instance
-     * with the application/x-www-form-urlencoded request body.
+     * with the "application/x-www-form-urlencoded" request body.
      *
      * @param  mixed  $data
      * @return static
@@ -266,13 +263,13 @@ class Request extends Message implements RequestInterface
         );
 
         return $new
-            ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
-            ->withHeader('Content-Length', (string) $new->getBody()->getSize());
+            ->withHeader(Header::CONTENT_TYPE, 'application/x-www-form-urlencoded')
+            ->withHeader(Header::CONTENT_LENGTH, (string) $new->getBody()->getSize());
     }
 
     /**
      * Return an instance
-     * with the multipart/form-data request body.
+     * with the "multipart/form-data" request body.
      *
      * @param  \Lazy\Http\FormData|array  $data
      * @param  string|null  $boundary
@@ -288,19 +285,7 @@ class Request extends Message implements RequestInterface
 
         $new = (clone $this)->withBody($data->getStream());
 
-        return $new->withHeader('Content-Type', sprintf("multipart/form-data; boundary=%s", $data->getBoundary()));
-    }
-
-    /**
-     * Check is the request an AJAX request.
-     *
-     * An alias method name to isXhr.
-     *
-     * @return bool
-     */
-    public function isAjax()
-    {
-        return $this->isXhr();
+        return $new->withHeader(Header::CONTENT_TYPE, sprintf("multipart/form-data; boundary=%s", $data->getBoundary()));
     }
 
     /**
@@ -310,19 +295,19 @@ class Request extends Message implements RequestInterface
      */
     public function isXhr()
     {
-        return 0 === strcasecmp($this->getHeaderLine('X-Requested-With'), 'XMLHttpRequest');
+        return 0 === strcasecmp($this->getHeaderLine(Header::X_REQUESTED_WITH), 'XMLHttpRequest');
     }
 
     /**
-     * Check is the request an HTTPS request.
+     * Check is the request an AJAX request.
      *
-     * An alias method name to isSecured.
+     * An alias method name to "isXhr".
      *
      * @return bool
      */
-    public function isHttps()
+    public function isAjax()
     {
-        return $this->isSecured();
+        return $this->isXhr();
     }
 
     /**
@@ -336,7 +321,19 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a GET request.
+     * Check is the request an HTTPS request.
+     *
+     * An alias method name to "isSecured".
+     *
+     * @return bool
+     */
+    public function isHttps()
+    {
+        return $this->isSecured();
+    }
+
+    /**
+     * Check is the request a "GET" request.
      *
      * @return bool
      */
@@ -346,7 +343,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a PUT request.
+     * Check is the request a "PUT" request.
      *
      * @return bool
      */
@@ -356,7 +353,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a HEAD request.
+     * Check is the request a "HEAD" request.
      *
      * @return bool
      */
@@ -366,7 +363,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a POST request.
+     * Check is the request a "POST" request.
      *
      * @return bool
      */
@@ -376,7 +373,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a PATCH request.
+     * Check is the request a "PATCH" request.
      *
      * @return bool
      */
@@ -386,7 +383,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a TRACE request.
+     * Check is the request a "TRACE" request.
      *
      * @return bool
      */
@@ -396,7 +393,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a DELETE request.
+     * Check is the request a "DELETE" request.
      *
      * @return bool
      */
@@ -406,7 +403,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request an OPTIONS request.
+     * Check is the request an "OPTIONS" request.
      *
      * @return bool
      */
@@ -416,7 +413,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Check is the request a CONNECT request.
+     * Check is the request a "CONNECT" request.
      *
      * @return bool
      */
@@ -440,7 +437,7 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * Set the request Host header from the URI.
+     * Set the request "Host" header from the URI.
      *
      * @param  \Psr\Http\Message\UriInterface  $uri
      * @return void
@@ -458,9 +455,9 @@ class Request extends Message implements RequestInterface
 
             $host = [
 
-                'Host' => [
+                Header::HOST => [
 
-                    'name'   => 'Host',
+                    'name'   => Header::HOST,
                     'values' => [$host]
 
                 ]

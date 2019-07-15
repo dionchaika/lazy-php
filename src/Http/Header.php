@@ -37,6 +37,7 @@ abstract class Header
     const CACHE_CONTROL                       = 'Cache-Control';
     const CLEAR_SITE_DATA                     = 'Clear-Site-Data';
     const CONNECTION                          = 'Connection';
+    const CONTENT_DESCRIPTION                 = 'Content-Description';
     const CONTENT_DPR                         = 'Content-DPR';
     const CONTENT_DISPOSITION                 = 'Content-Disposition';
     const CONTENT_ENCODING                    = 'Content-Encoding';
