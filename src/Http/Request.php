@@ -9,7 +9,10 @@ use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * {@inheritDoc}
+ * The PSR-7 HTTP request message implementation class.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ * @see https://tools.ietf.org/html/rfc7230
  */
 class Request extends Message implements RequestInterface
 {
@@ -69,7 +72,7 @@ class Request extends Message implements RequestInterface
                 : new Headers($headers);
         }
 
-        if (! $this->hasHeader('Host')) {
+        if (! $this->hasHeader(Header::HOST)) {
             $this->setHostHeaderFromUri($this->uri);
         }
 
