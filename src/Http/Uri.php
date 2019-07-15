@@ -12,9 +12,9 @@ use Psr\Http\Message\UriInterface;
 class Uri implements UriInterface
 {
     /**
-     * The default ports.
+     * The standart ports.
      */
-    const DEFAULT_PORTS = [
+    const STANDART_PORTS = [
 
         'http'  => 80,
         'https' => 443
@@ -37,76 +37,55 @@ class Uri implements UriInterface
     ];
 
     /**
-     * The URI scheme.
-     *
-     * @var string
+     * @var string The URI scheme.
      */
     protected $scheme = '';
 
     /**
-     * The URI user information.
-     *
-     * @var string
+     * @var string The URI user information.
      */
     protected $userInfo = '';
 
     /**
-     * The URI host.
-     *
-     * @var string
+     * @var string The URI host.
      */
     protected $host = '';
 
     /**
-     * The URI port.
-     *
-     * @var int|null
+     * @var int|null The URI port.
      */
     protected $port;
 
     /**
-     * The URI path.
-     *
-     * @var string
+     * @var string The URI path.
      */
     protected $path = '';
 
     /**
-     * The URI query.
-     *
-     * @var string
+     * @var string The URI query.
      */
     protected $query = '';
 
     /**
-     * The URI fragment.
-     *
-     * @var string
+     * @var string The URI fragment.
      */
     protected $fragment = '';
 
     /**
      * The URI constructor.
      *
-     * @param  string  $scheme
-     * @param  string  $user
-     * @param  string|null  $password
-     * @param  string  $host
-     * @param  int|null  $port
-     * @param  string  $path
-     * @param  string  $query
-     * @param  string  $fragment
+     * @param  string  $scheme  The URI scheme.
+     * @param  string  $user  The URI user.
+     * @param  string|null  $password  The URI password.
+     * @param  string  $host  The URI host.
+     * @param  int|null  $port  The URI port.
+     * @param  string  $path  The URI path.
+     * @param  string  $query  The URI query.
+     * @param  string  $fragment  The URI fragment.
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($scheme = '',
-                                $user = '',
-                                $password = null,
-                                $host = '',
-                                $port = null,
-                                $path = '',
-                                $query = '',
-                                $fragment = '')
+    public function __construct($scheme = '', $user = '', $password = null, $host = '', $port = null, $path = '', $query = '', $fragment = '')
     {
         $userInfo = $user;
 
@@ -138,7 +117,7 @@ class Uri implements UriInterface
     /**
      * Create a new URI from environments.
      *
-     * @param  array  $environments
+     * @param  array  $environments  The array of environments.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -161,7 +140,7 @@ class Uri implements UriInterface
     /**
      * Create a new URI from string.
      *
-     * @param  string  $uri
+     * @param  string  $uri  The URI string.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -187,15 +166,15 @@ class Uri implements UriInterface
     }
 
     /**
-     * Check is the URI port is non-standard for the given URI scheme.
+     * Check is the URI port is standard for the given URI scheme.
      *
-     * @param  string  $scheme
-     * @param  int|null  $port
+     * @param  string  $scheme  The URI scheme.
+     * @param  int|null  $port  The URI port.
      * @return bool
      */
-    public static function isNonStandartPort($scheme, $port)
+    public static function isStandartPort($scheme, $port)
     {
-        return ! isset(static::DEFAULT_PORTS[$scheme]) || $port !== static::DEFAULT_PORTS[$scheme];
+        return isset(static::STANDART_PORTS[$scheme]) && $port === static::STANDART_PORTS[$scheme];
     }
 
     /**
@@ -267,42 +246,6 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the array of URI query parameters.
-     *
-     * @return array
-     */
-    public function getQueryParams()
-    {
-        parse_str($this->query, $queryParams);
-
-        return $queryParams;
-    }
-
-    /**
-     * Check is the URI query parameter exists.
-     *
-     * @param  string  $name
-     * @return bool
-     */
-    public function hasQueryParam($name)
-    {
-        return isset($this->getQueryParams()[$name]);
-    }
-
-    /**
-     * Get the URI query parameter.
-     *
-     * @param  string  $name
-     * @return string
-     */
-    public function getQueryParam($name)
-    {
-        $queryParams = $this->getQueryParams();
-
-        return isset($queryParams[$name]) ? $queryParams[$name] : '';
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function getFragment()
@@ -318,7 +261,7 @@ class Uri implements UriInterface
         $new = clone $this;
 
         $new->scheme = $new->filterScheme($scheme);
-        $new->port = static::isNonStandartPort($new->scheme, $new->port) ? $new->port : null;
+        $new->port = static::isStandartPort($new->scheme, $new->port) ? null : $new->port;
 
         return $new;
     }
@@ -390,6 +333,54 @@ class Uri implements UriInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function withFragment($fragment)
+    {
+        $new = clone $this;
+
+        $new->fragment = $new->filterFragment($fragment);
+
+        return $new;
+    }
+
+    /**
+     * Get the array of URI query parameters.
+     *
+     * @return array
+     */
+    public function getQueryParams()
+    {
+        parse_str($this->query, $queryParams);
+
+        return $queryParams;
+    }
+
+    /**
+     * Check is the URI query parameter exists.
+     *
+     * @param  string  $name
+     * @return bool
+     */
+    public function hasQueryParam($name)
+    {
+        return isset($this->getQueryParams()[$name]);
+    }
+
+    /**
+     * Get the URI query parameter.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    public function getQueryParam($name)
+    {
+        $queryParams = $this->getQueryParams();
+
+        return isset($queryParams[$name]) ? $queryParams[$name] : '';
+    }
+
+    /**
      * Return an instance
      * with the specified URI query parameter.
      *
@@ -448,18 +439,6 @@ class Uri implements UriInterface
         }
 
         return $this->withQuery(implode('&', $params));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function withFragment($fragment)
-    {
-        $new = clone $this;
-
-        $new->fragment = $new->filterFragment($fragment);
-
-        return $new;
     }
 
     /**
@@ -622,7 +601,7 @@ class Uri implements UriInterface
                 );
             }
 
-            return static::isNonStandartPort($this->scheme, $port) ? $port : null;
+            return static::isStandartPort($this->scheme, $port) ? null : $port;
         }
 
         return $port;
