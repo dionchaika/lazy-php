@@ -30,7 +30,9 @@ class Query
         'where'   => [],
         'groupBy' => [],
         'having'  => [],
-        'orderBy' => []
+        'orderBy' => [],
+        'limit'   => [],
+        'offset'  => []
 
     ];
 
