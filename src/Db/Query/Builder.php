@@ -48,6 +48,13 @@ class Builder
     protected $distinct = false;
 
     /**
+     * The query SQL compiler.
+     *
+     * @var Lazy\Db\Query\Compilers\CompilerInterface
+     */
+    protected $compiler;
+
+    /**
      * The query
      * database connection.
      *
@@ -56,22 +63,15 @@ class Builder
     protected $connection;
 
     /**
-     * The query SQL compiler.
-     *
-     * @var Lazy\Db\Query\Compilers\CompilerInterface
-     */
-    protected $sqlCompiler;
-
-    /**
      * The query constructor.
      *
+     * @param  Lazy\Db\Query\Compilers\CompilerInterface  $compiler  The query SQL compiler.
      * @param  \Lazy\Db\ConnectionInterface  $connection  The query database connection.
-     * @param  Lazy\Db\Query\Compilers\CompilerInterface  $sqlCompiler  The query SQL compiler.
      */
-    public function __construct(ConnectionInterface $connection, CompilerInterface $sqlCompiler)
+    public function __construct(CompilerInterface $compiler, ConnectionInterface $connection)
     {
+        $this->compiler = $compiler;
         $this->connection = $connection;
-        $this->sqlCompiler = $sqlCompiler;
     }
 
     /**
@@ -149,7 +149,7 @@ class Builder
     public function get()
     {
         return $this->connection->select(
-            $this->sqlCompiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
+            $this->compiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
         );
     }
 
@@ -161,7 +161,7 @@ class Builder
     public function first()
     {
         return $this->connection->selectFirst(
-            $this->sqlCompiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
+            $this->compiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
         );
     }
 
@@ -173,7 +173,7 @@ class Builder
     public function last()
     {
         return $this->connection->selectLast(
-            $this->sqlCompiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
+            $this->compiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
         );
     }
 
@@ -185,7 +185,7 @@ class Builder
     public function rand()
     {
         return $this->connection->selectRand(
-            $this->sqlCompiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
+            $this->compiler->compileSelect($this->table, $this->columns, $this->clauses, $this->distinct)
         );
     }
 }
