@@ -2,33 +2,33 @@
 
 namespace Lazy\Db;
 
+/**
+ * The database query class.
+ */
 class Query
 {
     /**
-     * insert...
-     *
-     * Note: Invoke an "INSERT" query builder.
-     *
-     * @param  string|null  $sql  The raw SQL for "INSERT" query.
-     * @param  array  $bindings  The array of "INSERT" query value bindings.
-     * @return \Lazy\Db\InsertQuery
+     * The query types.
      */
-    public function insert($sql = null, $bindings = [])
-    {
-        return new InsertQuery($sql, $bindings);
-    }
+    const SELECT = 0;
+    const INSERT = 1;
+    const UPDATE = 2;
+    const DELETE = 3;
 
     /**
-     * update...
+     * The query database connection.
      *
-     * Note: Invoke an "UPDATE" query builder.
-     *
-     * @param  string|null  $sql  The raw SQL for "UPDATE" query.
-     * @param  array  $bindings  The array of "UPDATE" query value bindings.
-     * @return \Lazy\Db\UpdateQuery
+     * @var \Lazy\Db\ConnectionInterface|null
      */
-    public function update($sql = null, $bindings = [])
+    protected $connection;
+
+    /**
+     * The database query constructor.
+     *
+     * @param  \Lazy\Db\ConnectionInterface|null  $connection  The query database connection.
+     */
+    public function __construct(?ConnectionInterface $connection = null)
     {
-        return new UpdateQuery($sql, $bindings);
+        $this->connection = $connection;
     }
 }
