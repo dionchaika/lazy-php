@@ -8,9 +8,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * The PSR-7 stream wrapper class.
- *
- * @see https://www.php-fig.org/psr/psr-7/
+ * {@inheritDoc}
  */
 class Stream implements StreamInterface
 {
@@ -25,37 +23,27 @@ class Stream implements StreamInterface
     const WRITABLE_STREAM_MODE_PATTERN = '/r\+|w|w\+|a|a\+|x|x\+|c|c\+/';
 
     /**
-     * The stream size.
-     *
-     * @var int|null
+     * @var int|null The stream size.
      */
     protected $size;
 
     /**
-     * The stream underlying resource.
-     *
-     * @var resource
+     * @var resource The stream resource.
      */
     protected $resource;
 
     /**
-     * Is the stream seekable.
-     *
-     * @var bool
+     * @var bool Is the stream seekable.
      */
     protected $seekable = false;
 
     /**
-     * Is the stream readable.
-     *
-     * @var bool
+     * @var bool Is the stream readable.
      */
     protected $readable = false;
 
     /**
-     * Is the stream writable.
-     *
-     * @var bool
+     * @var bool Is the stream writable.
      */
     protected $writable = false;
 
@@ -68,8 +56,8 @@ class Stream implements StreamInterface
      *      3. readable (bool) - is the stream readable.
      *      4. writable (bool) - is the stream writable.
      *
-     * @param  resource  $resource
-     * @param  array  $opts
+     * @param  resource  $resource  The stream resource.
+     * @param  array  $opts  The array of stream options.
      *
      * @throws \InvalidArgumentException
      */
@@ -109,9 +97,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     *  Close the stream and any underlying resources.
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function close()
     {
@@ -121,9 +107,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Separates any underlying resources from the stream.
-     *
-     * @return resource|null
+     * {@inheritDoc}
      */
     public function detach()
     {
@@ -138,9 +122,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Get the stream size.
-     *
-     * @return int|null
+     * {@inheritDoc}
      */
     public function getSize()
     {
@@ -148,11 +130,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Return the current position of the stream read/write pointer.
-     *
-     * @return int
-     *
-     * @throws \RuntimeException
+     * {@inheritDoc}
      */
     public function tell()
     {
@@ -170,9 +148,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Check is the stream at the end of the stream.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function eof()
     {
@@ -180,9 +156,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Check is the stream seekable.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function isSeekable()
     {
@@ -190,13 +164,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Seek to a position in the stream.
-     *
-     * @param  int  $offset
-     * @param  int  $whence
-     * @return void
-     *
-     * @throws \RuntimeException
+     * {@inheritDoc}
      */
     public function seek($offset, $whence = \SEEK_SET)
     {
@@ -214,11 +182,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Seek to the beginning of the stream.
-     *
-     * @return void
-     *
-     * @throws \RuntimeException
+     * {@inheritDoc}
      */
     public function rewind()
     {
@@ -226,9 +190,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Check is the stream writable.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function isWritable()
     {
@@ -236,12 +198,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Write data to the stream.
-     *
-     * @param  string  $string
-     * @return int
-     *
-     * @throws \RuntimeException
+     * {@inheritDoc}
      */
     public function write($string)
     {
@@ -265,9 +222,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Check is the stream readable.
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function isReadable()
     {
@@ -275,12 +230,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Read data from the stream.
-     *
-     * @param  int  $length
-     * @return string
-     *
-     * @throws \RuntimeException
+     * {@inheritDoc}
      */
     public function read($length)
     {
@@ -302,11 +252,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Get the contents of the stream.
-     *
-     * @return string
-     *
-     * @throws \RuntimeException
+     * {@inheritDoc}
      */
     public function getContents()
     {
@@ -328,11 +274,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Get the stream metadata
-     * as an associative array or retrieve a specific key.
-     *
-     * @param  string|null  $key
-     * @return mixed|array|null
+     * {@inheritDoc}
      */
     public function getMetadata($key = null)
     {
@@ -348,21 +290,19 @@ class Stream implements StreamInterface
     /**
      * Append another stream to this stream.
      *
-     * @param  \Psr\Http\Message\StreamInterface  $stream
+     * @param  \Psr\Http\Message\StreamInterface  $stream  The stream to append.
      * @return void
      *
      * @throws \RuntimeException
      */
     public function append(StreamInterface $stream)
     {
-        $stream->rewind();
-
         $this->seek($this->size);
-        $this->write($stream->getContents());
+        $this->write($stream);
     }
 
     /**
-     * Send a stream contents to browser.
+     * Send the stream contents to browser.
      *
      * @return void
      */
@@ -372,12 +312,7 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Read all data from the stream
-     * into a string, from the beginning to end.
-     *
-     * Warning: This could attempt to load a large amount of data into memory.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function __toString()
     {
@@ -409,7 +344,7 @@ class Stream implements StreamInterface
     /**
      * Filter a stream mode.
      *
-     * @param  string  $mode
+     * @param  string  $mode  The stream mode.
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -419,7 +354,7 @@ class Stream implements StreamInterface
             ! preg_match(static::READABLE_STREAM_MODE_PATTERN, $mode) &&
             ! preg_match(static::WRITABLE_STREAM_MODE_PATTERN, $mode)
         ) {
-            throw new InvalidArgumentException('Invalid stream mode!');
+            throw new InvalidArgumentException("Invalid stream mode: {$mode}!");
         }
 
         return $mode;

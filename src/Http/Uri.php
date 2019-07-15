@@ -482,9 +482,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Stringify the URI.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function __toString()
     {
