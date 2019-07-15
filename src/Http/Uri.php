@@ -30,12 +30,12 @@ class Uri implements UriInterface
     const DEFAULT_ENVIRONMENTS = [
 
         'HTTPS'         => 'off',
-        'PHP_AUTH_USER' => '',
         'PHP_AUTH_PW'   => '',
         'SERVER_NAME'   => 'localhost',
         'SERVER_PORT'   => '80',
         'REQUEST_URI'   => '/',
-        'QUERY_STRING'  => ''
+        'QUERY_STRING'  => '',
+        'PHP_AUTH_USER' => ''
 
     ];
 
