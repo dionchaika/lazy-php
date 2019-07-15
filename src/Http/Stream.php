@@ -23,27 +23,37 @@ class Stream implements StreamInterface
     const WRITABLE_STREAM_MODE_PATTERN = '/r\+|w|w\+|a|a\+|x|x\+|c|c\+/';
 
     /**
-     * @var int|null The stream size.
+     * The stream size.
+     *
+     * @var int|null
      */
     protected $size;
 
     /**
-     * @var resource The stream resource.
+     * The stream resource.
+     *
+     * @var resource
      */
     protected $resource;
 
     /**
-     * @var bool Is the stream seekable.
+     * Is the stream seekable.
+     *
+     * @var bool
      */
     protected $seekable = false;
 
     /**
-     * @var bool Is the stream readable.
+     * Is the stream readable.
+     *
+     * @var bool
      */
     protected $readable = false;
 
     /**
-     * @var bool Is the stream writable.
+     * Is the stream writable.
+     *
+     * @var bool
      */
     protected $writable = false;
 
