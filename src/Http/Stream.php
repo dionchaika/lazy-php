@@ -298,7 +298,7 @@ class Stream implements StreamInterface
     public function append(StreamInterface $stream)
     {
         $this->seek($this->size);
-        $this->write($stream);
+        $this->write((string) $stream);
     }
 
     /**
