@@ -302,10 +302,28 @@ class Stream implements StreamInterface
     }
 
     /**
+     * Clear the stream.
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    public function clear()
+    {
+        if (! $this->resource) {
+            throw new RuntimeException('Stream resource is detached!');
+        }
+
+        if (false === ftruncate($this->resource, 0)) {
+            throw new RuntimeException('Unable to clear the stream!');
+        }
+    }
+
+    /**
      * Append another stream to this stream.
      *
      * @param  \Psr\Http\Message\StreamInterface  $stream  The stream to append.
-     * @return void
+     * @return $this
      *
      * @throws \RuntimeException
      */
@@ -313,13 +331,15 @@ class Stream implements StreamInterface
     {
         $this->seek($this->size);
         $this->write((string) $stream);
+
+        return $this;
     }
 
     /**
      * Prepend another stream to this stream.
      *
      * @param  \Psr\Http\Message\StreamInterface  $stream  The stream to prepend.
-     * @return void
+     * @return $this
      *
      * @throws \RuntimeException
      */
@@ -329,6 +349,8 @@ class Stream implements StreamInterface
 
         $this->rewind();
         $this->write($stream.$contents);
+
+        return $this;
     }
 
     /**
