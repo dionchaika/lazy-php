@@ -69,7 +69,7 @@ abstract class Message implements ArrayAccess, MessageInterface
      *
      * @return \Lazy\Http\Headers
      */
-    public function getHeaderCollection()
+    public function getHeaderCollection(): Headers
     {
         return $this->headers;
     }
