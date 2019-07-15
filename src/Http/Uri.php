@@ -27,11 +27,11 @@ class Uri implements UriInterface
     const DEFAULT_ENVIRONMENTS = [
 
         'HTTPS'         => 'off',
-        'PHP_AUTH_PW'   => '',
         'REQUEST_URI'   => '/',
         'SERVER_PORT'   => '80',
         'SERVER_NAME'   => 'localhost',
         'QUERY_STRING'  => '',
+        'PHP_AUTH_PW'   => '',
         'PHP_AUTH_USER' => ''
 
     ];
@@ -359,7 +359,7 @@ class Uri implements UriInterface
     /**
      * Check is the URI query parameter exists.
      *
-     * @param  string  $name
+     * @param  string  $name  The URI query parameter name.
      * @return bool
      */
     public function hasQueryParam($name)
@@ -370,7 +370,7 @@ class Uri implements UriInterface
     /**
      * Get the URI query parameter.
      *
-     * @param  string  $name
+     * @param  string  $name  The URI query parameter name.
      * @return string
      */
     public function getQueryParam($name)
@@ -384,8 +384,8 @@ class Uri implements UriInterface
      * Return an instance
      * with the specified URI query parameter.
      *
-     * @param  string  $name
-     * @param  string  $value
+     * @param  string  $name  The URI query parameter name.
+     * @param  string  $value  The URI query parameter value.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -403,7 +403,7 @@ class Uri implements UriInterface
      * Return an instance
      * with the specified URI query parameters.
      *
-     * @param  array  $params
+     * @param  array  $params  The array of URI query parameters.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -423,7 +423,7 @@ class Uri implements UriInterface
      * Return an instance
      * without the specified URI query parameter.
      *
-     * @param  string  $name
+     * @param  string  $name  The URI query parameter name.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -526,7 +526,7 @@ class Uri implements UriInterface
     /**
      * Filter a URI scheme.
      *
-     * @param  string  $scheme
+     * @param  string  $scheme  The URI scheme.
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -550,7 +550,7 @@ class Uri implements UriInterface
     /**
      * Filter a URI host.
      *
-     * @param  string  $host
+     * @param  string  $host  The URI host.
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -616,7 +616,7 @@ class Uri implements UriInterface
     /**
      * Filter a URI port.
      *
-     * @param  int|null  $port
+     * @param  int|null  $port  The URI port.
      * @return int|null
      *
      * @throws \InvalidArgumentException
@@ -640,7 +640,7 @@ class Uri implements UriInterface
     /**
      * Filter a URI path.
      *
-     * @param  string  $path
+     * @param  string  $path  The URI path.
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -689,7 +689,7 @@ class Uri implements UriInterface
     /**
      * Filter a URI query.
      *
-     * @param  string  $query
+     * @param  string  $query  The URI query.
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -715,7 +715,7 @@ class Uri implements UriInterface
     /**
      * Filter a URI fragment.
      *
-     * @param  string  $fragment
+     * @param  string  $fragment  The URI fragment.
      * @return string
      */
     protected function filterFragment($fragment)
