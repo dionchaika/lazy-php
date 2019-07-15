@@ -302,16 +302,6 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Send the stream contents to browser.
-     *
-     * @return void
-     */
-    public function send()
-    {
-        fwrite(fopen('php://output', 'w'), $this);
-    }
-
-    /**
      * Append another stream to this stream.
      *
      * @param  \Psr\Http\Message\StreamInterface  $stream  The stream to append.
@@ -323,6 +313,16 @@ class Stream implements StreamInterface
     {
         $this->seek($this->size);
         $this->write((string) $stream);
+    }
+
+    /**
+     * Send the stream contents to browser.
+     *
+     * @return void
+     */
+    public function send()
+    {
+        fwrite(fopen('php://output', 'w'), (string) $this);
     }
 
     /**
