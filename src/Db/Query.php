@@ -9,30 +9,26 @@ class Query
      *
      * Note: Invoke an "INSERT" query builder.
      *
-     * Example:
-     *      <code>
-     *          $query
-     *              ->insert('(id, name) values (?, ?), (?, ?)', [1, 'John', 2, 'Alex'])
-     *              ->into('users', 'u')
-     *              ->execute();
-     *
-     *          //
-     *          // or...
-     *          //
-     *          $query
-     *              ->insert()
-     *              ->into('users', 'u')
-     *              ->record(['id' => 1, 'name' => 'John'])
-     *              ->record(['id' => 2, 'name' => 'Alex'])
-     *              ->execute();
-     *      </code>
-     *
-     * @param  string|null  $sql  The raw SQL.
-     * @param  array  $bindings  The array of value bindings.
+     * @param  string|null  $sql  The raw SQL for "INSERT" query.
+     * @param  array  $bindings  The array of "INSERT" query value bindings.
      * @return \Lazy\Db\InsertQuery
      */
     public function insert($sql = null, $bindings = [])
     {
         return new InsertQuery($sql, $bindings);
+    }
+
+    /**
+     * update...
+     *
+     * Note: Invoke an "UPDATE" query builder.
+     *
+     * @param  string|null  $sql  The raw SQL for "UPDATE" query.
+     * @param  array  $bindings  The array of "UPDATE" query value bindings.
+     * @return \Lazy\Db\UpdateQuery
+     */
+    public function update($sql = null, $bindings = [])
+    {
+        return new UpdateQuery($sql, $bindings);
     }
 }
