@@ -8,9 +8,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
 /**
- * The PSR-7 uploaded file wrapper class.
- *
- * @see https://www.php-fig.org/psr/psr-7/
+ * {@inheritDoc}
  */
 class UploadedFile implements UploadedFileInterface
 {
@@ -31,70 +29,52 @@ class UploadedFile implements UploadedFileInterface
     ];
 
     /**
-     * The uploaded file size.
-     *
-     * @var int|null
+     * @var int|null The uploaded file size.
      */
     protected $size;
 
     /**
-     * The uploaded file error.
-     *
-     * @var int
+     * @var int The uploaded file error.
      */
     protected $error = \UPLOAD_ERR_OK;
 
     /**
-     * Is the uploaded file moved.
-     *
-     * @var bool
+     * @var bool Is the uploaded file moved.
      */
     protected $moved = false;
 
     /**
-     * The uploaded file stream.
-     *
-     * @var \Psr\Http\Message\StreamInterface
+     * @var \Psr\Http\Message\StreamInterface The uploaded file stream.
      */
     protected $stream;
 
      /**
-     * The uploaded file name.
-     *
-     * @var string
+     * @var string The uploaded file filename.
      */
     protected $filename;
 
     /**
-     * The uploaded file client name.
-     *
-     * @var string|null
+     * @var string|null The uploaded file client filename.
      */
     protected $clientFilename;
 
     /**
-     * The uploaded file client media type.
-     *
-     * @var string|null
+     * @var string|null The uploaded file client media type.
      */
     protected $clientMediaType;
 
     /**
      * The uploaded file constructor.
      *
-     * @param  \Psr\Http\Message\StreamInterface|string  $file
-     * @param  int|null  $size
-     * @param  int  $error
-     * @param  string|null  $clientFilename
-     * @param  string|null  $clientMediaType
+     * @param  \Psr\Http\Message\StreamInterface|string  $file  The uploaded file.
+     * @param  int|null  $size  The uploaded file size.
+     * @param  int  $error  The uploaded file error.
+     * @param  string|null  $clientFilename  The uploaded file filename.
+     * @param  string|null  $clientMediaType  The uploaded file client media type.
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($file,
-                                $size = null,
-                                $error = \UPLOAD_ERR_OK,
-                                $clientFilename = null,
-                                $clientMediaType = null)
+    public function __construct($file, $size = null, $error = \UPLOAD_ERR_OK, $clientFilename = null, $clientMediaType = null)
     {
         if ($file instanceof StreamInterface) {
             if (! $file->isReadable()) {
@@ -128,7 +108,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Normalize an array of uploaded files.
      *
-     * @param  array  $files
+     * @param  array  $files  The array of uploaded files.
      * @return array
      *
      * @throws \InvalidArgumentException
@@ -140,7 +120,6 @@ class UploadedFile implements UploadedFileInterface
         foreach ($files as $name => $info) {
             if ($info instanceof UploadedFileInterface) {
                 $normalized[$name] = $info;
-
                 continue;
             }
 
@@ -181,12 +160,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * Get the uploaded file stream.
-     *
-     * @return \Psr\Http\Message\StreamInterface
-     *
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function getStream()
     {
@@ -201,20 +175,14 @@ class UploadedFile implements UploadedFileInterface
                 throw new RuntimeException('Unable to get the uploaded file stream!');
             }
 
-            $this->stream = new Stream($resource);
+            $this->stream = create_stream($resource);
         }
 
         return $this->stream;
     }
 
     /**
-     * Move the uploaded file to a new location.
-     *
-     * @param  string  $targetPath
-     * @return void
-     *
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function moveTo($targetPath)
     {
@@ -246,7 +214,7 @@ class UploadedFile implements UploadedFileInterface
                 throw new RuntimeException('Unable to create a stream for a new uploaded file location!');
             }
 
-            $newStream = new Stream($resource);
+            $newStream = create_stream($resource);
 
             if (false === stream_copy_to_stream($oldStream, $newStream)) {
                 throw new RuntimeException('Unable to copy the uploaded file stream!');
@@ -257,9 +225,7 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * Get the uploaded file size.
-     *
-     * @return int|null
+     * {@inheritDoc}
      */
     public function getSize()
     {
@@ -267,13 +233,27 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * Get the uploaded file error.
-     *
-     * @return int
+     * {@inheritDoc}
      */
     public function getError()
     {
         return $this->error;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getClientFilename()
+    {
+        return $this->clientFilename;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getClientMediaType()
+    {
+        return $this->clientMediaType;
     }
 
     /**
@@ -287,29 +267,9 @@ class UploadedFile implements UploadedFileInterface
     }
 
     /**
-     * Get the uploaded file client name.
-     *
-     * @return string|null
-     */
-    public function getClientFilename()
-    {
-        return $this->clientFilename;
-    }
-
-    /**
-     * Get the uploaded file client media type.
-     *
-     * @return string|null
-     */
-    public function getClientMediaType()
-    {
-        return $this->clientMediaType;
-    }
-
-    /**
      * Filter an uploaded file error.
      *
-     * @param  int  $error
+     * @param  int  $error  The uploaded file error.
      * @return int
      *
      * @throws \InvalidArgumentException
@@ -326,7 +286,10 @@ class UploadedFile implements UploadedFileInterface
             $error !== \UPLOAD_ERR_CANT_WRITE &&
             $error !== \UPLOAD_ERR_EXTENSION
         ) {
-            throw new InvalidArgumentException('Invalid error! Error must be a PHP file upload error.');
+            throw new InvalidArgumentException(
+                "Invalid error: {$error}! "
+                ."Error must be a PHP file upload error."
+            );
         }
 
         return $error;
@@ -335,7 +298,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Filter an uploaded file target path.
      *
-     * @param  string  $targetPath
+     * @param  string  $targetPath  The uploaded file target path.
      * @return string
      *
      * @throws \InvalidArgumentException
@@ -343,7 +306,7 @@ class UploadedFile implements UploadedFileInterface
     protected function filterTargetPath($targetPath)
     {
         if (! $targetPath) {
-            throw new InvalidArgumentException('Invalid target path! Target path can not be empty.');
+            throw new InvalidArgumentException("Invalid target path: {$targetPath}! Target path can not be empty.");
         }
 
         return $targetPath;
