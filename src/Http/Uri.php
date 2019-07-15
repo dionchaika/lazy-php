@@ -28,9 +28,9 @@ class Uri implements UriInterface
 
         'HTTPS'         => 'off',
         'PHP_AUTH_PW'   => '',
-        'SERVER_NAME'   => 'localhost',
-        'SERVER_PORT'   => '80',
         'REQUEST_URI'   => '/',
+        'SERVER_PORT'   => '80',
+        'SERVER_NAME'   => 'localhost',
         'QUERY_STRING'  => '',
         'PHP_AUTH_USER' => ''
 
