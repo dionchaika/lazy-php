@@ -3,7 +3,6 @@
 namespace Lazy\Db\Connectors;
 
 use PDO;
-use Lazy\Db\Connection as BaseConnection;
 
 /**
  * The base database connector class.
