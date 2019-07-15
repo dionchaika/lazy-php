@@ -22,23 +22,13 @@ class Connector
     ];
 
     /**
-     * Get a new database PDO connection.
+     * Create a new database PDO connection.
      *
      * @param  array  $config
      * @return \PDO
      */
-    protected function getPdo(array $config): PDO
+    protected function createPdo(array $config): PDO
     {
         return new PDO($this->getDsn($config), $config['user'], $config['password'], $this->defaultPdoOptions);
-    }
-
-    /**
-     * Get the database connection class.
-     *
-     * @return string
-     */
-    public function getConnectionClass()
-    {
-        return BaseConnection::class;
     }
 }
