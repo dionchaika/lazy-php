@@ -316,6 +316,22 @@ class Stream implements StreamInterface
     }
 
     /**
+     * Prepend another stream to this stream.
+     *
+     * @param  \Psr\Http\Message\StreamInterface  $stream  The stream to prepend.
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    public function prepend(StreamInterface $stream)
+    {
+        $contents = (string) $this;
+
+        $this->rewind();
+        $this->write($stream.$contents);
+    }
+
+    /**
      * Send the stream contents to browser.
      *
      * @return void
