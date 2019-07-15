@@ -113,7 +113,7 @@ class Headers implements ArrayAccess
             if (false === strpos($line, ':')) {
                 throw new InvalidArgumentException(
                     "Invalid header field: {$line}! "
-                    ."Header must be compliant with the \"RFC 7230\" standart."
+                    ."Header field must be compliant with the \"RFC 7230\" standart."
                 );
             }
 
