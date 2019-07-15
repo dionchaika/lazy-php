@@ -18,6 +18,15 @@ class Query
     const DELETE = 3;
 
     /**
+     * The current query type.
+     *
+     * Note: Read only property.
+     *
+     * @var int
+     */
+    protected $type = self::SELECT;
+
+    /**
      * The array of query value bindings.
      *
      * @var array
@@ -35,6 +44,22 @@ class Query
         'offset'  => []
 
     ];
+
+    /**
+     * Get the current query type.
+     *
+     * Supported types:
+     *      0 - "SELECT".
+     *      1 - "INSERT".
+     *      2 - "UPDATE".
+     *      3 - "DELETE".
+     *
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
     /**
      * Get the array of query value bindings.
