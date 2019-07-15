@@ -60,7 +60,9 @@ trait BodyParserTrait
     public function getDefaultUrlencodedParser(): callable
     {
         return function (StreamInterface $body) {
-            return urldecode($body);
+            parse_str($body, $data);
+
+            return $data;
         };
     }
 
