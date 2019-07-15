@@ -2,8 +2,10 @@
 
 namespace Lazy\Db;
 
+use InvalidArgumentException;
+
 /**
- * The database query class.
+ * The query builder class.
  */
 class Query
 {
@@ -15,6 +17,11 @@ class Query
     const UPDATE = 2;
     const DELETE = 3;
 
+    /**
+     * The array of query value bindings.
+     *
+     * @var array
+     */
     protected $bindings = [
 
         'select'  => [],
@@ -28,18 +35,45 @@ class Query
     ];
 
     /**
-     * Bind values to parameters in the query part.
+     * Get the array of query value bindings.
      *
-     * @param  string  $to
-     * @param  array|mixed  $bindings
-     * @return $this
+     * @param  string|null  $type
+     * @return array
+     *
+     * @throws \InvalidArgumentException
      */
-    public function bindValues($to = 'where', $bindings)
+    public function getBindings($type = null)
     {
-        $this->bindings[$to] = array_merge(
-            $this->bindings[$to], array ($bindings)
-        );
+        if (! $type) {
+            return $this->bindings;
+        }
 
-        return $this;
+        if (array_key_exists($type, $this->bindings)) {
+            return $this->bindings[$type];
+        }
+
+        throw new InvalidArgumentException("Invalid bindings type: {$type}!");
+    }
+
+    /**
+     * Bind values to parameters.
+     *
+     * @param  mixed|array  $values
+     * @param  string  $type
+     * @return $this
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function bindValues($values, $type = 'select')
+    {
+        if (array_key_exists($type, $this->bindings)) {
+            $this->bindings[$type] = array_merge(
+                $this->bindings[$type], (array) $values
+            );
+
+            return $this;
+        }
+
+        throw new InvalidArgumentException("Invalid bindings type: {$type}!");
     }
 }
