@@ -7,10 +7,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
 /**
- * The PSR-7 URI implementation class.
- *
- * @see https://www.php-fig.org/psr/psr-7/
- * @see https://www.ietf.org/rfc/rfc3986.txt
+ * {@inheritDoc}
  */
 class Uri implements UriInterface
 {
