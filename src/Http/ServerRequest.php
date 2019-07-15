@@ -39,65 +39,48 @@ class ServerRequest extends Request implements ServerRequestInterface
     protected $parsedBody = false;
 
     /**
-     * The array of request attributes.
-     *
-     * @var array
+     * @var array The array of request attributes.
      */
     protected $attributes = [];
 
     /**
-     * The array of request query parameters.
-     *
-     * @var array
+     * @var array The array of request query parameters.
      */
     protected $queryParams = [];
 
     /**
-     * The array of request server parameters.
-     *
-     * @var array
+     * @var array The array of request server parameters.
      */
     protected $serverParams = [];
 
     /**
-     * The array of request cookie parameters.
-     *
-     * @var array
+     * @var array The array of request cookie parameters.
      */
     protected $cookieParams = [];
 
     /**
-     * The array of request uploaded files.
-     *
-     * @var array
+     * @var array The array of request uploaded files.
      */
     protected $uploadedFiles = [];
 
     /**
-     * The original request method.
-     *
-     * @var string
+     * @var string The original request method.
      */
     protected $originalMethod = Method::GET;
 
     /**
      * The request constructor.
      *
-     * @param  string  $method
-     * @param  \Psr\Http\Message\UriInterface|string|null  $uri
-     * @param  \Lazy\Http\Headers|array|null  $headers
-     * @param  \Psr\Http\Message\StreamInterface|mixed|null  $body
-     * @param  array  $serverParams
-     * @param  string  $protocolVersion
+     * @param  string  $method  The request method.
+     * @param  \Psr\Http\Message\UriInterface|string|null  $uri  The request URI.
+     * @param  \Lazy\Http\Headers|array|null  $headers  The request headers.
+     * @param  \Psr\Http\Message\StreamInterface|mixed|null  $body  The request body.
+     * @param  array  $serverParams  The array of request server parameters.
+     * @param  string  $protocolVersion  The request protocol version.
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($method = Method::GET,
-                                $uri = '/',
-                                $headers = [],
-                                $body = null,
-                                array $serverParams = [],
-                                $protocolVersion = '1.1')
+    public function __construct($method = Method::GET, $uri = '/', $headers = [], $body = null, array $serverParams = [], $protocolVersion = '1.1')
     {
         $this->serverParams = $serverParams;
 
@@ -141,7 +124,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Create a new request from environments.
      *
-     * @param  array  $environments
+     * @param  array  $environments  The array of environments.
      * @return static
      *
      * @throws \InvalidArgumentException
@@ -326,7 +309,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Filter an array of request uploaded files.
      *
-     * @param  array  $uploadedFiles
+     * @param  array  $uploadedFiles  The array of request uploaded files.
      * @return array
      *
      * @throws \InvalidArgumentException
@@ -347,7 +330,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Filter a request parsed body.
      *
-     * @param  array|object|null  $data
+     * @param  array|object|null  $data  The request parsed body.
      * @return array|object|null
      *
      * @throws \InvalidArgumentException

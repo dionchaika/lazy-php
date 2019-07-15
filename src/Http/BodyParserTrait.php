@@ -10,9 +10,7 @@ use Psr\Http\Message\StreamInterface;
 trait BodyParserTrait
 {
     /**
-     * The array of registered body parsers.
-     *
-     * @var array
+     * @var array The array of registered body parsers.
      */
     protected $parsers = [];
 
