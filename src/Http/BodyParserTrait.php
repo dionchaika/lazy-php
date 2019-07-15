@@ -29,7 +29,7 @@ trait BodyParserTrait
     }
 
     /**
-     * Get a default XML body parser.
+     * Get a default "text/xml" body parser.
      *
      * @return callable
      */
@@ -41,7 +41,7 @@ trait BodyParserTrait
     }
 
     /**
-     * Get a default JSON body parser.
+     * Get a default "application/json" body parser.
      *
      * @return callable
      */
@@ -53,7 +53,7 @@ trait BodyParserTrait
     }
 
     /**
-     * Get a default application/x-www-form-urlencoded body parser.
+     * Get a default "application/x-www-form-urlencoded" body parser.
      *
      * @return callable
      */
@@ -73,6 +73,6 @@ trait BodyParserTrait
      */
     public function getMediaType()
     {
-        return strtolower(trim(explode(';', $this->getHeaderLine('Content-Type'))[0]));
+        return strtolower(trim(explode(';', $this->getHeaderLine(Header::CONTENT_TYPE))[0]));
     }
 }
