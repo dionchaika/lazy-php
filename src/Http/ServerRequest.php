@@ -31,8 +31,8 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * The request parsed body.
      *
-     * Note: contains FALSE
-     * if the request body is not parsed.
+     * Note: Contains FALSE
+     * if the request body is not parsed yet.
      *
      * @var array|object|null
      */
@@ -105,8 +105,8 @@ class ServerRequest extends Request implements ServerRequestInterface
 
         $this->originalMethod = $method;
 
-        if ($this->hasHeader('X-HTTP-Method-Override')) {
-            $this->method = $this->filterMethod($this->getHeaderLine('X-HTTP-Method-Override'));
+        if ($this->hasHeader(Header::X_HTTP_METHOD_OVERRIDE)) {
+            $this->method = $this->filterMethod($this->getHeaderLine(Header::X_HTTP_METHOD_OVERRIDE));
         }
 
         $this->registerParser('text/xml', $this->getDefaultXmlParser());
@@ -160,26 +160,6 @@ class ServerRequest extends Request implements ServerRequestInterface
     public static function fromString($request)
     {
         trigger_error('Method "fromString" is not supported by the server requests!', \E_USER_ERROR);
-    }
-
-    /**
-     * Get the original request method.
-     *
-     * @return string
-     */
-    public function getOriginalMethod()
-    {
-        return $this->originalMethod;
-    }
-
-    /**
-     * Check is the request method overridden.
-     *
-     * @return bool
-     */
-    public function isMethodOverridden()
-    {
-        return $this->method !== $this->originalMethod;
     }
 
     /**
@@ -316,6 +296,26 @@ class ServerRequest extends Request implements ServerRequestInterface
         unset($new->attributes[$name]);
 
         return $new;
+    }
+
+    /**
+     * Get the original request method.
+     *
+     * @return string
+     */
+    public function getOriginalMethod()
+    {
+        return $this->originalMethod;
+    }
+
+    /**
+     * Check is the request method overridden.
+     *
+     * @return bool
+     */
+    public function isMethodOverridden()
+    {
+        return $this->method !== $this->originalMethod;
     }
 
     /**
