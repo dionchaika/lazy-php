@@ -458,7 +458,7 @@ class Request extends Message implements RequestInterface
 
             $host = [
 
-                'host' => [
+                'Host' => [
 
                     'name'   => 'Host',
                     'values' => [$host]
