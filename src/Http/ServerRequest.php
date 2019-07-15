@@ -36,7 +36,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @var array|object|null
      */
-    protected $parsedBody;
+    protected $parsedBody = false;
 
     /**
      * The array of request attributes.
