@@ -15,20 +15,31 @@ class Query
     const UPDATE = 2;
     const DELETE = 3;
 
-    /**
-     * The query database connection.
-     *
-     * @var \Lazy\Db\ConnectionInterface|null
-     */
-    protected $connection;
+    protected $bindings = [
+
+        'select'  => [],
+        'from'    => [],
+        'join'    => [],
+        'where'   => [],
+        'groupBy' => [],
+        'having'  => [],
+        'orderBy' => []
+
+    ];
 
     /**
-     * The database query constructor.
+     * Bind values to parameters in the query part.
      *
-     * @param  \Lazy\Db\ConnectionInterface|null  $connection  The query database connection.
+     * @param  string  $to
+     * @param  array|mixed  $bindings
+     * @return $this
      */
-    public function __construct(?ConnectionInterface $connection = null)
+    public function bindValues($to = 'where', $bindings)
     {
-        $this->connection = $connection;
+        $this->bindings[$to] = array_merge(
+            $this->bindings[$to], array ($bindings)
+        );
+
+        return $this;
     }
 }
