@@ -201,10 +201,8 @@ class Uri implements UriInterface
         return ! isset(static::DEFAULT_PORTS[$scheme]) || $port !== static::DEFAULT_PORTS[$scheme];
     }
 
-     /**
-     * Get the URI scheme.
-     *
-     * @return string
+    /**
+     * {@inheritDoc}
      */
     public function getScheme()
     {
@@ -212,9 +210,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI authority.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getAuthority()
     {
@@ -234,9 +230,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI user information.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getUserInfo()
     {
@@ -244,9 +238,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI host.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getHost()
     {
@@ -254,9 +246,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI port.
-     *
-     * @return int|null
+     * {@inheritDoc}
      */
     public function getPort()
     {
@@ -264,9 +254,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI path.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getPath()
     {
@@ -274,9 +262,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI query.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getQuery()
     {
@@ -320,9 +306,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Get the URI fragment.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getFragment()
     {
@@ -330,13 +314,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return an instance
-     * with the specified URI scheme.
-     *
-     * @param  string  $scheme
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withScheme($scheme)
     {
@@ -349,12 +327,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return an instance
-     * with the specified URI user information.
-     *
-     * @param  string  $user
-     * @param  string|null  $password
-     * @return static
+     * {@inheritDoc}
      */
     public function withUserInfo($user, $password = null)
     {
@@ -372,13 +345,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return an instance
-     * with the specified URI host.
-     *
-     * @param  string  $host
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withHost($host)
     {
@@ -390,13 +357,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return an instance
-     * with the specified URI port.
-     *
-     * @param  int|null  $port
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withPort($port)
     {
@@ -408,13 +369,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return an instance
-     * with the specified URI path.
-     *
-     * @param  string  $path
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withPath($path)
     {
@@ -426,13 +381,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return an instance
-     * with the specified URI query.
-     *
-     * @param  string  $query
-     * @return static
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritDoc}
      */
     public function withQuery($query)
     {
@@ -505,11 +454,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Return an instance
-     * with the specified URI fragment.
-     *
-     * @param  string  $fragment
-     * @return static
+     * {@inheritDoc}
      */
     public function withFragment($fragment)
     {
