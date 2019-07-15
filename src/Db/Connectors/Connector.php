@@ -21,7 +21,7 @@ class Connector
     ];
 
     /**
-     * Create a new database PDO connection.
+     * Create a new PDO connection.
      *
      * @param  array  $config
      * @return \PDO
