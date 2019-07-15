@@ -1,11 +1,21 @@
 <?php
 
-namespace Lazy\Db;
+namespace Lazy\Db\Query;
 
-class InsertQuery
+class SelectQuery
 {
-    public function __construct($sql = null, $bindings = [])
+    public function __construct($columns = null)
     {
-        
+        //
+    }
+
+    public function from($table, $alias = null)
+    {
+        //
+    }
+
+    public function where($column, $operator, $value)
+    {
+        //
     }
 }
