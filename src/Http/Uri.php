@@ -27,47 +27,61 @@ class Uri implements UriInterface
     const DEFAULT_ENVIRONMENTS = [
 
         'HTTPS'         => 'off',
-        'REQUEST_URI'   => '/',
-        'SERVER_PORT'   => '80',
-        'SERVER_NAME'   => 'localhost',
-        'QUERY_STRING'  => '',
         'PHP_AUTH_PW'   => '',
-        'PHP_AUTH_USER' => ''
+        'PHP_AUTH_USER' => '',
+        'QUERY_STRING'  => '',
+        'REQUEST_URI'   => '/',
+        'SERVER_NAME'   => 'localhost',
+        'SERVER_PORT'   => '80'
 
     ];
 
     /**
-     * @var string The URI scheme.
+     * The URI scheme.
+     *
+     * @var string
      */
     protected $scheme = '';
 
     /**
-     * @var string The URI user information.
+     * The URI user information.
+     *
+     * @var string
      */
     protected $userInfo = '';
 
     /**
-     * @var string The URI host.
+     * The URI host.
+     *
+     * @var string
      */
     protected $host = '';
 
     /**
-     * @var int|null The URI port.
+     * The URI port.
+     *
+     * @var int|null
      */
     protected $port;
 
     /**
-     * @var string The URI path.
+     * The URI path.
+     *
+     * @var string
      */
     protected $path = '';
 
     /**
-     * @var string The URI query.
+     * The URI query.
+     *
+     * @var string
      */
     protected $query = '';
 
     /**
-     * @var string The URI fragment.
+     * The URI fragment.
+     *
+     * @var string
      */
     protected $fragment = '';
 
@@ -166,7 +180,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Check is the URI port is standard for the given URI scheme.
+     * Check is the URI port standard for the given URI scheme.
      *
      * @param  string  $scheme  The URI scheme.
      * @param  int|null  $port  The URI port.
@@ -362,13 +376,15 @@ class Uri implements UriInterface
                 $uri .= '//'.$authority;
             }
 
-            if ($authority && 0 !== strpos($this->path, '/')) {
-                $uri .= '/'.$this->path;
+            $path = $this->path;
+
+            if ($authority && 0 !== strpos($path, '/')) {
+                $path = '/'.$path;
             } else if (! $authority && 0 === strpos($this->path, '//')) {
-                $uri .= '/'.ltrim($this->path, '/');
-            } else {
-                $uri .= $this->path;
+                $path = '/'.ltrim($path, '/');
             }
+
+            $uri .= $path;
 
             if ($this->query) {
                 $uri .= '?'.$this->query;
@@ -492,7 +508,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Check is the URI network-path reference.
+     * Check is the URI a network-path reference.
      *
      * @return bool
      */
@@ -502,7 +518,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Check is the URI absolute-path reference.
+     * Check is the URI an absolute-path reference.
      *
      * @return bool
      */
@@ -512,7 +528,7 @@ class Uri implements UriInterface
     }
 
     /**
-     * Check is the URI relative-path reference.
+     * Check is the URI a relative-path reference.
      *
      * @return bool
      */
