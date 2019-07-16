@@ -145,7 +145,7 @@ class Uri implements UriInterface
         $password = $environments['PHP_AUTH_PW'] ?: null;
         $host = $environments['SERVER_NAME'];
         $port = (int) $environments['SERVER_PORT'];
-        $path = explode('?', $environments['REQUEST_URI'], 2)[0];
+        $path = reset(explode('?', $environments['REQUEST_URI'], 2));
         $query = $environments['QUERY_STRING'];
 
         return new static($scheme, $user, $password, $host, $port, $path, $query);
