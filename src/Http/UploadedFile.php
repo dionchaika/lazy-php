@@ -29,37 +29,51 @@ class UploadedFile implements UploadedFileInterface
     ];
 
     /**
-     * @var int|null The uploaded file size.
+     * The uploaded file size.
+     *
+     * @var int|null
      */
     protected $size;
 
     /**
-     * @var int The uploaded file error.
+     * The uploaded file error.
+     *
+     * @var int
      */
     protected $error = \UPLOAD_ERR_OK;
 
     /**
-     * @var bool Is the uploaded file moved.
+     * Is the uploaded file moved.
+     *
+     * @var bool
      */
     protected $moved = false;
 
     /**
-     * @var \Psr\Http\Message\StreamInterface The uploaded file stream.
+     * The uploaded file stream.
+     *
+     * @var \Psr\Http\Message\StreamInterface
      */
     protected $stream;
 
-     /**
-     * @var string The uploaded file filename.
+    /**
+     * The uploaded file filename.
+     *
+     * @var string
      */
     protected $filename;
 
     /**
-     * @var string|null The uploaded file client filename.
+     * The uploaded file client filename.
+     *
+     * @var string|null
      */
     protected $clientFilename;
 
     /**
-     * @var string|null The uploaded file client media type.
+     * The uploaded file client media type.
+     *
+     * @var string|null
      */
     protected $clientMediaType;
 
