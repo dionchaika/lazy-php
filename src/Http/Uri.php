@@ -142,7 +142,7 @@ class Uri implements UriInterface
 
         $scheme = 'off' === $environments['HTTPS'] ? 'http' : 'https';
         $user = $environments['PHP_AUTH_USER'];
-        $password = $environments['PHP_AUTH_PW'] ? $environments['PHP_AUTH_PW'] : null;
+        $password = $environments['PHP_AUTH_PW'] ?: null;
         $host = $environments['SERVER_NAME'];
         $port = (int) $environments['SERVER_PORT'];
         $path = explode('?', $environments['REQUEST_URI'], 2)[0];
