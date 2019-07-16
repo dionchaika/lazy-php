@@ -160,7 +160,7 @@ class Headers implements ArrayAccess
      *
      * @return array
      */
-    public function allCustom()
+    public function custom()
     {
         foreach ($this->headers as $header) {
             if (0 === stripos($header['name'], 'x-')) {
