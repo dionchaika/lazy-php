@@ -155,6 +155,23 @@ class Headers implements ArrayAccess
     }
 
     /**
+     * Get the array
+     * of all of the custom headers in the collection.
+     *
+     * @return array
+     */
+    public function allCustom()
+    {
+        foreach ($this->headers as $header) {
+            if (0 === stripos($header['name'], 'x-')) {
+                $headers[$header['name']] = $header['value'];
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
      * Check is the header exists in the collection.
      *
      * @param  string  $name
